@@ -2,21 +2,23 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
-	"header": {
+		"title": {
 			"type": "string"
 		},
 		"logo": {
 			"type": "string"
 		},
-		"offertext": {
+		"offerText": {
 			"type": "string"
 		},
-		"approvalstatus": {
+		"approvalStatus": {
 			"type": "string"
 		}
 	},
 	"required":[
 		"logo",
-		"offertext"
+		"offerText",
+		"title",
+		"approvalStatus"
 	]
 }
