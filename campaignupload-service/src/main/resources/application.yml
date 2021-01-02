@@ -1,0 +1,70 @@
+server:
+  port: 9921
+
+# API Registry client configuration
+eureka:
+  instance:
+    metadata-map:
+      public: true
+      role: live
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/registry/eureka/
+
+# Configure Internal JWT handler
+sso:
+  jwt:
+    internal:
+      signature:
+        key:
+          type: ENV
+          value: SIG_SECRET_KEY
+
+# Spring health monitoring
+management:
+  health:
+    jms:
+     enabled: false
+     
+logging:
+  level:
+    com.backbase: INFO
+    org.springframework: INFO
+     
+backbase:
+  security:
+    public:
+      paths: /**
+      
+      
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/practice
+    username: root
+    password: root@123
+    continue-on-error: true
+  jpa:
+    generate-ddl: false
+#Configuration for sever.
+
+#spring:
+  #h2:
+    #console:
+      #enabled: true
+  #datasource:
+    #url: jdbc:oracle:thin:@localhost:1521:xe
+    #driver: oracle.jdbc.driver.OracleDriver
+    #username: microsite_admin
+    #password: root123
+    #continue-on-error: true
+  #jpa:
+    #generate-ddl: false
+
+file:
+  location: 'D:\Movies'  
+
+LOG_FILE: D:/BackbaseLogs/campaign-upload/campaignupload.log
+LOG_FILE_ARCHIVED: D:/BackbaseLogs/campaign-upload/archived/campaignupload.log

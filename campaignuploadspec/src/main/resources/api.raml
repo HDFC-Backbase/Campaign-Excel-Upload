@@ -1,0 +1,52 @@
+#%RAML 1.0
+---
+#===============================================================
+#  References:
+#    - RAML Specification - https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md
+#===============================================================
+title: campaign Upload
+uses: 
+  traits: lib/traits/traits.raml
+version: v1
+baseUri: "/{version}"
+mediaType:  application/json
+protocols: [ HTTP, HTTPS ]
+types:
+  postcampaignResponseObject: !include schemas/body/post-campaign.json
+
+  getcampaignResponseObject: !include schemas/body/get-campaign.json
+  campaign: !include schemas/body/campaign.json
+  headers: !include schemas/body/headers.json
+  header: !include schemas/body/header.json
+  data: !include schemas/body/data.json
+#===============================================================
+# API resource definitions
+#===============================================================
+/campaignupload:
+  post:
+    body:
+      multipart/form-data:
+        properties:
+          file:
+            description: The file to be uploaded
+            required: true
+            type: file 
+          uploadedBy:
+            description: The name of uploader
+            required: true
+            type: string
+    responses:
+        200:
+            description: request to create item accepted
+            body:
+              application/json:
+                schema: postcampaignResponseObject
+                example: !include examples/body/example-item-created.json
+                
+  get:
+    responses:
+        200:
+            body:
+                application/json:
+                    schema: getcampaignResponseObject
+                    example: !include examples/body/example-item-get.json
