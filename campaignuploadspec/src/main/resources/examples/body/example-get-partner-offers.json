@@ -17,7 +17,7 @@
 			"link": true
 		},
 		{
-			"id": "offertext",
+			"id": "offerText",
 			"sortable": false,
 			"checkbox": false,
 			"searchable": false,
@@ -25,7 +25,7 @@
 			"link": false
 		},
 		{
-			"id": "approvalstatus",
+			"id": "approvalStatus",
 			"sortable": true,
 			"checkbox": false,
 			"searchable": true,
@@ -35,23 +35,23 @@
 	],
 	"data": [
 		{
-			"header": "abc",
+			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offertext": "This is the offertext",
-		    "approvalstatus": "Pending"
+			"offerText": "This is the offertext",
+		    "approvalStatus": "Pending"
 
 		},
 		{
-			"header": "abc",
+			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offertext": "This is the offertext",
-		    "approvalstatus": "Pending"
+			"offerText": "This is the offertext",
+		    "approvalStatus": "Pending"
 		},
 		{
-			"header": "abc",
+			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offertext": "This is the offertext",
-		    "approvalstatus": "Pending"
+			"offerText": "This is the offertext",
+		    "approvalStatus": "Pending"
 		}
 	]
 }
