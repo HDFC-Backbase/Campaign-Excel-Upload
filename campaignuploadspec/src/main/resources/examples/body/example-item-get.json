@@ -5,22 +5,22 @@
 			"sortable": true,
 			"checkbox": false,
 			"searchable": true,
-			"img": true,
-			"link": true
+			"img": false,
+			"link": false
 		},
 		{
 			"id": "logo",
-			"sortable": true,
+			"sortable": false,
 			"checkbox": false,
-			"searchable": true,
+			"searchable": false,
 			"img": true,
 			"link": true
 		},
 		{
 			"id": "offertext",
-			"sortable": true,
+			"sortable": false,
 			"checkbox": false,
-			"searchable": true,
+			"searchable": false,
 			"img": false,
 			"link": false
 		},
@@ -36,20 +36,20 @@
 	"data": [
 		{
 			"header": "abc",
-			"logo": "1",
+			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
 			"offertext": "This is the offertext",
 		    "approvalstatus": "pending"
 
 		},
 		{
 			"header": "abc",
-			"logo": "1",
+			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
 			"offertext": "This is the offertext",
 		    "approvalstatus": "pending"
 		},
 		{
 			"header": "abc",
-			"logo": "1",
+			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
 			"offertext": "This is the offertext",
 		    "approvalstatus": "pending"
 		}
