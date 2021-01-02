@@ -8,17 +8,17 @@
 		"logo": {
 			"type": "string"
 		},
-		"offerText": {
+		"offer Text": {
 			"type": "string"
 		},
-		"approvalStatus": {
+		"approval Status": {
 			"type": "string"
 		}
 	},
 	"required":[
 		"logo",
-		"offerText",
+		"offer Text",
 		"title",
-		"approvalStatus"
+		"approval Status"
 	]
 }
