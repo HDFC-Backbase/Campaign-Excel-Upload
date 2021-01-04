@@ -10,37 +10,39 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "campaign_staging")
-public class CampaignStagingEntity {
+@Table(name = "part_off_staging")
+public class PartnerOffersStagingEntity {
 
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "header")
-	private String header;
+	@Column(name = "title")
+	private String title;
+	
+
 	@Column(name = "logo")
 	private String logo;
 
-	@Column(name = "offertext")
+	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approvalstatus")
+	@Column(name = "approval_status")
 	private String approvalstatus;
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
 	private FileApproveEntity fileApproveEntity;
 
-	public CampaignStagingEntity() {
+	public PartnerOffersStagingEntity() {
 
 	}
 
-	public CampaignStagingEntity(Integer id, String header, String logo, String offertext, String approvalstatus,
+	public PartnerOffersStagingEntity(Integer id, String header, String logo, String offertext, String approvalstatus,
 			FileApproveEntity fileApproveEntity) {
 		super();
 		this.id = id;
-		this.header = header;
+		this.title = title;
 		this.logo = logo;
 		this.offertext = offertext;
 		this.approvalstatus = approvalstatus;
@@ -79,14 +81,7 @@ public class CampaignStagingEntity {
 		this.fileApproveEntity = fileApproveEntity;
 	}
 
-	public String getHeader() {
-		return header;
-	}
-
-	public void setHeader(String header) {
-		this.header = header;
-	}
-
+	
 	public String getApprovalstatus() {
 		return approvalstatus;
 	}
@@ -95,9 +90,16 @@ public class CampaignStagingEntity {
 		this.approvalstatus = approvalstatus;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	@Override
 	public String toString() {
-		return "CampaignStagingEntity [id=" + id + ", header=" + header + ", logo=" + logo + ", offertext=" + offertext
+		return "CampaignStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext=" + offertext
 				+ ", approvalstatus=" + approvalstatus + ", fileApproveEntity=" + fileApproveEntity + "]";
 	}
 }

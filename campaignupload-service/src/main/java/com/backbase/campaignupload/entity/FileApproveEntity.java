@@ -40,7 +40,7 @@ public class FileApproveEntity {
 	
 	@OneToMany(mappedBy="fileApproveEntity" ,fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private List<CampaignStagingEntity> campaignEntity;
+    private List<PartnerOffersStagingEntity> campaignEntity;
 
 
 	public Integer getId() {
@@ -91,11 +91,11 @@ public class FileApproveEntity {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<CampaignStagingEntity> getCampaignEntity() {
+	public List<PartnerOffersStagingEntity> getCampaignEntity() {
 		return campaignEntity;
 	}
 
-	public void setCampaignEntity(List<CampaignStagingEntity> campaignEntity) {
+	public void setCampaignEntity(List<PartnerOffersStagingEntity> campaignEntity) {
 		this.campaignEntity = campaignEntity;
 	}
 

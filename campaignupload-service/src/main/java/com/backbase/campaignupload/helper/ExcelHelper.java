@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backbase.campaignupload.entity.CampaignStagingEntity;
+import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
 
 public class ExcelHelper {
@@ -32,8 +32,8 @@ public class ExcelHelper {
 		return true;
 	}
 
-	public static List<CampaignStagingEntity> excelToTutorials(InputStream is) {
-		List<CampaignStagingEntity> campaigndatalist = new ArrayList<CampaignStagingEntity>();
+	public static List<PartnerOffersStagingEntity> excelToTutorials(InputStream is) {
+		List<PartnerOffersStagingEntity> campaigndatalist = new ArrayList<PartnerOffersStagingEntity>();
 
 		try {
 			HSSFWorkbook workbook = new HSSFWorkbook(is);
@@ -46,7 +46,7 @@ public class ExcelHelper {
 
 				logger.info("Current Row " + row);
 
-				CampaignStagingEntity campaigndata = new CampaignStagingEntity();
+				PartnerOffersStagingEntity campaigndata = new PartnerOffersStagingEntity();
 
 				logger.info("No of cells " + sheet.getRow(row).getLastCellNum());
 
@@ -63,7 +63,7 @@ public class ExcelHelper {
 					case 0:
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
 								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
-							campaigndata.setHeader(currentCell.getStringCellValue());
+							campaigndata.setTitle(currentCell.getStringCellValue());
 						}
 						break;
 

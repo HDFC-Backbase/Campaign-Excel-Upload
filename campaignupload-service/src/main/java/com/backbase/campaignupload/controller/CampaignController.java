@@ -20,21 +20,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backbase.campaignupload.entity.CampaignStagingEntity;
+import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
 import com.backbase.campaignupload.helper.ExcelHelper;
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.Campaign;
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.CampaignuploadApi;
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.CampaignuploadGetResponseBody;
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.CampaignuploadPostResponseBody;
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.Header;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.Header;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartnerOffer;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersApi;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 
 import liquibase.util.file.FilenameUtils;
 
 @RestController
-public class CampaignController implements CampaignuploadApi {
+public class CampaignController implements PartneroffersApi {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CampaignController.class);
 
@@ -45,19 +45,19 @@ public class CampaignController implements CampaignuploadApi {
 	private String dir;
 
 	@Override
-	public CampaignuploadGetResponseBody getCampaignupload(HttpServletRequest arg0, HttpServletResponse arg1) {
+	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest arg0, HttpServletResponse arg1) {
 		logger.info("Request received to get data");
 
 		// TODO Auto-generated method stub
-		CampaignuploadGetResponseBody campaignuploadGetResponseBody = new CampaignuploadGetResponseBody();
+		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
-		List<CampaignStagingEntity> compent = fileService.getAllCampanian();
+		List<PartnerOffersStagingEntity> compent = fileService.getPartnerOffers();
 
 		List<Header> headerslist = new ArrayList<Header>();
 
 		List<Object> dataList = new ArrayList<Object>();
 
-		setHeaders(headerslist, "header");
+		setHeaders(headerslist, "title");
 		setHeaders(headerslist, "offertext");
 		setHeaders(headerslist, "approvalstatus");
 		
@@ -70,33 +70,35 @@ public class CampaignController implements CampaignuploadApi {
 		hdcoffertext.setLink(false);
 		headerslist.add(hdcoffertext);
 		compent.stream().forEach(ce -> {
-			Campaign campaignresponse = new Campaign();
-			campaignresponse.setHeader(ce.getHeader());
-			campaignresponse.setLogo(ce.getLogo());
-			campaignresponse.setoffertext(ce.getOffertext());
-			campaignresponse.setApprovalstatus(ce.getApprovalstatus());
-						dataList.add(campaignresponse);
+			PartnerOffer partnerofferresponse = new PartnerOffer();
+			partnerofferresponse.setTitle(ce.getTitle());
+			partnerofferresponse.setLogo(ce.getLogo());
+			partnerofferresponse.setOffertext(ce.getOffertext());
+			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
+						dataList.add(partnerofferresponse);
 		});
 
-		campaignuploadGetResponseBody.setHeaders(headerslist);
-		campaignuploadGetResponseBody.setData(dataList);
-		return campaignuploadGetResponseBody;	}
+		partneroffersGetResponseBody.setHeaders(headerslist);
+		partneroffersGetResponseBody.setData(dataList);
+		return partneroffersGetResponseBody;
+	}
 
 	@Override
-	public CampaignuploadPostResponseBody postCampaignupload(MultipartFile file, String uploadedBy, HttpServletRequest arg2,
+	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, String uploadedBy, HttpServletRequest arg2,
 			HttpServletResponse arg3) {
+		// TODO Auto-generated method stub
 		logger.info("Request received to Upload data");
 
-		CampaignuploadPostResponseBody campaignuploadPostResponseBody =new CampaignuploadPostResponseBody();
+		PartneroffersPostResponseBody partneroffersPostResponseBody =new PartneroffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				String filename = saveFiletoLocation(file, uploadedBy);
 				fileService.save(file, "CampaignData", uploadedBy, filename);
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
-				campaignuploadPostResponseBody.setStatuscode("200");
-				campaignuploadPostResponseBody.setMessage(message);
-				return campaignuploadPostResponseBody;
+				partneroffersPostResponseBody.setStatuscode("200");
+				partneroffersPostResponseBody.setMessage(message);
+				return partneroffersPostResponseBody;
 			} catch (Exception e) {
 				logger.info(e.getMessage());
 				throw new CustomInternalServerException(
@@ -137,7 +139,6 @@ public class CampaignController implements CampaignuploadApi {
 			logger.info(e.getMessage());
 		}
 
-		return filename;
-	}
+		return filename;	}
 
 }

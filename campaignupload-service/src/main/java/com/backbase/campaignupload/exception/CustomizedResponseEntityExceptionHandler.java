@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.backbase.campaignupload.rest.spec.v1.campaignupload.CampaignuploadPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 
 
 
@@ -18,20 +18,20 @@ import com.backbase.campaignupload.rest.spec.v1.campaignupload.CampaignuploadPos
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(CustomBadRequestException.class)
-	public final ResponseEntity<CampaignuploadPostResponseBody> handleNotFoundException(CustomBadRequestException ex, WebRequest request) {
-		CampaignuploadPostResponseBody uploadCampaignDataPostResponseBody=new CampaignuploadPostResponseBody();
-		uploadCampaignDataPostResponseBody.setStatuscode("400");
-		uploadCampaignDataPostResponseBody.setMessage(ex.getMessage());
+	public final ResponseEntity<PartneroffersPostResponseBody> handleNotFoundException(CustomBadRequestException ex, WebRequest request) {
+		PartneroffersPostResponseBody uploadPartnerOfferPostResponseBody=new PartneroffersPostResponseBody();
+		uploadPartnerOfferPostResponseBody.setStatuscode("400");
+		uploadPartnerOfferPostResponseBody.setMessage(ex.getMessage());
 		
-		return new ResponseEntity<CampaignuploadPostResponseBody>(uploadCampaignDataPostResponseBody, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<PartneroffersPostResponseBody>(uploadPartnerOfferPostResponseBody, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(CustomInternalServerException.class)
-	public final ResponseEntity<CampaignuploadPostResponseBody> handleInternalServerException(CustomInternalServerException ex, WebRequest request) {
-		CampaignuploadPostResponseBody uploadCampaignDataPostResponseBody = new CampaignuploadPostResponseBody();
-		uploadCampaignDataPostResponseBody.setStatuscode("500");
-		uploadCampaignDataPostResponseBody.setMessage(ex.getMessage());
+	public final ResponseEntity<PartneroffersPostResponseBody> handleInternalServerException(CustomInternalServerException ex, WebRequest request) {
+		PartneroffersPostResponseBody uploadPartnerOfferPostResponseBody = new PartneroffersPostResponseBody();
+		uploadPartnerOfferPostResponseBody.setStatuscode("500");
+		uploadPartnerOfferPostResponseBody.setMessage(ex.getMessage());
 		
-		return new ResponseEntity<CampaignuploadPostResponseBody>(uploadCampaignDataPostResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<PartneroffersPostResponseBody>(uploadPartnerOfferPostResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

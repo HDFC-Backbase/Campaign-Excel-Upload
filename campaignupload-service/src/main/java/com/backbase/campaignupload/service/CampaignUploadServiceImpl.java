@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backbase.campaignupload.entity.CampaignStagingEntity;
+import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
 import com.backbase.campaignupload.helper.ExcelHelper;
 import com.backbase.campaignupload.repo.CampaignUploadRepo;
@@ -31,7 +31,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename) {
 		try {
-			List<CampaignStagingEntity> companyfileuploads = ExcelHelper.excelToTutorials(file.getInputStream());
+			List<PartnerOffersStagingEntity> companyfileuploads = ExcelHelper.excelToTutorials(file.getInputStream());
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
 			fileApproveEntity.setFilestatus(PENDING);
 			fileApproveEntity.setCreatedby(uploadedBy);
@@ -52,7 +52,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 	}
 
 	@Override
-	public List<CampaignStagingEntity> getAllCampanian() {
+	public List<PartnerOffersStagingEntity> getPartnerOffers() {
 		// TODO Auto-generated method stub
 		return exeluploadrepo.findAll();
 	}
