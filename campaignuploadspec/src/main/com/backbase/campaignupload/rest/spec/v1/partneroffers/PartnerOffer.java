@@ -1,5 +1,5 @@
 
-package com.backbase.campaignupload.rest.spec.v1.campaignupload;
+package com.backbase.campaignupload.rest.spec.v1.partneroffers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,80 +16,135 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "header",
+    "title",
     "logo",
     "offertext",
     "approvalstatus"
 })
-public class Campaign implements AdditionalPropertiesAware
+public class PartnerOffer implements AdditionalPropertiesAware
 {
 
+    @JsonProperty("title")
+    private String title;
     /**
      * 
      * (Required)
      * 
      */
-    @JsonProperty("header")
-    @NotNull
-    private String header;
     @JsonProperty("logo")
+    @NotNull
     private String logo;
-    @JsonProperty("offertext")
-    private String offertext;
     /**
      * 
      * (Required)
      * 
      */
-    @JsonProperty("approvalstatus")
-    @NotNull
-    private String approvalstatus;
-
-	 
-	@JsonProperty("header")
-    public String getHeader() {
-        return header;
-    }
-
-
-    @JsonProperty("header")
-    public void setHeader(String header) {
-        this.header = header;
-    }
-	
-	@JsonProperty("logo")
-    public String getLogo() {
-        return logo;
-    }
-
-    @JsonProperty("logo")
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-	@JsonProperty("offertext")
-    public String getoffertext() {
-        return offertext;
-    }
-
     @JsonProperty("offertext")
-    public void setoffertext(String offertext) {
-        this.offertext = offertext;
-    }
-	/**
+    @NotNull
+    private String offertext;
+    @JsonProperty("approvalstatus")
+    private String approvalstatus;
+    /**
      * Additional Properties
      * 
      */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> additions = new HashMap<String, String>();
 
+    /**
+     * 
+     * @return
+     *     The title
+     */
+    @JsonProperty("title")
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * 
+     * @param title
+     *     The title
+     */
+    @JsonProperty("title")
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public PartnerOffer withTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     * @return
+     *     The logo
+     */
+    @JsonProperty("logo")
+    public String getLogo() {
+        return logo;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     * @param logo
+     *     The logo
+     */
+    @JsonProperty("logo")
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public PartnerOffer withLogo(String logo) {
+        this.logo = logo;
+        return this;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     * @return
+     *     The offertext
+     */
+    @JsonProperty("offertext")
+    public String getOffertext() {
+        return offertext;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     * @param offertext
+     *     The offertext
+     */
+    @JsonProperty("offertext")
+    public void setOffertext(String offertext) {
+        this.offertext = offertext;
+    }
+
+    public PartnerOffer withOffertext(String offertext) {
+        this.offertext = offertext;
+        return this;
+    }
+
+    /**
+     * 
+     * @return
+     *     The approvalstatus
+     */
     @JsonProperty("approvalstatus")
     public String getApprovalstatus() {
         return approvalstatus;
     }
 
     /**
-     * 
-     * (Required)
      * 
      * @param approvalstatus
      *     The approvalstatus
@@ -99,7 +154,7 @@ public class Campaign implements AdditionalPropertiesAware
         this.approvalstatus = approvalstatus;
     }
 
-    public Campaign withApprovalstatus(String approvalstatus) {
+    public PartnerOffer withApprovalstatus(String approvalstatus) {
         this.approvalstatus = approvalstatus;
         return this;
     }
@@ -111,7 +166,7 @@ public class Campaign implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(header).append(logo).append(offertext).append(approvalstatus).toHashCode();
+        return new HashCodeBuilder().append(title).append(logo).append(offertext).append(approvalstatus).toHashCode();
     }
 
     @Override
@@ -119,11 +174,11 @@ public class Campaign implements AdditionalPropertiesAware
         if (other == this) {
             return true;
         }
-        if ((other instanceof Campaign) == false) {
+        if ((other instanceof PartnerOffer) == false) {
             return false;
         }
-        Campaign rhs = ((Campaign) other);
-        return new EqualsBuilder().append(header, rhs.header).append(logo, rhs.logo).append(offertext, rhs.offertext).append(approvalstatus, rhs.approvalstatus).isEquals();
+        PartnerOffer rhs = ((PartnerOffer) other);
+        return new EqualsBuilder().append(title, rhs.title).append(logo, rhs.logo).append(offertext, rhs.offertext).append(approvalstatus, rhs.approvalstatus).isEquals();
     }
 
     /**
