@@ -41,7 +41,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 
 			companyfileuploads.stream().forEach(ce -> {
 				ce.setFileApproveEntity(savedFile);
-				//ce.setApprovalstatus(PENDING);
+				ce.setApprovalstatus(PENDING);
 			});
 
 			exeluploadrepo.saveAll(companyfileuploads);

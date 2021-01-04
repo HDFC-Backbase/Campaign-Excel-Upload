@@ -76,8 +76,8 @@ public class CampaignController implements PartneroffersApi {
 			partnerofferresponse.setOffertext(ce.getOffertext());
 			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
 						dataList.add(partnerofferresponse);
-		});
 
+		});
 		partneroffersGetResponseBody.setHeaders(headerslist);
 		partneroffersGetResponseBody.setData(dataList);
 		return partneroffersGetResponseBody;
