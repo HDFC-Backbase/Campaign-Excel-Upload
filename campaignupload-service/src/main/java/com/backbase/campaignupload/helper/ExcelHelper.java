@@ -89,7 +89,6 @@ public class ExcelHelper {
 					}
 
 				}
-				System.out.println("campaigndatalist...."+campaigndatalist);
 
 				campaigndatalist.add(campaigndata);
 			}
