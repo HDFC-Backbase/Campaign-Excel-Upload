@@ -10,10 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
+import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
 import com.backbase.campaignupload.helper.ExcelHelper;
 import com.backbase.campaignupload.repo.CampaignUploadRepo;
+import com.backbase.campaignupload.repo.CompanyUploadRepo;
+import com.backbase.campaignupload.repo.CorporateOfferRepo;
 import com.backbase.campaignupload.repo.FileApproveRepository;
+
 
 import liquibase.util.file.FilenameUtils;
 
@@ -26,8 +30,14 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 	CampaignUploadRepo exeluploadrepo;
 
 	@Autowired
+	CorporateOfferRepo corporateOfferRepo;
+	
+	@Autowired
 	FileApproveRepository fileApproveRepository;
 
+	@Autowired
+	CompanyUploadRepo companyupload;
+	
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename) {
 		try {
@@ -55,6 +65,36 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 	public List<PartnerOffersStagingEntity> getPartnerOffers() {
 		// TODO Auto-generated method stub
 		return exeluploadrepo.findAll();
+	}
+
+	@Override
+	public void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename) {
+		try {
+		List<CorporateStagingEntity> corptaglist= ExcelHelper.excelToCorporateStaging(file.getInputStream(),companyupload);
+System.out.println("corptaglist..."+corptaglist.toString());
+		FileApproveEntity fileApproveEntity = new FileApproveEntity();
+		fileApproveEntity.setCreatedby(uploadedBy);
+		fileApproveEntity.setFilestatus(PENDING);
+		fileApproveEntity.setFilename(filename);
+		fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+		FileApproveEntity savedFile = fileApproveRepository.save(fileApproveEntity);
+		corptaglist.stream().forEach(corp -> {
+			corp.setCorpfileApproveEntity(savedFile);
+			corp.setApprovalstatus(PENDING);
+			
+		});
+		corporateOfferRepo.saveAll(corptaglist);
+		System.out.println("save success");
+	} catch (IOException e) {
+		throw new RuntimeException("Fail to store excel data: " + e.getMessage());
+	}
+		
+	}
+
+	@Override
+	public List<CorporateStagingEntity> getCorporateOffers() {
+		// TODO Auto-generated method stub
+		return corporateOfferRepo.findAll();
 	}
 
 }

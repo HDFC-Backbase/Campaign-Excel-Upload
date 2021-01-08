@@ -33,7 +33,7 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-	<logger name="com.backbase.companyexcelupload" level="info"
+	<logger name="com.backbase.campaignupload" level="info"
 		additivity="false">
 		<appender-ref ref="FILE-ROLLING" />
 		<appender-ref ref="CONSOLE" />

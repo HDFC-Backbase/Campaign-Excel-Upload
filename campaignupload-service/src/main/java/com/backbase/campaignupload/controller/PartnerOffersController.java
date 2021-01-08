@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,16 +37,17 @@ import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import liquibase.util.file.FilenameUtils;
 
 @RestController
-public class CampaignController implements PartneroffersApi {
+public class PartnerOffersController implements PartneroffersApi {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CampaignController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PartnerOffersController.class);
 
 	@Autowired
 	CampaignUploadServiceImpl fileService;
 
 	@Value("${file.location}")
 	private String dir;
-
+	
+	
 	@Override
 	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest arg0, HttpServletResponse arg1) {
 		logger.info("Request received to get data");
@@ -82,6 +86,7 @@ public class CampaignController implements PartneroffersApi {
 		partneroffersGetResponseBody.setData(dataList);
 		return partneroffersGetResponseBody;
 	}
+
 
 	@Override
 	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, String uploadedBy, HttpServletRequest arg2,

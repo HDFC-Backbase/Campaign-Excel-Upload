@@ -13,9 +13,11 @@ mediaType:  application/json
 protocols: [ HTTP, HTTPS ]
 types:
   postPartnerOffersResponseObject: !include schemas/body/post-partner-offers.json
-
   getPartnerOffersResponseObject: !include schemas/body/get-partner-offers.json
   partnerOffer: !include schemas/body/partner-offer.json
+  postCorporateOffersResponseObject: !include schemas/body/post-corporate-offers.json
+  getCorporateOffersResponseObject: !include schemas/body/get-corporate-offers.json
+  corporateOffer: !include schemas/body/corporate-offer.json
   headers: !include schemas/body/headers.json
   header: !include schemas/body/header.json
   data: !include schemas/body/data.json
@@ -50,3 +52,32 @@ types:
                 application/json:
                     schema: getPartnerOffersResponseObject
                     example: !include examples/body/example-get-partner-offers.json
+
+/corporate-offers:
+  post:
+    body:
+      multipart/form-data:
+        properties:
+          file:
+            description: The file to be uploaded
+            required: true
+            type: file 
+          uploadedBy:
+            description: The name of uploader
+            required: true
+            type: string
+    responses:
+        200:
+            description: request to create item accepted
+            body:
+              application/json:
+                schema: postCorporateOffersResponseObject
+                example: !include examples/body/example-post-corporate-offers.json
+                
+  get:
+    responses:
+        200:
+            body:
+                application/json:
+                    schema: getCorporateOffersResponseObject
+                    #example: !include examples/body/example-get-corporate-offers.json

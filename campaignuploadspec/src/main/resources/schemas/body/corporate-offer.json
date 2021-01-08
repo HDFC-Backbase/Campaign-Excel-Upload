@@ -1,0 +1,28 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+		"title": {
+			"type": "string"
+		},
+		"logo": {
+			"type": "string"
+		},
+		"offer Text": {
+			"type": "string"
+		},
+		"company Id": {
+			"type": "integer"
+		},
+		"approval Status": {
+			"type": "string"
+		}
+	},
+	"required":[
+		"logo",
+		"offer Text",
+		"title",
+		"company Id",
+		"approval Status"
+	]
+}

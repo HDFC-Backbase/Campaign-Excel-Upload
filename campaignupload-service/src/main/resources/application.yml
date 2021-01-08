@@ -66,5 +66,5 @@ spring:
 file:
   location: 'D:\Movies'  
 
-LOG_FILE: D:/BackbaseLogs/campaign-upload/campaignupload.log
-LOG_FILE_ARCHIVED: D:/BackbaseLogs/campaign-upload/archived/campaignupload.log
+LOG_FILE: D:/BackbaseLogs/campaignupload-service/campaignupload.log
+LOG_FILE_ARCHIVED: D:/BackbaseLogs/campaignupload-service/archived/campaignupload.log
