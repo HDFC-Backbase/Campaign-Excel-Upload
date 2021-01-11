@@ -71,7 +71,6 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 	public void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename) {
 		try {
 		List<CorporateStagingEntity> corptaglist= ExcelHelper.excelToCorporateStaging(file.getInputStream(),companyupload);
-System.out.println("corptaglist..."+corptaglist.toString());
 		FileApproveEntity fileApproveEntity = new FileApproveEntity();
 		fileApproveEntity.setCreatedby(uploadedBy);
 		fileApproveEntity.setFilestatus(PENDING);
@@ -84,7 +83,6 @@ System.out.println("corptaglist..."+corptaglist.toString());
 			
 		});
 		corporateOfferRepo.saveAll(corptaglist);
-		System.out.println("save success");
 	} catch (IOException e) {
 		throw new RuntimeException("Fail to store excel data: " + e.getMessage());
 	}
