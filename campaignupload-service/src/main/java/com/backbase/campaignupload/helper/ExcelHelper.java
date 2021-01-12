@@ -23,7 +23,7 @@ public class ExcelHelper {
 
 	public static String TYPE = "application/vnd.ms-excel";
 	static String[] HEADERs = { "Header", "Logo", "OfferText"};
-	static String SHEET = "CampaignData";
+	static String SHEET = "PartnerOffer";
 	static String SHEETCORP = "CorporateOffer";
 
 	public static boolean hasExcelFormat(MultipartFile file) {

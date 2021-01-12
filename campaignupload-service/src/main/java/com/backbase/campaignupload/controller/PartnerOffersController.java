@@ -99,7 +99,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				String filename = saveFiletoLocation(file, uploadedBy);
-				fileService.save(file, "CampaignData", uploadedBy, filename);
+				fileService.save(file, "PartnerOffer", uploadedBy, filename);
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
 				partneroffersPostResponseBody.setStatuscode("200");
 				partneroffersPostResponseBody.setMessage(message);
