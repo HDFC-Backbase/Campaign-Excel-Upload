@@ -62,8 +62,6 @@ public class PartnerOffersController implements PartneroffersApi {
 		List<Object> dataList = new ArrayList<Object>();
 
 		setHeaders(headerslist, "title");
-		setHeaders(headerslist, "offertext");
-		setHeaders(headerslist, "approvalstatus");
 		
 		Header hdcoffertext = new Header();
 		hdcoffertext.setId("logo");
@@ -73,6 +71,10 @@ public class PartnerOffersController implements PartneroffersApi {
 		hdcoffertext.setImg(true);
 		hdcoffertext.setLink(false);
 		headerslist.add(hdcoffertext);
+		
+		setHeaders(headerslist, "offertext");
+		setHeaders(headerslist, "approvalstatus");
+		
 		compent.stream().forEach(ce -> {
 			PartnerOffer partnerofferresponse = new PartnerOffer();
 			partnerofferresponse.setTitle(ce.getTitle());
