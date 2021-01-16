@@ -38,7 +38,7 @@ public class PartnerOffersStagingEntity {
 
 	}
 
-	public PartnerOffersStagingEntity(Integer id, String header, String logo, String offertext, String approvalstatus,
+	public PartnerOffersStagingEntity(Integer id, String title, String logo, String offertext, String approvalstatus,
 			FileApproveEntity fileApproveEntity) {
 		super();
 		this.id = id;

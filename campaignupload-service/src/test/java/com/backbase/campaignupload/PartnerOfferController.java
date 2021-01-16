@@ -27,7 +27,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -52,7 +51,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  * "classpath:insert_file_master.sql", "classpath:insert_partneroffer_stag.sql"
  * })
  */
-public class PartnerOfferControllerTest {
+public class PartnerOfferController {
 
 	public static final String TEST_JWT = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxk"
 			+ "ZXIiLCJpYXQiOjE0ODQ4MjAxOTYsImV4cCI6MTUxNjM1NjE5NiwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJv"
@@ -108,7 +107,7 @@ public class PartnerOfferControllerTest {
 
 		byte[] bytes = bos.toByteArray();
 
-		MockMultipartFile file = new MockMultipartFile("file", "corporate-offer.xls", "application/vnd.ms-excel",
+		MockMultipartFile file = new MockMultipartFile("file", "partner-offer.xls", "application/vnd.ms-excel",
 				bytes);
 
 		this.mvc.perform(

@@ -46,6 +46,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 			fileApproveEntity.setFilestatus(PENDING);
 			fileApproveEntity.setCreatedby(uploadedBy);
 			fileApproveEntity.setFilename(filename);
+			fileApproveEntity.setDisplayfilename(file.getOriginalFilename());
 			fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
 			FileApproveEntity savedFile = fileApproveRepository.save(fileApproveEntity);
 
@@ -63,7 +64,6 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 
 	@Override
 	public List<PartnerOffersStagingEntity> getPartnerOffers() {
-		// TODO Auto-generated method stub
 		return exeluploadrepo.findAll();
 	}
 
@@ -75,6 +75,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 		fileApproveEntity.setCreatedby(uploadedBy);
 		fileApproveEntity.setFilestatus(PENDING);
 		fileApproveEntity.setFilename(filename);
+		fileApproveEntity.setDisplayfilename(file.getOriginalFilename());
 		fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
 		FileApproveEntity savedFile = fileApproveRepository.save(fileApproveEntity);
 		corptaglist.stream().forEach(corp -> {
@@ -91,7 +92,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService{
 
 	@Override
 	public List<CorporateStagingEntity> getCorporateOffers() {
-		// TODO Auto-generated method stub
+		
 		return corporateOfferRepo.findAll();
 	}
 

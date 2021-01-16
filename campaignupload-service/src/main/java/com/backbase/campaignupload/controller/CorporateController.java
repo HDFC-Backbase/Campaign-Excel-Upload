@@ -17,13 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
 import com.backbase.campaignupload.helper.ExcelHelper;
@@ -32,10 +28,6 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersA
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Header;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartnerOffer;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersApi;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 
 import liquibase.util.file.FilenameUtils;

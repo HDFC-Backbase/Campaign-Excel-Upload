@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
-
 @Entity
 @Table(name = "file_master")
 public class FileApproveEntity {
@@ -25,23 +23,24 @@ public class FileApproveEntity {
 
 	@Column(name = "f_name")
 	private String filename;
-	
+
+	@Column(name = "f_display_name")
+	private String displayfilename;
+
 	@Column(name = "f_type")
 	private String fileType;
 
 	@Column(name = "f_status")
 	private String filestatus;
-	
+
 	@Column(name = "created_by")
 	private String createdby;
-	
+
 	@Column(name = "updated_by")
 	private String updatedBy;
-	
-	@OneToMany(mappedBy="fileApproveEntity" ,fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<PartnerOffersStagingEntity> campaignEntity;
 
+	@OneToMany(mappedBy = "fileApproveEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<PartnerOffersStagingEntity> campaignEntity;
 
 	public Integer getId() {
 		return id;
@@ -99,12 +98,19 @@ public class FileApproveEntity {
 		this.campaignEntity = campaignEntity;
 	}
 
+	public String getDisplayfilename() {
+		return displayfilename;
+	}
+
+	public void setDisplayfilename(String displayfilename) {
+		this.displayfilename = displayfilename;
+	}
+
 	@Override
 	public String toString() {
 		return "FileApproveEntity [id=" + id + ", filename=" + filename + ", fileType=" + fileType + ", filestatus="
 				+ filestatus + ", createdby=" + createdby + ", updatedBy=" + updatedBy + ", campaignEntity="
 				+ campaignEntity + "]";
 	}
- 
 
 }
