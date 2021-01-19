@@ -88,8 +88,10 @@ public class PartnerOffersController implements PartneroffersApi {
 
 
 	@Override
-	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, String uploadedBy, HttpServletRequest arg2,
+	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, HttpServletRequest arg2,
 			HttpServletResponse arg3) {
+		String uploadedBy="Deepti";
+
 		// TODO Auto-generated method stub
 		logger.info("Request received to Upload data");
 

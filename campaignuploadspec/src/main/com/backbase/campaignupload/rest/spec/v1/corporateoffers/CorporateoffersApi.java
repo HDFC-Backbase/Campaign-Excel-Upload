@@ -22,9 +22,7 @@ public interface CorporateoffersApi {
     @ResponseStatus(HttpStatus.OK)
     public CorporateoffersPostResponseBody postCorporateoffers(
         @RequestParam("file")
-        MultipartFile file,
-        @RequestParam("uploadedBy")
-        String uploadedBy, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
+        MultipartFile file, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
 
     @RequestMapping(method = RequestMethod.GET, value = "", produces = {
         "application/json"

@@ -85,9 +85,9 @@ public class CorporateController implements CorporateoffersApi {
 	}
 
 	@Override
-	public CorporateoffersPostResponseBody postCorporateoffers(MultipartFile file, String uploadedBy, HttpServletRequest arg2,
+	public CorporateoffersPostResponseBody postCorporateoffers(MultipartFile file, HttpServletRequest arg2,
 			HttpServletResponse arg3) {
-		
+		String uploadedBy="Deepti";
 		logger.info("Request Received to Upload Caorporate offer data");
 		CorporateoffersPostResponseBody corporateoffersPostResponseBody =new CorporateoffersPostResponseBody();
 		String message = "";
