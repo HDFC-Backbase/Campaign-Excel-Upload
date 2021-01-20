@@ -30,6 +30,7 @@ import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersApi;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
+import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
 
@@ -46,9 +47,16 @@ public class PartnerOffersController implements PartneroffersApi {
 	
 	
 	@Override
-	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest arg0, HttpServletResponse arg1) {
+	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest request, HttpServletResponse arg1) {
 		logger.info("Request received to get data");
 
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
+		
+		logger.info("Subject in JWT "+subject);
 		// TODO Auto-generated method stub
 		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
@@ -88,13 +96,18 @@ public class PartnerOffersController implements PartneroffersApi {
 
 
 	@Override
-	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, HttpServletRequest arg2,
+	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, HttpServletRequest request,
 			HttpServletResponse arg3) {
-		String uploadedBy="Deepti";
 
 		// TODO Auto-generated method stub
 		logger.info("Request received to Upload data");
+		logger.info("Authorization header " + request.getHeader("authorization"));
 
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String uploadedBy=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
+		
+		logger.info("Subject in JWT "+uploadedBy);
 		PartneroffersPostResponseBody partneroffersPostResponseBody =new PartneroffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {

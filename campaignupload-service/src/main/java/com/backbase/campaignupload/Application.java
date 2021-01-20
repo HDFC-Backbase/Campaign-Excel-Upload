@@ -7,10 +7,13 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.backbase.buildingblocks.jwt.internal.config.EnableInternalJwtConsumer;
+
 @EnableJpaRepositories
 @EntityScan
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableInternalJwtConsumer
 public class Application extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {

@@ -29,6 +29,7 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersG
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Header;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
+import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
 
@@ -44,9 +45,15 @@ public class CorporateController implements CorporateoffersApi {
 	private String dir;
 
 	@Override
-	public CorporateoffersGetResponseBody getCorporateoffers(HttpServletRequest arg0, HttpServletResponse arg1) {
+	public CorporateoffersGetResponseBody getCorporateoffers(HttpServletRequest request, HttpServletResponse arg1) {
 		logger.info("Request received to get Relation manager uploaded data");
+		logger.info("Authorization header " + request.getHeader("authorization"));
 
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
+		
+		logger.info("Subject in JWT "+subject);
 		
 		  CorporateoffersGetResponseBody corporateoffersGetResponseBody = new
 		  CorporateoffersGetResponseBody();
@@ -85,10 +92,16 @@ public class CorporateController implements CorporateoffersApi {
 	}
 
 	@Override
-	public CorporateoffersPostResponseBody postCorporateoffers(MultipartFile file, HttpServletRequest arg2,
+	public CorporateoffersPostResponseBody postCorporateoffers(MultipartFile file, HttpServletRequest request,
 			HttpServletResponse arg3) {
-		String uploadedBy="Deepti";
 		logger.info("Request Received to Upload Caorporate offer data");
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String uploadedBy=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
+		
+		logger.info("Subject in JWT "+uploadedBy);
 		CorporateoffersPostResponseBody corporateoffersPostResponseBody =new CorporateoffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {

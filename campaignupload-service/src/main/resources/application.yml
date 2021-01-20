@@ -31,12 +31,16 @@ logging:
     com.backbase: INFO
     org.springframework: INFO
      
-backbase:
+#backbase:
+  #security:
+    #public:
+      #paths: /**
+      
+buildingblocks:
   security:
-    public:
-      paths: /**
-      
-      
+    csrf:
+      enabled: false
+          
 spring:
   h2:
     console:
