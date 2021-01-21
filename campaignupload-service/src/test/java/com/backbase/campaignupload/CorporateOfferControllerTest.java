@@ -53,7 +53,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  * "classpath:insert_file_master.sql",
  * "classpath:insert_corporateoffer_stag.sql" })
  */
-@Sql(scripts = {"classpath:drop_tables.sql","classpath:schema.sql", "classpath:insert_file_master.sql", "classpath:insert_cmp_stag.sql" })
+@Sql(scripts = { "classpath:drop_tables.sql", "classpath:schema.sql", "classpath:insert_file_master.sql",
+		"classpath:insert_cmp_stag.sql" })
 public class CorporateOfferControllerTest {
 
 	public static final String TEST_JWT = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxk"
@@ -119,17 +120,17 @@ public class CorporateOfferControllerTest {
 		MockMultipartFile file = new MockMultipartFile("file", "corporate-offer.xls", "application/vnd.ms-excel",
 				bytes);
 
-		this.mvc.perform(
-				MockMvcRequestBuilders.multipart("/v1/corporate-offers").file(file).param("uploadedBy", "Deepti Surve").header("Authorization",TEST_JWT))
-				.andDo(print()).andExpect(status().isOk());
+		this.mvc.perform(MockMvcRequestBuilders.multipart("/v1/corporate-offers").file(file)
+				.param("uploadedBy", "Deepti Surve").header("Authorization", TEST_JWT)).andDo(print())
+				.andExpect(status().isOk());
 	}
 
 	/*
 	 * @Test public void getAllcorporateUpload() throws Exception {
 	 * 
 	 * RequestBuilder requestBuilderget =
-	 * MockMvcRequestBuilders.get("/v1/corporate-offers")
-	 * .accept(MediaType.APPLICATION_JSON);
+	 * MockMvcRequestBuilders.get("/v1/corporate-offers").header("Authorization",
+	 * TEST_JWT) .accept(MediaType.APPLICATION_JSON);
 	 * 
 	 * this.mvc.perform(requestBuilderget).andDo(print()).andExpect(status().isOk())
 	 * .andExpect(jsonPath("$.headers").isArray()).andExpect(jsonPath("$.headers",

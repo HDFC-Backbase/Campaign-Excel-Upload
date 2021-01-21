@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `file_master` (
   `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `system_remarks` varchar(200) DEFAULT NULL,
   `user_remarks` varchar(250) DEFAULT NULL,
+  `f_display_name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`f_id`)
 );
 CREATE TABLE IF NOT EXISTS `cmp_staging` (
