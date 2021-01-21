@@ -51,7 +51,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  * "classpath:insert_file_master.sql", "classpath:insert_partneroffer_stag.sql"
  * })
  */
-public class PartnerOfferController {
+public class PartnerOfferControllerTest {
 
 	public static final String TEST_JWT = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxk"
 			+ "ZXIiLCJpYXQiOjE0ODQ4MjAxOTYsImV4cCI6MTUxNjM1NjE5NiwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJv"
