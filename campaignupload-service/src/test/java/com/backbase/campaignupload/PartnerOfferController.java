@@ -111,14 +111,14 @@ public class PartnerOfferController {
 				bytes);
 
 		this.mvc.perform(
-				MockMvcRequestBuilders.multipart("/v1/partner-offers").file(file).param("uploadedBy", "Deepti Surve"))
+				MockMvcRequestBuilders.multipart("/v1/partner-offers").file(file).param("uploadedBy", "Deepti Surve").header("Authorization",TEST_JWT))
 				.andDo(print()).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllpartnerUpload() throws Exception {
 
-		RequestBuilder requestBuilderget = MockMvcRequestBuilders.get("/v1/partner-offers")
+		RequestBuilder requestBuilderget = MockMvcRequestBuilders.get("/v1/partner-offers").header("Authorization",TEST_JWT)
 				.accept(MediaType.APPLICATION_JSON);
 
 		this.mvc.perform(requestBuilderget).andDo(print()).andExpect(status().isOk())

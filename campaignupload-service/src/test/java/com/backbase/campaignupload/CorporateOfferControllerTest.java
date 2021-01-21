@@ -120,7 +120,7 @@ public class CorporateOfferControllerTest {
 				bytes);
 
 		this.mvc.perform(
-				MockMvcRequestBuilders.multipart("/v1/corporate-offers").file(file).param("uploadedBy", "Deepti Surve"))
+				MockMvcRequestBuilders.multipart("/v1/corporate-offers").file(file).param("uploadedBy", "Deepti Surve").header("Authorization",TEST_JWT))
 				.andDo(print()).andExpect(status().isOk());
 	}
 
