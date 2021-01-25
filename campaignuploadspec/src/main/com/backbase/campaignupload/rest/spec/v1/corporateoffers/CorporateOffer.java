@@ -18,9 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonPropertyOrder({
     "title",
     "logo",
-    "offertext",
-	"companyid",
-    "approvalstatus"
+    "offerText",
+	"companyId",
+    "approvalStatus"
 })
 public class CorporateOffer implements AdditionalPropertiesAware
 {
@@ -40,14 +40,18 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * (Required)
      * 
      */
-    @JsonProperty("offertext")
+    @JsonProperty("offerText")
     @NotNull
     private String offertext;
-    @JsonProperty("approvalstatus")
+    @JsonProperty("approvalStatus")
     private String approvalstatus;
 	
-	 @JsonProperty("companyid")
+	 @JsonProperty("companyId")
     private String companyid;
+	
+	@JsonProperty("id")
+	@NotNull
+    private Integer id;
     /**
      * Additional Properties
      * 
@@ -60,7 +64,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @return
      *     The title
      */
-    @JsonProperty("title")
+  
     public String getTitle() {
         return title;
     }
@@ -70,7 +74,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @param title
      *     The title
      */
-    @JsonProperty("title")
+ 
     public void setTitle(String title) {
         this.title = title;
     }
@@ -87,7 +91,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @return
      *     The logo
      */
-    @JsonProperty("logo")
+
     public String getLogo() {
         return logo;
     }
@@ -99,7 +103,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @param logo
      *     The logo
      */
-    @JsonProperty("logo")
+
     public void setLogo(String logo) {
         this.logo = logo;
     }
@@ -116,7 +120,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @return
      *     The offertext
      */
-    @JsonProperty("offertext")
+
     public String getOffertext() {
         return offertext;
     }
@@ -128,10 +132,18 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @param offertext
      *     The offertext
      */
-    @JsonProperty("offertext")
+
     public void setOffertext(String offertext) {
         this.offertext = offertext;
     }
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
     public CorporateOffer withOffertext(String offertext) {
         this.offertext = offertext;
@@ -143,7 +155,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @return
      *     The approvalstatus
      */
-    @JsonProperty("approvalstatus")
+
     public String getApprovalstatus() {
         return approvalstatus;
     }
@@ -153,7 +165,7 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @param approvalstatus
      *     The approvalstatus
      */
-    @JsonProperty("approvalstatus")
+
     public void setApprovalstatus(String approvalstatus) {
         this.approvalstatus = approvalstatus;
     }
@@ -168,7 +180,6 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @return
      *     The companyid
      */
-    @JsonProperty("companyid")
     public String getCompanyid() {
         return companyid;
     }
@@ -178,7 +189,6 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * @param companyid
      *     The companyid
      */
-    @JsonProperty("companyid")
     public void setCompanyid(String companyid) {
         this.companyid = companyid;
     }

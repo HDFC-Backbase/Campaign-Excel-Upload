@@ -1,68 +1,52 @@
 {
 	"headers": [
-	{
-			"id": "title",
-			"sortable": true,
-			"checkbox": false,
-			"searchable": true,
-			"img": false,
-			"link": false
+		{
+			"field": "title"
 		},
 		{
-			"id": "logo",
-			"sortable": false,
-			"checkbox": false,
-			"searchable": false,
-			"img": true,
-			"link": true
+			"field": "logo",
+			"type": "imageColumn"
 		},
 		{
-			"id": "offer Text",
-			"sortable": false,
-			"checkbox": false,
-			"searchable": false,
-			"img": false,
-			"link": false
+			"field": "offerText",
+			"type": "largeTextColumn"
 		},
 		{
-			"id": "company Id",
-			"sortable": true,
-			"checkbox": false,
-			"searchable": true,
-			"img": false,
-			"link": false
-		}
+			"field": "companyId"
+		},
 		{
-			"id": "approval Status",
-			"sortable": true,
-			"checkbox": false,
-			"searchable": true,
-			"img": false,
-			"link": false
+			"field": "approvalStatus",
+			"editable": false
+		},
+		{
+			"field": "id",
+			"hide": true
 		}
 	],
 	"data": [
 		{
 			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offer Text": "This is the offertext",
-			"company Id": 1,
-		    "approval Status": "Pending"
-
+			"offerText": "This is the offertext",
+			"companyId": 1,
+			"approvalStatus": "Pending",
+			"id": 1
 		},
 		{
 			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offer Text": "This is the offertext",			
-			"company Id": 1,
-            "approval Status": "Pending"
+			"offerText": "This is the offertext",
+			"companyId": 1,
+			"approvalStatus": "Pending",
+			"id": 1
 		},
 		{
 			"title": "abc",
 			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offer Text": "This is the offertext",
-			"company Id": 1,
-			"approval Status": "Pending"
+			"offerText": "This is the offertext",
+			"companyId": 1,
+			"approvalStatus": "Pending",
+			"id": 1
 		}
 	]
 }

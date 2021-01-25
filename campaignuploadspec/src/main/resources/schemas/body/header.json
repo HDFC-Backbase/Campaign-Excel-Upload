@@ -2,26 +2,29 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
-		"id": {
+		"headerName": {
+			"type": "string"
+		},
+		"field": {
 			"type": "string"
 		},
 		"sortable": {
 			"type": "boolean"
 		},
-		"checkbox": {
+		"filter": {
 			"type": "boolean"
 		},
-		"searchable": {
+		"editable": {
 			"type": "boolean"
 		},
-		"img": {
+		"hide": {
 			"type": "boolean"
 		},
-		"link": {
-			"type": "boolean"
+		"type": {
+			"type": "string"
 		}
 	},
 	"required": [
-		"id"
+		"field"
 	]
 }

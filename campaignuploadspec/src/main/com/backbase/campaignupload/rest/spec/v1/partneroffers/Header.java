@@ -16,34 +16,37 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "id",
+    "headerName",
+    "field",
     "sortable",
-    "checkbox",
-    "searchable",
-    "img",
-    "link"
+    "filter",
+    "editable",
+    "hide",
+    "type"
 })
 public class Header implements AdditionalPropertiesAware
 {
 
+    @JsonProperty("headerName")
+    private String headerName;
     /**
      * 
      * (Required)
      * 
      */
-    @JsonProperty("id")
+    @JsonProperty("field")
     @NotNull
-    private String id;
+    private String field;
     @JsonProperty("sortable")
     private Boolean sortable;
-    @JsonProperty("checkbox")
-    private Boolean checkbox;
-    @JsonProperty("searchable")
-    private Boolean searchable;
-    @JsonProperty("img")
-    private Boolean img;
-    @JsonProperty("link")
-    private Boolean link;
+    @JsonProperty("filter")
+    private Boolean filter;
+    @JsonProperty("editable")
+    private Boolean editable;
+    @JsonProperty("hide")
+    private Boolean hide;
+    @JsonProperty("type")
+    private String type;
     /**
      * Additional Properties
      * 
@@ -53,30 +56,55 @@ public class Header implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @return
-     *     The id
+     *     The headerName
      */
-    @JsonProperty("id")
-    public String getId() {
-        return id;
+    @JsonProperty("headerName")
+    public String getHeaderName() {
+        return headerName;
+    }
+
+    /**
+     * 
+     * @param headerName
+     *     The headerName
+     */
+    @JsonProperty("headerName")
+    public void setHeaderName(String headerName) {
+        this.headerName = headerName;
+    }
+
+    public Header withHeaderName(String headerName) {
+        this.headerName = headerName;
+        return this;
     }
 
     /**
      * 
      * (Required)
      * 
-     * @param id
-     *     The id
+     * @return
+     *     The field
      */
-    @JsonProperty("id")
-    public void setId(String id) {
-        this.id = id;
+    @JsonProperty("field")
+    public String getField() {
+        return field;
     }
 
-    public Header withId(String id) {
-        this.id = id;
+    /**
+     * 
+     * (Required)
+     * 
+     * @param field
+     *     The field
+     */
+    @JsonProperty("field")
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public Header withField(String field) {
+        this.field = field;
         return this;
     }
 
@@ -108,100 +136,100 @@ public class Header implements AdditionalPropertiesAware
     /**
      * 
      * @return
-     *     The checkbox
+     *     The filter
      */
-    @JsonProperty("checkbox")
-    public Boolean getCheckbox() {
-        return checkbox;
+    @JsonProperty("filter")
+    public Boolean getFilter() {
+        return filter;
     }
 
     /**
      * 
-     * @param checkbox
-     *     The checkbox
+     * @param filter
+     *     The filter
      */
-    @JsonProperty("checkbox")
-    public void setCheckbox(Boolean checkbox) {
-        this.checkbox = checkbox;
+    @JsonProperty("filter")
+    public void setFilter(Boolean filter) {
+        this.filter = filter;
     }
 
-    public Header withCheckbox(Boolean checkbox) {
-        this.checkbox = checkbox;
+    public Header withFilter(Boolean filter) {
+        this.filter = filter;
         return this;
     }
 
     /**
      * 
      * @return
-     *     The searchable
+     *     The editable
      */
-    @JsonProperty("searchable")
-    public Boolean getSearchable() {
-        return searchable;
+    @JsonProperty("editable")
+    public Boolean getEditable() {
+        return editable;
     }
 
     /**
      * 
-     * @param searchable
-     *     The searchable
+     * @param editable
+     *     The editable
      */
-    @JsonProperty("searchable")
-    public void setSearchable(Boolean searchable) {
-        this.searchable = searchable;
+    @JsonProperty("editable")
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
     }
 
-    public Header withSearchable(Boolean searchable) {
-        this.searchable = searchable;
+    public Header withEditable(Boolean editable) {
+        this.editable = editable;
         return this;
     }
 
     /**
      * 
      * @return
-     *     The img
+     *     The hide
      */
-    @JsonProperty("img")
-    public Boolean getImg() {
-        return img;
+    @JsonProperty("hide")
+    public Boolean getHide() {
+        return hide;
     }
 
     /**
      * 
-     * @param img
-     *     The img
+     * @param hide
+     *     The hide
      */
-    @JsonProperty("img")
-    public void setImg(Boolean img) {
-        this.img = img;
+    @JsonProperty("hide")
+    public void setHide(Boolean hide) {
+        this.hide = hide;
     }
 
-    public Header withImg(Boolean img) {
-        this.img = img;
+    public Header withHide(Boolean hide) {
+        this.hide = hide;
         return this;
     }
 
     /**
      * 
      * @return
-     *     The link
+     *     The type
      */
-    @JsonProperty("link")
-    public Boolean getLink() {
-        return link;
+    @JsonProperty("type")
+    public String getType() {
+        return type;
     }
 
     /**
      * 
-     * @param link
-     *     The link
+     * @param type
+     *     The type
      */
-    @JsonProperty("link")
-    public void setLink(Boolean link) {
-        this.link = link;
+    @JsonProperty("type")
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Header withLink(Boolean link) {
-        this.link = link;
+    public Header withType(String type) {
+        this.type = type;
         return this;
     }
 
@@ -212,7 +240,7 @@ public class Header implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(sortable).append(checkbox).append(searchable).append(img).append(link).toHashCode();
+        return new HashCodeBuilder().append(headerName).append(field).append(sortable).append(filter).append(editable).append(hide).append(type).toHashCode();
     }
 
     @Override
@@ -224,7 +252,7 @@ public class Header implements AdditionalPropertiesAware
             return false;
         }
         Header rhs = ((Header) other);
-        return new EqualsBuilder().append(id, rhs.id).append(sortable, rhs.sortable).append(checkbox, rhs.checkbox).append(searchable, rhs.searchable).append(img, rhs.img).append(link, rhs.link).isEquals();
+        return new EqualsBuilder().append(headerName, rhs.headerName).append(field, rhs.field).append(sortable, rhs.sortable).append(filter, rhs.filter).append(editable, rhs.editable).append(hide, rhs.hide).append(type, rhs.type).isEquals();
     }
 
     /**

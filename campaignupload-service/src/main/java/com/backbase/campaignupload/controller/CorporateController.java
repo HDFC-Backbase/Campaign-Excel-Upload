@@ -35,7 +35,7 @@ import liquibase.util.file.FilenameUtils;
 
 @RestController
 public class CorporateController implements CorporateoffersApi {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CorporateController.class);
 
 	@Autowired
@@ -51,44 +51,56 @@ public class CorporateController implements CorporateoffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
-		
-		logger.info("Subject in JWT "+subject);
-		
-		  CorporateoffersGetResponseBody corporateoffersGetResponseBody = new
-		  CorporateoffersGetResponseBody();
-		  
-		  List<Header> headerslist = new ArrayList<Header>();
-		  
-		  List<Object> dataList = new ArrayList<Object>();
-		  
-		  setHeaders(headerslist, "title");
-			setHeaders(headerslist, "offertext");
-			setHeaders(headerslist, "companyid");
-			setHeaders(headerslist, "approvalstatus");
-			
-			Header hdcoffertext = new Header();
-			hdcoffertext.setId("logo");
-			hdcoffertext.setSortable(false);
-			hdcoffertext.setSearchable(false);
-			hdcoffertext.setCheckbox(false);
-			hdcoffertext.setImg(true);
-			hdcoffertext.setLink(false);
-			headerslist.add(hdcoffertext);
-		  
-		  fileService.getCorporateOffers().stream().forEach(corp -> { CorporateOffer
-		  corpdata = new CorporateOffer(); corpdata.setTitle(corp.getTitle());
-		  corpdata.setLogo(corp.getLogo()); corpdata.setOffertext(corp.getOffertext());
-		  corpdata.setCompanyid(corp.getCompanyId());
-		  corpdata.setApprovalstatus(corp.getApprovalstatus()); dataList.add(corpdata);
-		  
-		  });
-		  
-		  corporateoffersGetResponseBody.setHeaders(headerslist);
-		  corporateoffersGetResponseBody.setData(dataList);
-		  
-		  return corporateoffersGetResponseBody;
-		 
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("Subject in JWT " + subject);
+
+		CorporateoffersGetResponseBody corporateoffersGetResponseBody = new CorporateoffersGetResponseBody();
+
+		List<Header> headerslist = new ArrayList<Header>();
+
+		List<Object> dataList = new ArrayList<Object>();
+
+		setHeaders(headerslist, "title");
+		setHeaders(headerslist, "companyId");
+
+		Header hdclogo = new Header();
+		hdclogo.setField("logo");
+		hdclogo.setType("imageColumn");
+		headerslist.add(hdclogo);
+
+		Header hdcoffertext = new Header();
+		hdcoffertext.setField("offerText");
+		hdcoffertext.setType("largeTextColumn");
+		headerslist.add(hdcoffertext);
+
+		Header hdapproval = new Header();
+		hdapproval.setField("approvalStatus");
+		hdapproval.setEditable(false);
+		headerslist.add(hdapproval);
+
+		Header hdId = new Header();
+		hdId.setField("id");
+		hdId.setHide(true);
+		headerslist.add(hdId);
+
+		fileService.getCorporateOffers().stream().forEach(corp -> {
+			CorporateOffer corpdata = new CorporateOffer();
+			corpdata.setTitle(corp.getTitle());
+			corpdata.setLogo(corp.getLogo());
+			corpdata.setOffertext(corp.getOffertext());
+			corpdata.setCompanyid(corp.getCompanyId());
+			corpdata.setApprovalstatus(corp.getApprovalstatus());
+			corpdata.setId(corp.getId());
+			dataList.add(corpdata);
+
+		});
+
+		corporateoffersGetResponseBody.setHeaders(headerslist);
+		corporateoffersGetResponseBody.setData(dataList);
+
+		return corporateoffersGetResponseBody;
+
 	}
 
 	@Override
@@ -99,10 +111,10 @@ public class CorporateController implements CorporateoffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String uploadedBy=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
-		
-		logger.info("Subject in JWT "+uploadedBy);
-		CorporateoffersPostResponseBody corporateoffersPostResponseBody =new CorporateoffersPostResponseBody();
+		String uploadedBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("Subject in JWT " + uploadedBy);
+		CorporateoffersPostResponseBody corporateoffersPostResponseBody = new CorporateoffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
@@ -119,22 +131,16 @@ public class CorporateController implements CorporateoffersApi {
 			}
 		} else
 			throw new CustomBadRequestException("Please upload an excel file!");
-		
 
-	
 	}
+
 	public void setHeaders(List<Header> headerslist, String headerId) {
 
 		Header header = new Header();
-		header.setId(headerId);
-		header.setSortable(true);
-		header.setSearchable(true);
-		header.setCheckbox(false);
-		header.setImg(false);
-		header.setLink(false);
+		header.setField(headerId);
 		headerslist.add(header);
 	}
-	
+
 	public String saveFiletoLocation(MultipartFile file, String uploadedBy) {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -154,7 +160,7 @@ public class CorporateController implements CorporateoffersApi {
 			logger.info(e.getMessage());
 		}
 
-		return filename;	}
-	
+		return filename;
+	}
 
 }

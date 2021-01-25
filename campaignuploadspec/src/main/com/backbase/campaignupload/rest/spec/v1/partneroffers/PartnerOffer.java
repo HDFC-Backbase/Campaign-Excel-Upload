@@ -18,8 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonPropertyOrder({
     "title",
     "logo",
-    "offertext",
-    "approvalstatus"
+    "offerText",
+    "approvalStatus",
+	"id"
 })
 public class PartnerOffer implements AdditionalPropertiesAware
 {
@@ -39,11 +40,15 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * (Required)
      * 
      */
-    @JsonProperty("offertext")
+    @JsonProperty("offerText")
     @NotNull
     private String offertext;
-    @JsonProperty("approvalstatus")
+    @JsonProperty("approvalStatus")
     private String approvalstatus;
+	
+	@JsonProperty("id")
+	@NotNull
+    private Integer id;
     /**
      * Additional Properties
      * 
@@ -55,8 +60,7 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * 
      * @return
      *     The title
-     */
-    @JsonProperty("title")
+
     public String getTitle() {
         return title;
     }
@@ -66,7 +70,7 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @param title
      *     The title
      */
-    @JsonProperty("title")
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -83,7 +87,6 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @return
      *     The logo
      */
-    @JsonProperty("logo")
     public String getLogo() {
         return logo;
     }
@@ -95,7 +98,7 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @param logo
      *     The logo
      */
-    @JsonProperty("logo")
+
     public void setLogo(String logo) {
         this.logo = logo;
     }
@@ -112,7 +115,7 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @return
      *     The offertext
      */
-    @JsonProperty("offertext")
+
     public String getOffertext() {
         return offertext;
     }
@@ -124,7 +127,6 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @param offertext
      *     The offertext
      */
-    @JsonProperty("offertext")
     public void setOffertext(String offertext) {
         this.offertext = offertext;
     }
@@ -139,7 +141,7 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @return
      *     The approvalstatus
      */
-    @JsonProperty("approvalstatus")
+
     public String getApprovalstatus() {
         return approvalstatus;
     }
@@ -149,10 +151,18 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @param approvalstatus
      *     The approvalstatus
      */
-    @JsonProperty("approvalstatus")
+
     public void setApprovalstatus(String approvalstatus) {
         this.approvalstatus = approvalstatus;
     }
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
     public PartnerOffer withApprovalstatus(String approvalstatus) {
         this.approvalstatus = approvalstatus;

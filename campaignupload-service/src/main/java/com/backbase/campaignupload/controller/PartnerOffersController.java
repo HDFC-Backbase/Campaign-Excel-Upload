@@ -36,7 +36,7 @@ import liquibase.util.file.FilenameUtils;
 
 @RestController
 public class PartnerOffersController implements PartneroffersApi {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PartnerOffersController.class);
 
 	@Autowired
@@ -44,8 +44,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Value("${file.location}")
 	private String dir;
-	
-	
+
 	@Override
 	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest request, HttpServletResponse arg1) {
 		logger.info("Request received to get data");
@@ -54,9 +53,9 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
-		
-		logger.info("Subject in JWT "+subject);
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("Subject in JWT " + subject);
 		// TODO Auto-generated method stub
 		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
@@ -67,33 +66,41 @@ public class PartnerOffersController implements PartneroffersApi {
 		List<Object> dataList = new ArrayList<Object>();
 
 		setHeaders(headerslist, "title");
-		
+
+		Header hdclogo = new Header();
+		hdclogo.setField("logo");
+		hdclogo.setType("imageColumn");
+		headerslist.add(hdclogo);
+
 		Header hdcoffertext = new Header();
-		hdcoffertext.setId("logo");
-		hdcoffertext.setSortable(false);
-		hdcoffertext.setSearchable(false);
-		hdcoffertext.setCheckbox(false);
-		hdcoffertext.setImg(true);
-		hdcoffertext.setLink(false);
+		hdcoffertext.setField("offerText");
+		hdcoffertext.setType("largeTextColumn");
 		headerslist.add(hdcoffertext);
-		
-		setHeaders(headerslist, "offertext");
-		setHeaders(headerslist, "approvalstatus");
-		
+
+		Header hdapproval = new Header();
+		hdapproval.setField("approvalStatus");
+		hdapproval.setEditable(false);
+		headerslist.add(hdapproval);
+
+		Header hdId = new Header();
+		hdId.setField("id");
+		hdId.setHide(true);
+		headerslist.add(hdId);
+
 		compent.stream().forEach(ce -> {
 			PartnerOffer partnerofferresponse = new PartnerOffer();
 			partnerofferresponse.setTitle(ce.getTitle());
 			partnerofferresponse.setLogo(ce.getLogo());
 			partnerofferresponse.setOffertext(ce.getOffertext());
 			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
-						dataList.add(partnerofferresponse);
+			partnerofferresponse.setId(ce.getId());
+			dataList.add(partnerofferresponse);
 
 		});
 		partneroffersGetResponseBody.setHeaders(headerslist);
 		partneroffersGetResponseBody.setData(dataList);
 		return partneroffersGetResponseBody;
 	}
-
 
 	@Override
 	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, HttpServletRequest request,
@@ -105,10 +112,10 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String uploadedBy=ValidateJwt.validateJwt(authorization,"JWTSecretKeyDontUseInProduction!");
-		
-		logger.info("Subject in JWT "+uploadedBy);
-		PartneroffersPostResponseBody partneroffersPostResponseBody =new PartneroffersPostResponseBody();
+		String uploadedBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("Subject in JWT " + uploadedBy);
+		PartneroffersPostResponseBody partneroffersPostResponseBody = new PartneroffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
@@ -130,12 +137,7 @@ public class PartnerOffersController implements PartneroffersApi {
 	public void setHeaders(List<Header> headerslist, String headerId) {
 
 		Header header = new Header();
-		header.setId(headerId);
-		header.setSortable(true);
-		header.setSearchable(true);
-		header.setCheckbox(false);
-		header.setImg(false);
-		header.setLink(false);
+		header.setField(headerId);
 		headerslist.add(header);
 	}
 
@@ -158,6 +160,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			logger.info(e.getMessage());
 		}
 
-		return filename;	}
+		return filename;
+	}
 
 }
