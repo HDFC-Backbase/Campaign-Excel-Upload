@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
-public interface CampaignUploadRepo extends JpaRepository<PartnerOffersStagingEntity,Integer>{
+public interface PartnerOfferRepo extends JpaRepository<PartnerOffersStagingEntity,Integer>,PTStagCustomRepo{
 
 }

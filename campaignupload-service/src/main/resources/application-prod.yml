@@ -41,14 +41,30 @@ buildingblocks:
     csrf:
       enabled: false
           
+#spring:
+  #h2:
+    #console:
+      #enabled: true
+  #datasource:
+    #url: jdbc:mysql://localhost:3306/practice
+    #username: root
+    #password: root
+    #continue-on-error: true
+  #jpa:
+    #generate-ddl: false
+#Configuration for sever.
+
 spring:
+  active:
+    profiles: prod
   h2:
     console:
       enabled: true
   datasource:
-    url: jdbc:mysql://localhost:3306/practice
-    username: root
-    password: root
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    driver: oracle.jdbc.driver.OracleDriver
+    username: microsite_admin
+    password: root123
     continue-on-error: true
   jpa:
     generate-ddl: false
@@ -56,23 +72,9 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-#Configuration for sever.
-
-#spring:
-  #h2:
-    #console:
-      #enabled: true
-  #datasource:
-    #url: jdbc:oracle:thin:@localhost:1521:xe
-    #driver: oracle.jdbc.driver.OracleDriver
-    #username: microsite_admin
-    #password: root123
-    #continue-on-error: true
-  #jpa:
-    #generate-ddl: false
 
 file:
-  location: 'D:\Movies'  
+  location: 'C:\Program Files (x86)\Backbase\SourceCode\Services\Excel_Upload_Services\Files'
 
-LOG_FILE: D:/BackbaseLogs/campaignupload-service/campaignupload.log
-LOG_FILE_ARCHIVED: D:/BackbaseLogs/campaignupload-service/archived/campaignupload.log
+LOG_FILE: C:/Program Files (x86)/Backbase/SourceCode/Services/Logs/campaign-upload/campaign-upload.log
+LOG_FILE_ARCHIVED: C:/Program Files (x86)/Backbase/SourceCode/Services/Logs/campaign-upload/archived/campaign-upload.log

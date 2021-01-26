@@ -20,7 +20,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "logo",
     "offerText",
     "approvalStatus",
-	"id"
+	"id",
+	"live"
 })
 public class PartnerOffer implements AdditionalPropertiesAware
 {
@@ -53,6 +54,9 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * Additional Properties
      * 
      */
+	@JsonProperty("live")
+	private boolean live;
+	
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> additions = new HashMap<String, String>();
 
@@ -70,6 +74,10 @@ public class PartnerOffer implements AdditionalPropertiesAware
      * @param title
      *     The title
      */
+
+  	public String getTitle() {
+		return title;
+	}
 
     public void setTitle(String title) {
         this.title = title;
@@ -162,6 +170,14 @@ public class PartnerOffer implements AdditionalPropertiesAware
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public boolean isLive() {
+		return live;
+	}
+
+	public void setLive(boolean live) {
+		this.live = live;
 	}
 
     public PartnerOffer withApprovalstatus(String approvalstatus) {

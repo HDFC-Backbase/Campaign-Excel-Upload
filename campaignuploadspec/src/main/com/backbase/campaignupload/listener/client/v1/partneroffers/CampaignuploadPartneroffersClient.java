@@ -3,8 +3,6 @@ package com.backbase.campaignupload.listener.client.v1.partneroffers;
 
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRequestBody;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutResponseBody;
 import org.springframework.http.ResponseEntity;
 
 
@@ -38,18 +36,5 @@ public interface CampaignuploadPartneroffersClient {
      *     {@link ResponseEntity }{@code <}{@link PartneroffersGetResponseBody }{@code >}
      */
     public ResponseEntity<PartneroffersGetResponseBody> getPartneroffers();
-
-    /**
-     * <pre>PUT /v1/partner-offers</pre>
-     * 
-     * 
-     * 
-     * 
-     * @param partneroffersPutRequestBody
-     *     {@link PartneroffersPutRequestBody }
-     * @return
-     *     {@link ResponseEntity }{@code <}{@link PartneroffersPutResponseBody }{@code >}
-     */
-    public ResponseEntity<PartneroffersPutResponseBody> putPartneroffers(PartneroffersPutRequestBody partneroffersPutRequestBody);
 
 }

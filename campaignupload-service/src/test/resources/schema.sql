@@ -44,6 +44,22 @@ CREATE TABLE IF NOT EXISTS `corporate_offer_staging` (
   CONSTRAINT `corporate_offer_staging_file_master_fk` FOREIGN KEY (`file_id`) REFERENCES `file_master` (`f_id`) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `corporate_offer_final` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) DEFAULT NULL,
+  `logo` varchar(400) DEFAULT NULL,
+  `offer_text` varchar(400) DEFAULT NULL,
+  `corp_id` int(11) NOT NULL,
+  `company_id` varchar(200) DEFAULT NULL,
+  `approval_status` varchar(100) DEFAULT NULL,
+  `created_by` varchar(100) DEFAULT 'SYSTEM',
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` varchar(100) DEFAULT 'SYSTEM',
+  `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `corporate_offer_staging_fk` FOREIGN KEY (`corp_id`) REFERENCES `corporate_offer_staging` (`id`) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS `partner_offer_staging` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) DEFAULT NULL,
@@ -57,4 +73,19 @@ CREATE TABLE IF NOT EXISTS `partner_offer_staging` (
   `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `partner_offer_staging_file_master_fk` FOREIGN KEY (`file_id`) REFERENCES `file_master` (`f_id`) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `partner_offer_final` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) DEFAULT NULL,
+  `logo` varchar(400) DEFAULT NULL,
+  `offer_text` varchar(400) DEFAULT NULL,
+  `partoff_id` int(11) NOT NULL,
+  `approval_status` varchar(100) DEFAULT NULL,
+  `created_by` varchar(100) DEFAULT 'SYSTEM',
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` varchar(100) DEFAULT 'SYSTEM',
+  `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `partner_offer_staging_fk` FOREIGN KEY (`partoff_id`) REFERENCES `partner_offer_staging` (`id`) ON DELETE CASCADE
 );

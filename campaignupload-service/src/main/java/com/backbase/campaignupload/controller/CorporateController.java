@@ -13,21 +13,28 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
 import com.backbase.campaignupload.helper.ExcelHelper;
+import com.backbase.campaignupload.pojo.CampaignPutResponse;
+import com.backbase.campaignupload.pojo.CorporateOfferPutRequest;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateOffer;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersApi;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Header;
+import com.backbase.campaignupload.service.CampaignUploadService;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import com.backbase.validate.jwt.ValidateJwt;
 
@@ -39,7 +46,7 @@ public class CorporateController implements CorporateoffersApi {
 	private static final Logger logger = LoggerFactory.getLogger(CorporateController.class);
 
 	@Autowired
-	CampaignUploadServiceImpl fileService;
+	CampaignUploadService campaignUploadService;
 
 	@Value("${file.location}")
 	private String dir;
@@ -84,7 +91,24 @@ public class CorporateController implements CorporateoffersApi {
 		hdId.setHide(true);
 		headerslist.add(hdId);
 
-		fileService.getCorporateOffers().stream().forEach(corp -> {
+		List<CorporateStagingEntity> corstg = campaignUploadService.getLiveApprovedCorp();
+
+		corstg.stream().forEach(corp -> {
+			CorporateOffer corpdata = new CorporateOffer();
+			corpdata.setTitle(corp.getTitle());
+			corpdata.setLogo(corp.getLogo());
+			corpdata.setOffertext(corp.getOffertext());
+			corpdata.setCompanyid(corp.getCompanyId());
+			corpdata.setApprovalstatus(corp.getApprovalstatus());
+			corpdata.setId(corp.getId());
+			corpdata.setLive(true);
+			dataList.add(corpdata);
+
+		});
+
+		List<CorporateStagingEntity> allcorp = campaignUploadService.getCorporateOffers();
+		allcorp.removeAll(corstg);
+		allcorp.stream().forEach(corp -> {
 			CorporateOffer corpdata = new CorporateOffer();
 			corpdata.setTitle(corp.getTitle());
 			corpdata.setLogo(corp.getLogo());
@@ -119,7 +143,7 @@ public class CorporateController implements CorporateoffersApi {
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				String filename = saveFiletoLocation(file, uploadedBy);
-				fileService.savecarpoateoffer(file, "CorporateOffer", uploadedBy, filename);
+				campaignUploadService.savecarpoateoffer(file, "CorporateOffer", uploadedBy, filename);
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
 				corporateoffersPostResponseBody.setStatuscode("200");
 				corporateoffersPostResponseBody.setMessage(message);
@@ -161,6 +185,33 @@ public class CorporateController implements CorporateoffersApi {
 		}
 
 		return filename;
+	}
+
+	@PutMapping
+	public CampaignPutResponse putCompanies(@RequestBody CorporateOfferPutRequest requestBody, HttpServletRequest arg1,
+			HttpServletResponse arg2) {
+
+		logger.info("Request received to update data");
+
+		logger.info("CompaniesPutRequestBody " + requestBody);
+
+		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
+
+		for (CorporateOffer prtoffer : requestBody.getUpdates()) {
+			CorporateStagingEntity prtstag = campaignUploadService.getCorpOffer(prtoffer.getId());
+			prtstag.setTitle(prtoffer.getTitle());
+			prtstag.setLogo(prtoffer.getLogo());
+			prtstag.setOffertext(prtoffer.getOffertext());
+			prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+			prtstag.setId(prtoffer.getId());
+			campaignUploadService.saveCorpOffer(prtstag);
+			campaignUploadService.deleteFinalCorpOffer(prtstag);
+		}
+
+		campaignPutResponse.setMessage("Successfully update data in table");
+		campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+
+		return campaignPutResponse;
 	}
 
 }

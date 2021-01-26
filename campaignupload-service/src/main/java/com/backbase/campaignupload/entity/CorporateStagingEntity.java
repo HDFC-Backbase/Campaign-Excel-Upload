@@ -13,8 +13,6 @@ import javax.persistence.Table;
 @Table(name = "corporate_offer_staging")
 public class CorporateStagingEntity {
 
-
-
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +33,6 @@ public class CorporateStagingEntity {
 	
 	@Column(name = "company_id")
 	private String companyId;
-	
 	
 
 	@ManyToOne

@@ -1,47 +1,97 @@
 <configuration>
 
-	<property file="src/main/resources/application.yml" />
-
-	<!-- <property name="HOME_LOG" value="E:/BackbaseLogs/companyexcelupload/companyexcelupload.log" 
-		/> -->
-
-	<appender name="FILE-ROLLING"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_FILE}</file>
+	<springProfile name="default">
+		<property file="src/main/resources/application.yml" />
+		<appender name="FILE-ROLLING"
+			class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_FILE}</file>
 
 
-		<rollingPolicy
-			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_FILE_ARCHIVED}.%d{yyyy-MM-dd}_%i.log
-			</fileNamePattern>
-			<!-- each archived file, size max 10MB -->
-			<maxFileSize>10MB</maxFileSize>
-			<!-- total size of all archive files, if total size > 20GB, it will delete 
-				old archived file -->
-			<totalSizeCap>100MB</totalSizeCap>
-			<!-- 60 days to keep -->
-			<maxHistory>20</maxHistory>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d %p %c{1.} [%t] %m%n</pattern>
-		</encoder>
-	</appender>
+			<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_FILE_ARCHIVED}.%d{yyyy-MM-dd}_%i.log
+				</fileNamePattern>
+				<!-- each archived file, size max 10MB -->
+				<maxFileSize>10MB</maxFileSize>
+				<!-- total size of all archive files, if total size > 20GB, it will delete 
+					old archived file -->
+				<totalSizeCap>100MB</totalSizeCap>
+				<!-- 60 days to keep -->
+				<maxHistory>20</maxHistory>
+			</rollingPolicy>
 
-	<appender name="CONSOLE"
-		class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
-		</encoder>
-	</appender>
-	<logger name="com.backbase.campaignupload" level="info"
-		additivity="false">
-		<appender-ref ref="FILE-ROLLING" />
-		<appender-ref ref="CONSOLE" />
-	</logger>
-	<root level="info">
-		<appender-ref ref="FILE-ROLLING" />
-		<appender-ref ref="CONSOLE" />
-	</root>
+			<encoder>
+				<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+			</encoder>
+		</appender>
+
+		<appender name="CONSOLE"
+			class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -
+					%msg%n</pattern>
+			</encoder>
+		</appender>
+		<logger name="com.backbase.rmupload" level="debug"
+			additivity="false">
+			<appender-ref ref="FILE-ROLLING" />
+			<appender-ref ref="CONSOLE" />
+		</logger>
+
+		<root level="info">
+			<appender-ref ref="FILE-ROLLING" />
+			<appender-ref ref="CONSOLE" />
+		</root>
+
+	</springProfile>
+
+	<springProfile name="prod">
+		<property file="src/main/resources/application-prod.yml" />
+		<appender name="FILE-ROLLING"
+			class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_FILE}</file>
+
+
+			<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_FILE_ARCHIVED}.%d{yyyy-MM-dd}_%i.log
+				</fileNamePattern>
+				<!-- each archived file, size max 10MB -->
+				<maxFileSize>10MB</maxFileSize>
+				<!-- total size of all archive files, if total size > 20GB, it will delete 
+					old archived file -->
+				<totalSizeCap>100MB</totalSizeCap>
+				<!-- 60 days to keep -->
+				<maxHistory>20</maxHistory>
+			</rollingPolicy>
+
+			<encoder>
+				<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+			</encoder>
+		</appender>
+
+		<appender name="CONSOLE"
+			class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -
+					%msg%n</pattern>
+			</encoder>
+		</appender>
+		<logger name="com.backbase.rmupload" level="debug"
+			additivity="false">
+			<appender-ref ref="FILE-ROLLING" />
+			<appender-ref ref="CONSOLE" />
+		</logger>
+
+		<root level="info">
+			<appender-ref ref="FILE-ROLLING" />
+			<appender-ref ref="CONSOLE" />
+		</root>
+
+	</springProfile>
+
+	<!-- <property name="HOME_LOG" value="E:/BackbaseLogs/rmupload/rmupload.log"/> -->
+
 
 
 

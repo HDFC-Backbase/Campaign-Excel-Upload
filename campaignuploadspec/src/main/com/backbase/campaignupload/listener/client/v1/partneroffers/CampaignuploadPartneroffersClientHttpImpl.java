@@ -8,8 +8,6 @@ import com.backbase.buildingblocks.backend.internalrequest.InternalRequestContex
 import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRequestBody;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,40 +163,6 @@ public class CampaignuploadPartneroffersClientHttpImpl implements Campaignupload
             }
             HttpEntity httpEntity = new HttpEntity(httpHeaders);
             ResponseEntity<PartneroffersGetResponseBody> response = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, PartneroffersGetResponseBody.class);
-            return response;
-        } catch (RestClientResponseException exception) {
-            //Re-throw the exception if not part of the API
-            throw exception;
-        } catch (Exception exception) {
-            LOG.debug("Unexpected error sending request.", exception);
-            throw new InternalServerErrorException(exception.getMessage(), exception);
-        }
-    }
-
-    public ResponseEntity<PartneroffersPutResponseBody> putPartneroffers(PartneroffersPutRequestBody partneroffersPutRequestBody) {
-        try {
-            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(((scheme +"://")+ serviceId)).path((baseUri +"/partner-offers"));
-            // If uriString is passed to restTemplate.exchange below, it ends up double-encoding the query string
-            // part.  So first, it is converted to a URI, which will get handled properly in RestTemplate:
-            String uriString = uriBuilder.buildAndExpand().toUriString();
-            URI uri = new URI(uriString);
-            HttpHeaders httpHeaders = new HttpHeaders();
-            addHeaderIfNotEmpty(httpHeaders, HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-            if (RequestContextHolder.getRequestAttributes()!= null) {
-                InternalRequestContext internalRequestContext = this.internalRequestContext;
-                String authToken = internalRequestContext.getUserToken();
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USER_TOKEN, authToken);
-                // Add information sent over HTTP in the internalRequestContext as request headers.
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REMOTE_USER, internalRequestContext.getRemoteUser());
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_FORWARDED_FOR, internalRequestContext.getRemoteAddress());
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTTIME, String.valueOf(internalRequestContext.getRequestTime()));
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USERAGENT, internalRequestContext.getUserAgent());
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_CHANNELID, internalRequestContext.getChannelId());
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTUUID, internalRequestContext.getRequestUuid());
-                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_AUTHSTATUS, String.valueOf(internalRequestContext.getAuthStatus()));
-            }
-            HttpEntity httpEntity = new HttpEntity(partneroffersPutRequestBody, httpHeaders);
-            ResponseEntity<PartneroffersPutResponseBody> response = restTemplate.exchange(uri, HttpMethod.PUT, httpEntity, PartneroffersPutResponseBody.class);
             return response;
         } catch (RestClientResponseException exception) {
             //Re-throw the exception if not part of the API
