@@ -201,7 +201,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 			prtstag.setId(prtoffer.getId());
 			campaignUploadService.savePartnerOffer(prtstag);
-			campaignUploadService.deleteFinalPartnerOffer(prtstag);
+			//campaignUploadService.deleteFinalPartnerOffer(prtstag);
 		}
 
 		campaignPutResponse.setMessage("Successfully update data in table");

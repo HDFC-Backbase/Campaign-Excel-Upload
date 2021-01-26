@@ -205,7 +205,7 @@ public class CorporateController implements CorporateoffersApi {
 			prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 			prtstag.setId(prtoffer.getId());
 			campaignUploadService.saveCorpOffer(prtstag);
-			campaignUploadService.deleteFinalCorpOffer(prtstag);
+			//campaignUploadService.deleteFinalCorpOffer(prtstag);
 		}
 
 		campaignPutResponse.setMessage("Successfully update data in table");
