@@ -6,7 +6,7 @@
 			"$ref": "headers.json"
 		},
 		"data": {
-			"$ref": "data.json"
+			"$ref": "corporate-offer-data.json"
 		}
 	},
 	"required": [

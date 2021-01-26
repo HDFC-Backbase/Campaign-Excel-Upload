@@ -2,15 +2,11 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
-		"headers": {
-			"$ref": "headers.json"
-		},
-		"data": {
-			"$ref": "partner-offer-data.json"
+		"updates": {
+			"$ref": "corporate-offer-data.json"
 		}
 	},
 	"required": [
-		"headers",
-		"data"
+		"updates"
 	]
 }

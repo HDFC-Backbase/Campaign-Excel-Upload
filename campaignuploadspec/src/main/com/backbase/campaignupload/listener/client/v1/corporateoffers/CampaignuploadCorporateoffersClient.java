@@ -3,6 +3,8 @@ package com.backbase.campaignupload.listener.client.v1.corporateoffers;
 
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutRequestBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutResponseBody;
 import org.springframework.http.ResponseEntity;
 
 
@@ -36,5 +38,18 @@ public interface CampaignuploadCorporateoffersClient {
      *     {@link ResponseEntity }{@code <}{@link CorporateoffersGetResponseBody }{@code >}
      */
     public ResponseEntity<CorporateoffersGetResponseBody> getCorporateoffers();
+
+    /**
+     * <pre>PUT /v1/corporate-offers</pre>
+     * 
+     * 
+     * 
+     * 
+     * @param corporateoffersPutRequestBody
+     *     {@link CorporateoffersPutRequestBody }
+     * @return
+     *     {@link ResponseEntity }{@code <}{@link CorporateoffersPutResponseBody }{@code >}
+     */
+    public ResponseEntity<CorporateoffersPutResponseBody> putCorporateoffers(CorporateoffersPutRequestBody corporateoffersPutRequestBody);
 
 }

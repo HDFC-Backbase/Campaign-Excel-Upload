@@ -12,15 +12,23 @@ baseUri: "/{version}"
 mediaType:  application/json
 protocols: [ HTTP, HTTPS ]
 types:
-  postPartnerOffersResponseObject: !include schemas/body/post-partner-offers.json
-  getPartnerOffersResponseObject: !include schemas/body/get-partner-offers.json
-  partnerOffer: !include schemas/body/partner-offer.json
-  postCorporateOffersResponseObject: !include schemas/body/post-corporate-offers.json
-  getCorporateOffersResponseObject: !include schemas/body/get-corporate-offers.json
-  corporateOffer: !include schemas/body/corporate-offer.json
   headers: !include schemas/body/headers.json
   header: !include schemas/body/header.json
-  data: !include schemas/body/data.json
+
+  getPartnerOffersResponseObject: !include schemas/body/get-partner-offers.json
+  partnerOffersData: !include schemas/body/partner-offer-data.json
+  partnerOffer: !include schemas/body/partner-offer.json
+  postPartnerOffersResponseObject: !include schemas/body/post-partner-offers.json
+  putPartnerOffersResponseObject: !include schemas/body/put-partner-offers.json
+  putPartnerOffersRequestObject: !include schemas/body/put-partner-offers-request.json
+
+
+  getCorporateOffersResponseObject: !include schemas/body/get-corporate-offers.json
+  corporateBenefitsData: !include schemas/body/corporate-offer-data.json
+  corporateOffer: !include schemas/body/corporate-offer.json
+  postCorporateOffersResponseObject: !include schemas/body/post-corporate-offers.json 
+  putCorporateOffersResponseObject: !include schemas/body/put-corporate-offers.json
+  putCorporateOffersRequestObject: !include schemas/body/put-corporate-offers-request.json
 #===============================================================
 # API resource definitions
 #===============================================================
@@ -48,6 +56,18 @@ types:
                 application/json:
                     schema: getPartnerOffersResponseObject
                     example: !include examples/body/example-get-partner-offers.json
+  put: 
+    body:
+      application/json:
+        schema: putPartnerOffersRequestObject
+        example: !include examples/body/example-put-partner-offers-request.json
+    responses: 
+          200:
+            description: Update Partner Offers Table
+            body: 
+              application/json:
+                schema: putPartnerOffersResponseObject
+                example: !include examples/body/example-put-partner-offers-response.json
 
 /corporate-offers:
   post:
@@ -73,3 +93,15 @@ types:
                 application/json:
                     schema: getCorporateOffersResponseObject
                     #example: !include examples/body/example-get-corporate-offers.json
+  put: 
+    body:
+      application/json:
+        schema: putCorporateOffersRequestObject
+        example: !include examples/body/example-put-corporate-offers-request.json
+    responses: 
+          200:
+            description: Update Corporate Offers Table
+            body: 
+              application/json:
+                schema: putCorporateOffersResponseObject
+                example: !include examples/body/example-put-corporate-offers-response.json

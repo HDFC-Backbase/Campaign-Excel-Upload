@@ -3,7 +3,9 @@ package com.backbase.campaignupload.rest.spec.v1.partneroffers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,5 +31,14 @@ public interface PartneroffersApi {
     })
     @ResponseStatus(HttpStatus.OK)
     public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
+
+    @RequestMapping(method = RequestMethod.PUT, value = "", produces = {
+        "application/json"
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public PartneroffersPutResponseBody putPartneroffers(
+        @RequestBody
+        @Valid
+        PartneroffersPutRequestBody partneroffersPutRequestBody, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
 
 }
