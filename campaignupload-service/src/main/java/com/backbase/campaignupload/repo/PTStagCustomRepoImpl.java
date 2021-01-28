@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -39,4 +40,24 @@ public class PTStagCustomRepoImpl implements PTStagCustomRepo {
 		return partnerOffersStagingEntity;
 	}
 
+	@Override
+	public PartnerOffersStagingEntity getPTWithFileId(Integer id) {
+		PartnerOffersStagingEntity pt = null;
+		LOGGER.info("PartnerOffersStagingEntity repo"+id);
+
+		try {
+			Query query = entityManager.createQuery("from PartnerOffersStagingEntity ce  where ce.id =: id ");
+			query.setParameter("id", id);
+			pt = (PartnerOffersStagingEntity) query.getSingleResult();
+		} catch (Exception e) {
+			LOGGER.info("Exception while querying " + e.getMessage());
+
+		} finally {
+			if (entityManager != null && entityManager.isOpen()) {
+				entityManager.close();
+			}
+		}
+		return pt;
+
+	}
 }

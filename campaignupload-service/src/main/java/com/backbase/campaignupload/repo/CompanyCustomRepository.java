@@ -1,9 +1,9 @@
 package com.backbase.campaignupload.repo;
 
-import com.backbase.campaignupload.entity.CompanyStagingEntity;
+import com.backbase.campaignupload.entity.CompanyFinalEntity;
 
 public interface CompanyCustomRepository {
 	
-	CompanyStagingEntity getCompany(String name) throws Exception;
+	CompanyFinalEntity getCompany(String name);
 
 }

@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.backbase.campaignupload.entity.CompanyStagingEntity;
+import com.backbase.campaignupload.entity.CompanyFinalEntity;
+
 
 
 @Repository
@@ -20,13 +21,13 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
 	EntityManager entityManager;
 
 	@Override
-	public CompanyStagingEntity getCompany(String name) throws Exception {
+	public CompanyFinalEntity getCompany(String name) {
 
-		CompanyStagingEntity comp = null;
+		CompanyFinalEntity comp = null;
 		try {
-			Query query = entityManager.createQuery("from CompanyStagingEntity ce  where ce.company_Id =: companyId ");
+			Query query = entityManager.createQuery("from CompanyFinalEntity ce  where ce.company_Id =: companyId ");
 			query.setParameter("companyId", name);
-			comp = (CompanyStagingEntity) query.getSingleResult();
+			comp = (CompanyFinalEntity) query.getResultList().get(0);
 		} catch (Exception e) {
 			logger.info("Exception while querying " + e.getMessage());
 		} finally {

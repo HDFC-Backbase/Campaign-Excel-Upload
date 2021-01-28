@@ -42,7 +42,6 @@ import com.backbase.campaignupload.service.CampaignUploadService;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import com.backbase.validate.jwt.ValidateJwt;
 
-
 import liquibase.util.file.FilenameUtils;
 
 @RestController
@@ -55,7 +54,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Value("${file.location}")
 	private String dir;
-	
+
 	private static final String APPROVED = "Approved";
 
 	private static final String REJECTED = "Rejected";
@@ -210,7 +209,7 @@ public class PartnerOffersController implements PartneroffersApi {
 				prtstag.setOffertext(prtoffer.getOffertext());
 				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				prtstag.setId(prtoffer.getId());
-			campaignUploadService.savePartnerOffer(prtstag);
+				campaignUploadService.savePartnerOffer(prtstag);
 			} else {
 				PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
 				prtstag.setTitle(prtoffer.getTitle());
@@ -226,7 +225,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		return campaignPutResponse;
 	}
-	
+
 	@PostMapping("/record/{id}")
 	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
 			HttpServletRequest arg1, HttpServletResponse arg2) {
@@ -236,30 +235,26 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (action.equalsIgnoreCase("A")) {
 			PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			prtstag.setApprovalstatus(APPROVED);
-			//logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
-			campaignUploadService.savePT(prtstag);
-			
-			PartnerOffersFinalEntity ptfinal =campaignUploadService.getFinalEntitybyStagId(prtstag);
+			logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
+			campaignUploadService.savePartnerOffer(prtstag);
 
-			if (prtstag.getFileApproveEntity() == null && ptfinal==null) {
+			PartnerOffersFinalEntity ptfinal = campaignUploadService.getFinalEntitybyStagId(prtstag);
+
+			if (prtstag.getFileApproveEntity() == null && ptfinal == null) {
 				PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
-				
 				ptfinals.setTitle(prtstag.getTitle());
 				ptfinals.setLogo(prtstag.getLogo());
 				ptfinals.setOffertext(prtstag.getOffertext());
 				ptfinals.setApprovalstatus(APPROVED);
 				ptfinals.setPartoffstagentity(prtstag);
-			
-			//	logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
+				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 				campaignUploadService.savePTFinal(ptfinals);
-			}else {
-				logger.info("PartnerOffersStagingEntity entity not null " + prtstag);
-
+			} else {
 				ptfinal.setTitle(prtstag.getTitle());
 				ptfinal.setLogo(prtstag.getLogo());
 				ptfinal.setOffertext(prtstag.getOffertext());
 				ptfinal.setApprovalstatus(APPROVED);
-			//	logger.info("YTFinalEntity entity going for save " + ptfinal);
+				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
 				campaignUploadService.savePTFinal(ptfinal);
 			}
 
@@ -268,8 +263,8 @@ public class PartnerOffersController implements PartneroffersApi {
 		else if (action.equalsIgnoreCase("R")) {
 			PartnerOffersStagingEntity ptstg = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			ptstg.setApprovalstatus(REJECTED);
-			logger.info("YTStagingEntity entity going for save " + ptstg);
-			campaignUploadService.savePT(ptstg);
+			logger.info("PartnerOffersStagingEntity entity going for save " + ptstg);
+			campaignUploadService.savePartnerOffer(ptstg);
 		}
 
 		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();

@@ -18,11 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
@@ -44,6 +49,10 @@ import liquibase.util.file.FilenameUtils;
 public class CorporateController implements CorporateoffersApi {
 
 	private static final Logger logger = LoggerFactory.getLogger(CorporateController.class);
+	
+	private static final String APPROVED = "Approved";
+
+	private static final String REJECTED = "Rejected";
 
 	@Autowired
 	CampaignUploadService campaignUploadService;
@@ -187,26 +196,95 @@ public class CorporateController implements CorporateoffersApi {
 		return filename;
 	}
 
+	
 	@PutMapping
 	public CampaignPutResponse putCompanies(@RequestBody CorporateOfferPutRequest requestBody, HttpServletRequest arg1,
 			HttpServletResponse arg2) {
 
-		logger.info("Request received to update data");
-
-		logger.info("CompaniesPutRequestBody " + requestBody);
+		logger.info("Request received to update data "+requestBody);
 
 		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
-		for (CorporateOffer prtoffer : requestBody.getUpdates()) {
-			CorporateStagingEntity prtstag = campaignUploadService.getCorpOffer(prtoffer.getId());
-			prtstag.setTitle(prtoffer.getTitle());
-			prtstag.setLogo(prtoffer.getLogo());
-			prtstag.setOffertext(prtoffer.getOffertext());
-			prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
-			prtstag.setId(prtoffer.getId());
-			campaignUploadService.saveCorpOffer(prtstag);
-			//campaignUploadService.deleteFinalCorpOffer(prtstag);
+		for (CorporateOffer corpoff : requestBody.getUpdates()) {
+			if (corpoff.getId() > 0) {
+				CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
+				corpstg.setCompanyId(corpoff.getCompanyid());
+				corpstg.setTitle(corpoff.getTitle());
+				corpstg.setLogo(corpoff.getLogo());
+				corpstg.setOffertext(corpoff.getOffertext());
+				corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+				corpstg.setId(corpoff.getId());
+				campaignUploadService.saveCorpOffer(corpstg);
+			}else {
+				CorporateStagingEntity corpstg = new CorporateStagingEntity();
+				corpstg.setCompanyId(corpoff.getCompanyid());
+				corpstg.setTitle(corpoff.getTitle());
+				corpstg.setLogo(corpoff.getLogo());
+				corpstg.setOffertext(corpoff.getOffertext());
+				corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+				campaignUploadService.saveCorpOffer(corpstg);
+			}
 		}
+
+		campaignPutResponse.setMessage("Successfully update data in table");
+		campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+
+		return campaignPutResponse;
+	}
+	
+	@PostMapping("/record/{id}")
+	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
+			HttpServletRequest arg1, HttpServletResponse arg2) {
+
+		logger.info("Request received to approve record data " + id);
+
+		if (action.equalsIgnoreCase("A")) {
+			CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithFileId(Integer.parseInt(id));
+			corpstg.setApprovalstatus(APPROVED);
+			logger.info("CorporateStagingEntity entity going for save " + corpstg);
+			campaignUploadService.saveCorpOffer(corpstg);
+			
+			CorporateFinalEntity corpfinal =campaignUploadService.getcorpFinalEntitybyStagId(corpstg);
+			CompanyFinalEntity cmfinal=campaignUploadService.getCompany(corpstg.getCompanyId());
+
+			if (corpstg.getCorpfileApproveEntity() == null && corpfinal==null) {
+				CorporateFinalEntity corpfinals = new CorporateFinalEntity();
+				
+				corpfinals.setTitle(corpstg.getTitle());
+				corpfinals.setLogo(corpstg.getLogo());
+				corpfinals.setOffertext(corpstg.getOffertext());
+				corpfinals.setApprovalstatus(APPROVED);
+				corpfinals.setCorporateStagingEntity(corpstg);		
+				if(cmfinal!=null)
+					corpfinals.setCompanyfinalEntity(cmfinal);
+				else
+					throw new CustomBadRequestException("No Company Mapping Found");
+				logger.info("CorporateFinalEntity entity going for save " + corpfinal);
+				campaignUploadService.saveCorpFinal(corpfinals);
+			}else {
+				if(cmfinal!=null)
+					corpfinal.setCompanyfinalEntity(cmfinal);
+				else
+					throw new CustomBadRequestException("No Company Mapping Found");
+				corpfinal.setTitle(corpstg.getTitle());
+				corpfinal.setLogo(corpstg.getLogo());
+				corpfinal.setOffertext(corpstg.getOffertext());
+				corpfinal.setApprovalstatus(APPROVED);
+				
+				logger.info("BAnnerFinalEntity entity going for save " + corpfinal);
+				campaignUploadService.saveCorpFinal(corpfinal);
+			}
+
+		}
+
+		else if (action.equalsIgnoreCase("R")) {
+			CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithFileId(Integer.parseInt(id));
+			corpstg.setApprovalstatus(REJECTED);
+			logger.info("YTStagingEntity entity going for save " + corpstg);
+			campaignUploadService.saveCorpOffer(corpstg);
+		}
+
+		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
 		campaignPutResponse.setMessage("Successfully update data in table");
 		campaignPutResponse.setStatuscode(HttpStatus.SC_OK);

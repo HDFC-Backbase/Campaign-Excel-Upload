@@ -7,5 +7,7 @@ import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 public interface PTStagCustomRepo {
 	
 	List<PartnerOffersStagingEntity> getLiveApprovedPT();
+	
+	PartnerOffersStagingEntity getPTWithFileId(Integer id);
 
 }

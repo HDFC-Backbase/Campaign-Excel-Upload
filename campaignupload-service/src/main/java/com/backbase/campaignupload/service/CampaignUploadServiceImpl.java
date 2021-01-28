@@ -9,20 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.helper.ExcelHelper;
 import com.backbase.campaignupload.repo.CompanyUploadRepo;
-import com.backbase.campaignupload.repo.CorpFinalCustomRepo;
+import com.backbase.campaignupload.repo.CorporateFinalUploadRepo;
 import com.backbase.campaignupload.repo.CorporateOfferRepo;
 import com.backbase.campaignupload.repo.FileApproveRepository;
-import com.backbase.campaignupload.repo.PTFinalCustomRepo;
 import com.backbase.campaignupload.repo.PartnerFinalUploadRepo;
 import com.backbase.campaignupload.repo.PartnerOfferRepo;
-import com.backbase.campaignupload.repo.PartnerStagingCustomRepo;
-import com.backbase.campaignupload.repo.PartnerUploadRepo;
 
 import liquibase.util.file.FilenameUtils;
 
@@ -44,20 +43,10 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	CompanyUploadRepo companyupload;
 
 	@Autowired
-	PTFinalCustomRepo ptfinalCustomRepo;
+	PartnerFinalUploadRepo partnerFinalUploadRepo;
 
 	@Autowired
-	CorpFinalCustomRepo corpFinalCustomRepo;
-	
-	
-	@Autowired
-	PartnerStagingCustomRepo partnerStagingCustomRepo;
-	
-	@Autowired
-	PartnerFinalUploadRepo partnerFinalUploadRepo;
-	
-	@Autowired
-	PartnerUploadRepo partnerUploadRepo;
+	CorporateFinalUploadRepo corporateFinalUploadRepo;
 
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename) {
@@ -118,10 +107,9 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 		return corporateOfferRepo.findAll();
 	}
 
-	
 	@Override
 	public PartnerOffersStagingEntity getPTWithFileId(Integer id) {
-		return partnerStagingCustomRepo.getPTWithFileId(id);
+		return partnerOfferRepo.getPTWithFileId(id);
 	}
 
 	@Override
@@ -130,11 +118,12 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 
 	}
 
-	@Override
-	public void deleteFinalPartnerOffer(PartnerOffersStagingEntity entity) {
-		ptfinalCustomRepo.deletePTFinalByStagId(entity);
-
-	}
+	/*
+	 * @Override public void deleteFinalPartnerOffer(PartnerOffersStagingEntity
+	 * entity) { ptfinalCustomRepo.deletePTFinalByStagId(entity);
+	 * 
+	 * }
+	 */
 
 	@Override
 	public List<PartnerOffersStagingEntity> getLiveApprovedPartnerOffer() {
@@ -154,35 +143,44 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 
 	}
 
-	@Override
-	public void deleteFinalCorpOffer(CorporateStagingEntity entity) {
-
-		corpFinalCustomRepo.deleteCorpFinalByStagId(entity);
-	}
 
 	@Override
 	public List<CorporateStagingEntity> getLiveApprovedCorp() {
-		return corporateOfferRepo.getLiveApprovedCorp();
+		return corporateOfferRepo.getLiveApprovedCorporate();
 	}
-
-
 
 	@Override
 	public void savePTFinal(PartnerOffersFinalEntity entity) {
 		partnerFinalUploadRepo.save(entity);
-		
-	}
 
-	@Override
-	public void savePT(PartnerOffersStagingEntity entity) {
-		partnerUploadRepo.save(entity);
-		
 	}
 
 	@Override
 	public PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity) {
-		// TODO Auto-generated method stub
 		return partnerFinalUploadRepo.getFinalEntitybyStagId(entity);
+	}
+
+	@Override
+	public void saveCorpFinal(CorporateFinalEntity entity) {
+		corporateFinalUploadRepo.save(entity);
+	}
+
+	@Override
+	public CorporateStagingEntity getCorporateWithFileId(Integer id) {
+
+		return corporateOfferRepo.getCorporateWithFileId(id);
+	}
+
+	@Override
+	public CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity) {
+		// TODO Auto-generated method stub
+		return corporateFinalUploadRepo.getFinalEntitybyStagId(entity);
+	}
+
+	@Override
+	public CompanyFinalEntity getCompany(String name) {
+		// TODO Auto-generated method stub
+		return companyupload.getCompany(name);
 	}
 
 }

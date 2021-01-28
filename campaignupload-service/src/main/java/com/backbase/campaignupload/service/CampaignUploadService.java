@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
@@ -19,11 +21,9 @@ public interface CampaignUploadService {
 
 	List<CorporateStagingEntity> getCorporateOffers();
 
-	//PartnerOffersStagingEntity getPartnerOffer(Integer id);
 
 	void savePartnerOffer(PartnerOffersStagingEntity entity);
 
-	void deleteFinalPartnerOffer(PartnerOffersStagingEntity entity);
 
 	List<PartnerOffersStagingEntity> getLiveApprovedPartnerOffer();
 	
@@ -33,18 +33,23 @@ public interface CampaignUploadService {
 
 	void saveCorpOffer(CorporateStagingEntity entity);
 
-	void deleteFinalCorpOffer(CorporateStagingEntity entity);
+	//void deleteFinalCorpOffer(CorporateStagingEntity entity);
 
 	List<CorporateStagingEntity> getLiveApprovedCorp();
 
 	PartnerOffersStagingEntity getPTWithFileId(Integer id);
+	
 	void savePTFinal(PartnerOffersFinalEntity entity);
 	
-	public void savePT(PartnerOffersStagingEntity entity);
-	
 	PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity);
+	
 
+	void saveCorpFinal(CorporateFinalEntity entity);
 
+	CorporateStagingEntity getCorporateWithFileId(Integer id);
+	
+	CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity);
+	CompanyFinalEntity getCompany(String name);
 
 
 }

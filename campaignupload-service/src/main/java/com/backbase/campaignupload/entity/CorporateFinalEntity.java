@@ -6,8 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "corporate_offer_final")
@@ -33,6 +35,10 @@ public class CorporateFinalEntity {
 	@OneToOne
 	@JoinColumn(name = "corp_id", nullable = false)
 	private CorporateStagingEntity corporateStagingEntity;
+	
+	@ManyToOne
+	@JoinColumn(name = "company_id", nullable = false)
+	private CompanyFinalEntity companyfinalEntity;
 	
 	
 	public int getId() {
@@ -81,6 +87,14 @@ public class CorporateFinalEntity {
 
 	public void setCorporateStagingEntity(CorporateStagingEntity corporateStagingEntity) {
 		this.corporateStagingEntity = corporateStagingEntity;
+	}
+
+	public CompanyFinalEntity getCompanyfinalEntity() {
+		return companyfinalEntity;
+	}
+
+	public void setCompanyfinalEntity(CompanyFinalEntity companyfinalEntity) {
+		this.companyfinalEntity = companyfinalEntity;
 	}
 
 	

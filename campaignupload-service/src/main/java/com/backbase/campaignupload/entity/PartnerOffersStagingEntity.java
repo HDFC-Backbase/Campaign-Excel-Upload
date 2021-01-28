@@ -101,7 +101,9 @@ public class PartnerOffersStagingEntity {
 	@Override
 	public String toString() {
 		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
-				+ offertext + ", approvalstatus=" + approvalstatus + ", fileApproveEntity=" + fileApproveEntity + "]";
+				+ offertext + ", approvalstatus=" + approvalstatus + "]";
 	}
+
+
 	
 }
