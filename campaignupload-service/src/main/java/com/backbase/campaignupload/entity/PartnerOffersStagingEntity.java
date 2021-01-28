@@ -97,9 +97,11 @@ public class PartnerOffersStagingEntity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	@Override
 	public String toString() {
-		return "CampaignStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext=" + offertext
-				+ ", approvalstatus=" + approvalstatus + ", fileApproveEntity=" + fileApproveEntity + "]";
+		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
+				+ offertext + ", approvalstatus=" + approvalstatus + ", fileApproveEntity=" + fileApproveEntity + "]";
 	}
+	
 }

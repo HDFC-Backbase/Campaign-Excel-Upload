@@ -236,7 +236,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (action.equalsIgnoreCase("A")) {
 			PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			prtstag.setApprovalstatus(APPROVED);
-			logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
+			//logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 			campaignUploadService.savePT(prtstag);
 			
 			PartnerOffersFinalEntity ptfinal =campaignUploadService.getFinalEntitybyStagId(prtstag);
@@ -250,14 +250,16 @@ public class PartnerOffersController implements PartneroffersApi {
 				ptfinals.setApprovalstatus(APPROVED);
 				ptfinals.setPartoffstagentity(prtstag);
 			
-				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
+			//	logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 				campaignUploadService.savePTFinal(ptfinals);
 			}else {
+				logger.info("PartnerOffersStagingEntity entity not null " + prtstag);
+
 				ptfinal.setTitle(prtstag.getTitle());
 				ptfinal.setLogo(prtstag.getLogo());
 				ptfinal.setOffertext(prtstag.getOffertext());
 				ptfinal.setApprovalstatus(APPROVED);
-				logger.info("YTFinalEntity entity going for save " + ptfinal);
+			//	logger.info("YTFinalEntity entity going for save " + ptfinal);
 				campaignUploadService.savePTFinal(ptfinal);
 			}
 

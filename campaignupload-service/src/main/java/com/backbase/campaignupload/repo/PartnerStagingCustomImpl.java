@@ -46,6 +46,7 @@ public class PartnerStagingCustomImpl implements PartnerStagingCustomRepo {
 	@Override
 	public PartnerOffersStagingEntity getPTWithFileId(Integer id) {
 		PartnerOffersStagingEntity pt = null;
+		LOGGER.info("PartnerOffersStagingEntity repo"+id);
 
 		try {
 			Query query = entityManager.createQuery("from PartnerOffersStagingEntity ce  where ce.id =: id ");
