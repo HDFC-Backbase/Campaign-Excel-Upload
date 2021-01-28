@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
+import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
+
 
 public interface CampaignUploadService {
 
@@ -17,7 +19,7 @@ public interface CampaignUploadService {
 
 	List<CorporateStagingEntity> getCorporateOffers();
 
-	PartnerOffersStagingEntity getPartnerOffer(Integer id);
+	//PartnerOffersStagingEntity getPartnerOffer(Integer id);
 
 	void savePartnerOffer(PartnerOffersStagingEntity entity);
 
@@ -34,5 +36,15 @@ public interface CampaignUploadService {
 	void deleteFinalCorpOffer(CorporateStagingEntity entity);
 
 	List<CorporateStagingEntity> getLiveApprovedCorp();
+
+	PartnerOffersStagingEntity getPTWithFileId(Integer id);
+	void savePTFinal(PartnerOffersFinalEntity entity);
+	
+	public void savePT(PartnerOffersStagingEntity entity);
+	
+	PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity);
+
+
+
 
 }

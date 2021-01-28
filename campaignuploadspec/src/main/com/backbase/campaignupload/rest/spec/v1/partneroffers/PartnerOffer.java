@@ -75,9 +75,9 @@ public class PartnerOffer implements AdditionalPropertiesAware
      *     The title
      */
 
-  	public String getTitle() {
-		return title;
-	}
+  	 public String getTitle() {
+        return title;
+    }
 
     public void setTitle(String title) {
         this.title = title;

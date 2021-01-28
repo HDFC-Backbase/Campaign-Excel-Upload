@@ -18,11 +18,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
@@ -38,6 +42,7 @@ import com.backbase.campaignupload.service.CampaignUploadService;
 import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import com.backbase.validate.jwt.ValidateJwt;
 
+
 import liquibase.util.file.FilenameUtils;
 
 @RestController
@@ -50,6 +55,10 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Value("${file.location}")
 	private String dir;
+	
+	private static final String APPROVED = "Approved";
+
+	private static final String REJECTED = "Rejected";
 
 	@Override
 	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest request, HttpServletResponse arg1) {
@@ -194,15 +203,74 @@ public class PartnerOffersController implements PartneroffersApi {
 		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
 		for (PartnerOffer prtoffer : requestBody.getUpdates()) {
-			PartnerOffersStagingEntity prtstag = campaignUploadService.getPartnerOffer(prtoffer.getId());
-			prtstag.setTitle(prtoffer.getTitle());
-			prtstag.setLogo(prtoffer.getLogo());
-			prtstag.setOffertext(prtoffer.getOffertext());
-			prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
-			prtstag.setId(prtoffer.getId());
+			if (prtoffer.getId() > 0) {
+				PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithFileId(prtoffer.getId());
+				prtstag.setTitle(prtoffer.getTitle());
+				prtstag.setLogo(prtoffer.getLogo());
+				prtstag.setOffertext(prtoffer.getOffertext());
+				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+				prtstag.setId(prtoffer.getId());
 			campaignUploadService.savePartnerOffer(prtstag);
-			//campaignUploadService.deleteFinalPartnerOffer(prtstag);
+			} else {
+				PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
+				prtstag.setTitle(prtoffer.getTitle());
+				prtstag.setLogo(prtoffer.getLogo());
+				prtstag.setOffertext(prtoffer.getOffertext());
+				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+				campaignUploadService.savePartnerOffer(prtstag);
+			}
 		}
+
+		campaignPutResponse.setMessage("Successfully update data in table");
+		campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+
+		return campaignPutResponse;
+	}
+	
+	@PostMapping("/record/{id}")
+	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
+			HttpServletRequest arg1, HttpServletResponse arg2) {
+
+		logger.info("Request received to approve record data " + id);
+
+		if (action.equalsIgnoreCase("A")) {
+			PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
+			prtstag.setApprovalstatus(APPROVED);
+			logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
+			campaignUploadService.savePT(prtstag);
+			
+			PartnerOffersFinalEntity ptfinal =campaignUploadService.getFinalEntitybyStagId(prtstag);
+
+			if (prtstag.getFileApproveEntity() == null && ptfinal==null) {
+				PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
+				
+				ptfinals.setTitle(prtstag.getTitle());
+				ptfinals.setLogo(prtstag.getLogo());
+				ptfinals.setOffertext(prtstag.getOffertext());
+				ptfinals.setApprovalstatus(APPROVED);
+				ptfinals.setPartoffstagentity(prtstag);
+			
+				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
+				campaignUploadService.savePTFinal(ptfinals);
+			}else {
+				ptfinal.setTitle(prtstag.getTitle());
+				ptfinal.setLogo(prtstag.getLogo());
+				ptfinal.setOffertext(prtstag.getOffertext());
+				ptfinal.setApprovalstatus(APPROVED);
+				logger.info("YTFinalEntity entity going for save " + ptfinal);
+				campaignUploadService.savePTFinal(ptfinal);
+			}
+
+		}
+
+		else if (action.equalsIgnoreCase("R")) {
+			PartnerOffersStagingEntity ptstg = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
+			ptstg.setApprovalstatus(REJECTED);
+			logger.info("YTStagingEntity entity going for save " + ptstg);
+			campaignUploadService.savePT(ptstg);
+		}
+
+		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
 		campaignPutResponse.setMessage("Successfully update data in table");
 		campaignPutResponse.setStatuscode(HttpStatus.SC_OK);

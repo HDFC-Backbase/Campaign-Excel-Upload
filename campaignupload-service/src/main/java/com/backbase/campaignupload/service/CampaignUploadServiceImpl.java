@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
+import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.helper.ExcelHelper;
 import com.backbase.campaignupload.repo.CompanyUploadRepo;
@@ -18,7 +19,10 @@ import com.backbase.campaignupload.repo.CorpFinalCustomRepo;
 import com.backbase.campaignupload.repo.CorporateOfferRepo;
 import com.backbase.campaignupload.repo.FileApproveRepository;
 import com.backbase.campaignupload.repo.PTFinalCustomRepo;
+import com.backbase.campaignupload.repo.PartnerFinalUploadRepo;
 import com.backbase.campaignupload.repo.PartnerOfferRepo;
+import com.backbase.campaignupload.repo.PartnerStagingCustomRepo;
+import com.backbase.campaignupload.repo.PartnerUploadRepo;
 
 import liquibase.util.file.FilenameUtils;
 
@@ -44,6 +48,16 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 
 	@Autowired
 	CorpFinalCustomRepo corpFinalCustomRepo;
+	
+	
+	@Autowired
+	PartnerStagingCustomRepo partnerStagingCustomRepo;
+	
+	@Autowired
+	PartnerFinalUploadRepo partnerFinalUploadRepo;
+	
+	@Autowired
+	PartnerUploadRepo partnerUploadRepo;
 
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename) {
@@ -104,10 +118,10 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 		return corporateOfferRepo.findAll();
 	}
 
+	
 	@Override
-	public PartnerOffersStagingEntity getPartnerOffer(Integer id) {
-		return partnerOfferRepo.findById(id).get();
-
+	public PartnerOffersStagingEntity getPTWithFileId(Integer id) {
+		return partnerStagingCustomRepo.getPTWithFileId(id);
 	}
 
 	@Override
@@ -149,6 +163,26 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	@Override
 	public List<CorporateStagingEntity> getLiveApprovedCorp() {
 		return corporateOfferRepo.getLiveApprovedCorp();
+	}
+
+
+
+	@Override
+	public void savePTFinal(PartnerOffersFinalEntity entity) {
+		partnerFinalUploadRepo.save(entity);
+		
+	}
+
+	@Override
+	public void savePT(PartnerOffersStagingEntity entity) {
+		partnerUploadRepo.save(entity);
+		
+	}
+
+	@Override
+	public PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity) {
+		// TODO Auto-generated method stub
+		return partnerFinalUploadRepo.getFinalEntitybyStagId(entity);
 	}
 
 }
