@@ -1,3 +1,3 @@
 spring:
   application:
-    name: campaignupload-service
+    name: campaign-upload
