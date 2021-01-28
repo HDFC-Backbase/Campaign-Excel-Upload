@@ -73,6 +73,10 @@ spring:
         show_sql: true
         format_sql: true
 
+role:
+  maker: ROLE_MAKER
+  checker: ROLE_CHECKER
+
 file:
   location: 'C:\Program Files (x86)\Backbase\SourceCode\Services\Excel_Upload_Services\Files'
 

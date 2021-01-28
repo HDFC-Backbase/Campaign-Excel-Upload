@@ -30,6 +30,13 @@ public class PartnerOffersStagingEntity {
 
 	@Column(name = "approval_status")
 	private String approvalstatus;
+	
+	@Column(name = "created_by")
+	private String createdBy;
+	
+	@Column(name = "updated_by")
+	private String updatedBy;	
+	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
 	private FileApproveEntity fileApproveEntity;
@@ -96,6 +103,22 @@ public class PartnerOffersStagingEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	@Override

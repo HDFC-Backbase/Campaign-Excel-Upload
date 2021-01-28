@@ -56,6 +56,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        
+role:
+  maker: ROLE_MAKER
+  checker: ROLE_CHECKER
 #Configuration for sever.
 
 #spring:

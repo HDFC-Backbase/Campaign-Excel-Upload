@@ -31,6 +31,12 @@ public class PartnerOffersFinalEntity {
 	@Column(name = "logo")
 	private String logo;
 	
+	@Column(name = "created_by")
+	private String createdBy;
+	
+	@Column(name = "updated_by")
+	private String updatedBy;
+	
 	@OneToOne
 	@JoinColumn(name = "partoff_id", nullable = false)
 	private PartnerOffersStagingEntity partoffstagentity;
@@ -75,6 +81,21 @@ public class PartnerOffersFinalEntity {
 		this.logo = logo;
 	}
 	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 	
 
 	public PartnerOffersStagingEntity getPartoffstagentity() {

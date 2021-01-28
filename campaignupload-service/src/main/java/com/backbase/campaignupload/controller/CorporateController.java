@@ -59,17 +59,30 @@ public class CorporateController implements CorporateoffersApi {
 
 	@Value("${file.location}")
 	private String dir;
+	
+	@Value("${role.maker}")
+	private String maker;
+
+	@Value("${role.checker}")
+	private String checker;
+
 
 	@Override
 	public CorporateoffersGetResponseBody getCorporateoffers(HttpServletRequest request, HttpServletResponse arg1) {
-		logger.info("Request received to get Relation manager uploaded data");
+		
+		logger.info("Request received to get Corporated Uploaded data");
+			
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String authorization = request.getHeader("authorization").substring(7);
 
 		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		
+		List<String> role=ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("Subject in JWT " + subject);
+		logger.info("User in JWT " + subject);
+		
+		logger.info("Role in JWT " + role);
 
 		CorporateoffersGetResponseBody corporateoffersGetResponseBody = new CorporateoffersGetResponseBody();
 
@@ -77,17 +90,21 @@ public class CorporateController implements CorporateoffersApi {
 
 		List<Object> dataList = new ArrayList<Object>();
 
-		setHeaders(headerslist, "title");
-		setHeaders(headerslist, "companyId");
+		setHeaders(headerslist, "title",role,checker);
+		setHeaders(headerslist, "companyId",role,checker);
 
 		Header hdclogo = new Header();
 		hdclogo.setField("logo");
 		hdclogo.setType("imageColumn");
+		if(role.contains(checker))
+			hdclogo.setEditable(false);
 		headerslist.add(hdclogo);
 
 		Header hdcoffertext = new Header();
 		hdcoffertext.setField("offerText");
 		hdcoffertext.setType("largeTextColumn");
+		if(role.contains(checker))
+			hdcoffertext.setEditable(false);
 		headerslist.add(hdcoffertext);
 
 		Header hdapproval = new Header();
@@ -98,11 +115,15 @@ public class CorporateController implements CorporateoffersApi {
 		Header hdId = new Header();
 		hdId.setField("id");
 		hdId.setHide(true);
+		if(role.contains(checker))
+			hdId.setEditable(false);
 		headerslist.add(hdId);
 		
 		Header hdlive = new Header();
 		hdlive.setField("live");
 		hdlive.setType("liveColumn");
+		if(role.contains(maker))
+			hdlive.setHide(true);
 		headerslist.add(hdlive);
 
 		List<CorporateStagingEntity> corstg = campaignUploadService.getLiveApprovedCorp();
@@ -114,6 +135,8 @@ public class CorporateController implements CorporateoffersApi {
 			corpdata.setOffertext(corp.getOffertext());
 			corpdata.setCompanyid(corp.getCompanyId());
 			corpdata.setApprovalstatus(corp.getApprovalstatus());
+			corpdata.setCreatedBy(corp.getCreatedBy());
+			corpdata.setUpdatedBy(corp.getUpdatedBy());
 			corpdata.setId(corp.getId());
 			corpdata.setLive(true);
 			dataList.add(corpdata);
@@ -129,6 +152,8 @@ public class CorporateController implements CorporateoffersApi {
 			corpdata.setOffertext(corp.getOffertext());
 			corpdata.setCompanyid(corp.getCompanyId());
 			corpdata.setApprovalstatus(corp.getApprovalstatus());
+			corpdata.setCreatedBy(corp.getCreatedBy());
+			corpdata.setUpdatedBy(corp.getUpdatedBy());
 			corpdata.setId(corp.getId());
 			dataList.add(corpdata);
 
@@ -145,6 +170,7 @@ public class CorporateController implements CorporateoffersApi {
 	public CorporateoffersPostResponseBody postCorporateoffers(MultipartFile file, HttpServletRequest request,
 			HttpServletResponse arg3) {
 		logger.info("Request Received to Upload Caorporate offer data");
+		
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String authorization = request.getHeader("authorization").substring(7);
@@ -172,10 +198,12 @@ public class CorporateController implements CorporateoffersApi {
 
 	}
 
-	public void setHeaders(List<Header> headerslist, String headerId) {
+	public void setHeaders(List<Header> headerslist, String headerId, List<String> role, String checker) {
 
 		Header header = new Header();
 		header.setField(headerId);
+		if(role.contains(checker))
+			header.setEditable(false);
 		headerslist.add(header);
 	}
 
@@ -203,10 +231,18 @@ public class CorporateController implements CorporateoffersApi {
 
 	
 	@PutMapping
-	public CampaignPutResponse putCompanies(@RequestBody CorporateOfferPutRequest requestBody, HttpServletRequest arg1,
+	public CampaignPutResponse putCompanies(@RequestBody CorporateOfferPutRequest requestBody, HttpServletRequest request,
 			HttpServletResponse arg2) {
 
 		logger.info("Request received to update data "+requestBody);
+		
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("User in JWT " + subject);
 
 		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
@@ -219,6 +255,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpstg.setOffertext(corpoff.getOffertext());
 				corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				corpstg.setId(corpoff.getId());
+				corpstg.setCreatedBy(subject);
+				corpstg.setUpdatedBy("-");
 				campaignUploadService.saveCorpOffer(corpstg);
 			}else {
 				CorporateStagingEntity corpstg = new CorporateStagingEntity();
@@ -227,6 +265,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpstg.setLogo(corpoff.getLogo());
 				corpstg.setOffertext(corpoff.getOffertext());
 				corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+				corpstg.setCreatedBy(subject);
+				corpstg.setUpdatedBy("-");
 				campaignUploadService.saveCorpOffer(corpstg);
 			}
 		}
@@ -239,13 +279,22 @@ public class CorporateController implements CorporateoffersApi {
 	
 	@PostMapping("/record/{id}")
 	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
-			HttpServletRequest arg1, HttpServletResponse arg2) {
+			HttpServletRequest request, HttpServletResponse arg2) {
 
 		logger.info("Request received to approve record data " + id);
+		
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("User in JWT " + subject);
 
 		if (action.equalsIgnoreCase("A")) {
 			CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithFileId(Integer.parseInt(id));
 			corpstg.setApprovalstatus(APPROVED);
+			corpstg.setUpdatedBy(subject);
 			logger.info("CorporateStagingEntity entity going for save " + corpstg);
 			campaignUploadService.saveCorpOffer(corpstg);
 			
@@ -259,12 +308,14 @@ public class CorporateController implements CorporateoffersApi {
 				corpfinals.setLogo(corpstg.getLogo());
 				corpfinals.setOffertext(corpstg.getOffertext());
 				corpfinals.setApprovalstatus(APPROVED);
+				corpfinals.setCreatedBy(corpstg.getCreatedBy());
+				corpfinals.setUpdatedBy(subject);
 				corpfinals.setCorporateStagingEntity(corpstg);		
 				if(cmfinal!=null)
 					corpfinals.setCompanyfinalEntity(cmfinal);
 				else
 					throw new CustomBadRequestException("No Company Mapping Found");
-				logger.info("CorporateFinalEntity entity going for save " + corpfinal);
+				logger.info("CorporateFinalEntity entity going for save " + corpfinals);
 				campaignUploadService.saveCorpFinal(corpfinals);
 			}else {
 				if(cmfinal!=null)
@@ -274,6 +325,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpfinal.setTitle(corpstg.getTitle());
 				corpfinal.setLogo(corpstg.getLogo());
 				corpfinal.setOffertext(corpstg.getOffertext());
+				corpfinal.setCreatedBy(corpstg.getCreatedBy());
+				corpfinal.setUpdatedBy(subject);
 				corpfinal.setApprovalstatus(APPROVED);
 				
 				logger.info("BAnnerFinalEntity entity going for save " + corpfinal);
@@ -285,6 +338,7 @@ public class CorporateController implements CorporateoffersApi {
 		else if (action.equalsIgnoreCase("R")) {
 			CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithFileId(Integer.parseInt(id));
 			corpstg.setApprovalstatus(REJECTED);
+			corpstg.setUpdatedBy(subject);
 			logger.info("YTStagingEntity entity going for save " + corpstg);
 			campaignUploadService.saveCorpOffer(corpstg);
 		}

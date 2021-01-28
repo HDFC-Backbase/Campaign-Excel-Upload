@@ -32,6 +32,12 @@ public class CorporateFinalEntity {
 	@Column(name = "approval_status")
 	private String approvalstatus;
 	
+	@Column(name = "created_by")
+	private String createdBy;
+	
+	@Column(name = "updated_by")
+	private String updatedBy;
+	
 	@OneToOne
 	@JoinColumn(name = "corp_id", nullable = false)
 	private CorporateStagingEntity corporateStagingEntity;
@@ -95,6 +101,22 @@ public class CorporateFinalEntity {
 
 	public void setCompanyfinalEntity(CompanyFinalEntity companyfinalEntity) {
 		this.companyfinalEntity = companyfinalEntity;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	

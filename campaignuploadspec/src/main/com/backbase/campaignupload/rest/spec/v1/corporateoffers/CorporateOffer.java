@@ -22,7 +22,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 	"companyId",
     "approvalStatus",
 	"id",
-	"live"
+	"live",
+	"createdBy",
+	"updatedBy"
 })
 public class CorporateOffer implements AdditionalPropertiesAware
 {
@@ -60,6 +62,12 @@ public class CorporateOffer implements AdditionalPropertiesAware
      */
 	@JsonProperty("live")
 	private boolean live;
+	
+	@JsonProperty("createdBy")
+	private String createdBy;
+	
+    @JsonProperty("updatedBy")
+	private String updatedBy;
 	
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> additions = new HashMap<String, String>();
@@ -156,6 +164,22 @@ public class CorporateOffer implements AdditionalPropertiesAware
 
 	public void setLive(boolean live) {
 		this.live = live;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
     public CorporateOffer withOffertext(String offertext) {

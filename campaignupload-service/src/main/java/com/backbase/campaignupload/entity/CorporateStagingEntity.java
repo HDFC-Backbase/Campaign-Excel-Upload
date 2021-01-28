@@ -34,6 +34,12 @@ public class CorporateStagingEntity {
 	@Column(name = "company_id")
 	private String companyId;
 	
+	@Column(name = "created_by")
+	private String createdBy;
+	
+	@Column(name = "updated_by")
+	private String updatedBy;
+	
 
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
@@ -113,6 +119,22 @@ public class CorporateStagingEntity {
 
 	public void setCompanyId(String companyId) {
 		this.companyId = companyId;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	@Override

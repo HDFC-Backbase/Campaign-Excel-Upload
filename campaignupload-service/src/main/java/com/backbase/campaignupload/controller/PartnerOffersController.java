@@ -54,6 +54,12 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Value("${file.location}")
 	private String dir;
+	
+	@Value("${role.maker}")
+	private String maker;
+
+	@Value("${role.checker}")
+	private String checker;
 
 	private static final String APPROVED = "Approved";
 
@@ -61,6 +67,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Override
 	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest request, HttpServletResponse arg1) {
+		
 		logger.info("Request received to get data");
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
@@ -68,40 +75,66 @@ public class PartnerOffersController implements PartneroffersApi {
 		String authorization = request.getHeader("authorization").substring(7);
 
 		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		
+		List<String> role=ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("Subject in JWT " + subject);
-		// TODO Auto-generated method stub
+		logger.info("User in JWT " + subject);
+		
+		logger.info("Role in JWT " + role);
+		
 		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
 		List<Header> headerslist = new ArrayList<Header>();
 
 		List<Object> dataList = new ArrayList<Object>();
 
-		setHeaders(headerslist, "title");
+		Header hdctitle = new Header();
+		hdctitle.setField("title");
+		if(role.contains(checker))
+			hdctitle.setEditable(false);
+		headerslist.add(hdctitle);
 
 		Header hdclogo = new Header();
 		hdclogo.setField("logo");
 		hdclogo.setType("imageColumn");
+		if(role.contains(checker))
+			hdclogo.setEditable(false);
 		headerslist.add(hdclogo);
 
 		Header hdcoffertext = new Header();
 		hdcoffertext.setField("offerText");
 		hdcoffertext.setType("largeTextColumn");
+		if(role.contains(checker))
+			hdcoffertext.setEditable(false);
 		headerslist.add(hdcoffertext);
 
 		Header hdapproval = new Header();
 		hdapproval.setField("approvalStatus");
 		hdapproval.setEditable(false);
 		headerslist.add(hdapproval);
+		
+		Header hdcreatedBy = new Header();
+		hdcreatedBy.setField("createdBy");
+		hdcreatedBy.setEditable(false);
+		headerslist.add(hdcreatedBy);
+		
+		Header hdupdatedBy = new Header();
+		hdupdatedBy.setField("updatedBy");
+		hdupdatedBy.setEditable(false);
+		headerslist.add(hdupdatedBy);
 
 		Header hdId = new Header();
 		hdId.setField("id");
 		hdId.setHide(true);
+		if(role.contains(checker))
+			hdId.setEditable(false);
 		headerslist.add(hdId);
 		
 		Header hdlive = new Header();
 		hdlive.setField("live");
 		hdlive.setType("liveColumn");
+		if(role.contains(maker))
+			hdlive.setHide(true);
 		headerslist.add(hdlive);
 
 		List<PartnerOffersStagingEntity> ptstg = campaignUploadService.getLiveApprovedPartnerOffer();
@@ -113,6 +146,8 @@ public class PartnerOffersController implements PartneroffersApi {
 			partnerofferresponse.setOffertext(ce.getOffertext());
 			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
 			partnerofferresponse.setId(ce.getId());
+			partnerofferresponse.setCreatedBy(ce.getCreatedBy());
+			partnerofferresponse.setUpdatedBy(ce.getUpdatedBy());
 			partnerofferresponse.setLive(true);
 			dataList.add(partnerofferresponse);
 
@@ -126,6 +161,8 @@ public class PartnerOffersController implements PartneroffersApi {
 			partnerofferresponse.setLogo(ce.getLogo());
 			partnerofferresponse.setOffertext(ce.getOffertext());
 			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
+			partnerofferresponse.setCreatedBy(ce.getCreatedBy());
+			partnerofferresponse.setUpdatedBy(ce.getUpdatedBy());
 			partnerofferresponse.setId(ce.getId());
 			dataList.add(partnerofferresponse);
 
@@ -139,15 +176,15 @@ public class PartnerOffersController implements PartneroffersApi {
 	public PartneroffersPostResponseBody postPartneroffers(MultipartFile file, HttpServletRequest request,
 			HttpServletResponse arg3) {
 
-		// TODO Auto-generated method stub
 		logger.info("Request received to Upload data");
+		
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String authorization = request.getHeader("authorization").substring(7);
 
 		String uploadedBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("Subject in JWT " + uploadedBy);
+		logger.info("User in JWT " + uploadedBy);
 		PartneroffersPostResponseBody partneroffersPostResponseBody = new PartneroffersPostResponseBody();
 		String message = "";
 		if (ExcelHelper.hasExcelFormat(file)) {
@@ -197,12 +234,16 @@ public class PartnerOffersController implements PartneroffersApi {
 	}
 
 	@PutMapping
-	public CampaignPutResponse putCompanies(@RequestBody PartnerOfferPutRequest requestBody, HttpServletRequest arg1,
+	public CampaignPutResponse putCompanies(@RequestBody PartnerOfferPutRequest requestBody, HttpServletRequest request,
 			HttpServletResponse arg2) {
 
 		logger.info("Request received to update data");
 
-		logger.info("CompaniesPutRequestBody " + requestBody);
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
@@ -214,12 +255,16 @@ public class PartnerOffersController implements PartneroffersApi {
 				prtstag.setOffertext(prtoffer.getOffertext());
 				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				prtstag.setId(prtoffer.getId());
+				prtstag.setCreatedBy(subject);
+				prtstag.setUpdatedBy("-");
 				campaignUploadService.savePartnerOffer(prtstag);
 			} else {
 				PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
 				prtstag.setTitle(prtoffer.getTitle());
 				prtstag.setLogo(prtoffer.getLogo());
 				prtstag.setOffertext(prtoffer.getOffertext());
+				prtstag.setCreatedBy(subject);
+				prtstag.setUpdatedBy("-");
 				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				campaignUploadService.savePartnerOffer(prtstag);
 			}
@@ -233,13 +278,20 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@PostMapping("/record/{id}")
 	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
-			HttpServletRequest arg1, HttpServletResponse arg2) {
+			HttpServletRequest request, HttpServletResponse arg2) {
 
 		logger.info("Request received to approve record data " + id);
+		
+		logger.info("Authorization header " + request.getHeader("authorization"));
+
+		String authorization = request.getHeader("authorization").substring(7);
+
+		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		if (action.equalsIgnoreCase("A")) {
 			PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			prtstag.setApprovalstatus(APPROVED);
+			prtstag.setUpdatedBy(subject);
 			logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 			campaignUploadService.savePartnerOffer(prtstag);
 
@@ -252,6 +304,8 @@ public class PartnerOffersController implements PartneroffersApi {
 				ptfinals.setOffertext(prtstag.getOffertext());
 				ptfinals.setApprovalstatus(APPROVED);
 				ptfinals.setPartoffstagentity(prtstag);
+				ptfinals.setCreatedBy(prtstag.getCreatedBy());
+				ptfinals.setUpdatedBy(subject);
 				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 				campaignUploadService.savePTFinal(ptfinals);
 			} else {
@@ -259,6 +313,8 @@ public class PartnerOffersController implements PartneroffersApi {
 				ptfinal.setLogo(prtstag.getLogo());
 				ptfinal.setOffertext(prtstag.getOffertext());
 				ptfinal.setApprovalstatus(APPROVED);
+				ptfinal.setCreatedBy(prtstag.getCreatedBy());
+				ptfinal.setUpdatedBy(subject);
 				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
 				campaignUploadService.savePTFinal(ptfinal);
 			}
@@ -268,6 +324,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		else if (action.equalsIgnoreCase("R")) {
 			PartnerOffersStagingEntity ptstg = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			ptstg.setApprovalstatus(REJECTED);
+			ptstg.setUpdatedBy(subject);
 			logger.info("PartnerOffersStagingEntity entity going for save " + ptstg);
 			campaignUploadService.savePartnerOffer(ptstg);
 		}
