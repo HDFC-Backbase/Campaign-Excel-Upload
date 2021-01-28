@@ -98,6 +98,11 @@ public class PartnerOffersController implements PartneroffersApi {
 		hdId.setField("id");
 		hdId.setHide(true);
 		headerslist.add(hdId);
+		
+		Header hdlive = new Header();
+		hdlive.setField("live");
+		hdlive.setType("liveColumn");
+		headerslist.add(hdlive);
 
 		List<PartnerOffersStagingEntity> ptstg = campaignUploadService.getLiveApprovedPartnerOffer();
 
