@@ -112,6 +112,16 @@ public class CorporateController implements CorporateoffersApi {
 		hdapproval.setEditable(false);
 		headerslist.add(hdapproval);
 
+		Header hdcreatedBy = new Header();
+		hdcreatedBy.setField("createdBy");
+		hdcreatedBy.setEditable(false);
+		headerslist.add(hdcreatedBy);
+		
+		Header hdupdatedBy = new Header();
+		hdupdatedBy.setField("updatedBy");
+		hdupdatedBy.setEditable(false);
+		headerslist.add(hdupdatedBy);
+		
 		Header hdId = new Header();
 		hdId.setField("id");
 		hdId.setHide(true);
