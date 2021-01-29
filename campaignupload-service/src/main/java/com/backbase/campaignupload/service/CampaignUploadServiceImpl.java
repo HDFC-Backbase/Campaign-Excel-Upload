@@ -61,6 +61,8 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 			FileApproveEntity savedFile = fileApproveRepository.save(fileApproveEntity);
 
 			companyfileuploads.stream().forEach(ce -> {
+				ce.setCreatedBy(uploadedBy);
+				ce.setUpdatedBy("-");
 				ce.setFileApproveEntity(savedFile);
 				ce.setApprovalstatus(PENDING);
 			});
@@ -90,6 +92,8 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 			fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
 			FileApproveEntity savedFile = fileApproveRepository.save(fileApproveEntity);
 			corptaglist.stream().forEach(corp -> {
+				corp.setCreatedBy(uploadedBy);
+				corp.setUpdatedBy("-");
 				corp.setCorpfileApproveEntity(savedFile);
 				corp.setApprovalstatus(PENDING);
 
@@ -118,12 +122,6 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 
 	}
 
-	/*
-	 * @Override public void deleteFinalPartnerOffer(PartnerOffersStagingEntity
-	 * entity) { ptfinalCustomRepo.deletePTFinalByStagId(entity);
-	 * 
-	 * }
-	 */
 
 	@Override
 	public List<PartnerOffersStagingEntity> getLiveApprovedPartnerOffer() {
