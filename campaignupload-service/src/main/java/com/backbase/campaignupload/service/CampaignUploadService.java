@@ -13,11 +13,11 @@ import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
 public interface CampaignUploadService {
 
-	void save(MultipartFile file, String sheetname, String uploadedBy, String filename);
+	void save(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip);
 
 	List<PartnerOffersStagingEntity> getPartnerOffers();
 
-	void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename);
+	void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip);
 
 	List<CorporateStagingEntity> getCorporateOffers();
 

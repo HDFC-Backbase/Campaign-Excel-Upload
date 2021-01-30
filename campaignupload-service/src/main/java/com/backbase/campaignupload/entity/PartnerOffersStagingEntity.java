@@ -37,6 +37,12 @@ public class PartnerOffersStagingEntity {
 	@Column(name = "updated_by")
 	private String updatedBy;	
 	
+	@Column(name = "checker_ip")
+	private String checkerip;
+	
+	@Column(name = "maker_ip")
+	private String makerip;
+	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
 	private FileApproveEntity fileApproveEntity;
@@ -121,12 +127,30 @@ public class PartnerOffersStagingEntity {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getCheckerip() {
+		return checkerip;
+	}
+
+	public void setCheckerip(String checkerip) {
+		this.checkerip = checkerip;
+	}
+
+	public String getMakerip() {
+		return makerip;
+	}
+
+	public void setMakerip(String makerip) {
+		this.makerip = makerip;
+	}
+
 	@Override
 	public String toString() {
 		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
-				+ offertext + ", approvalstatus=" + approvalstatus + "]";
+				+ offertext + ", approvalstatus=" + approvalstatus + ", createdBy=" + createdBy + ", updatedBy="
+				+ updatedBy + ", checkerip=" + checkerip + ", makerip=" + makerip + "]";
 	}
 
+	
 
 	
 }

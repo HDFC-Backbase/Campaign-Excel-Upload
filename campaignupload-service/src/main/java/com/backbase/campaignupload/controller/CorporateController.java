@@ -181,6 +181,9 @@ public class CorporateController implements CorporateoffersApi {
 			HttpServletResponse arg3) {
 		logger.info("Request Received to Upload Caorporate offer data");
 		
+		String makerip = request.getRemoteAddr();
+		logger.info(" CorporateoffersPostResponseBody ip  " + makerip);
+		
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String authorization = request.getHeader("authorization").substring(7);
@@ -193,7 +196,7 @@ public class CorporateController implements CorporateoffersApi {
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				String filename = saveFiletoLocation(file, uploadedBy);
-				campaignUploadService.savecarpoateoffer(file, "CorporateOffer", uploadedBy, filename);
+				campaignUploadService.savecarpoateoffer(file, "CorporateOffer", uploadedBy, filename,makerip);
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
 				corporateoffersPostResponseBody.setStatuscode("200");
 				corporateoffersPostResponseBody.setMessage(message);
@@ -247,6 +250,9 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("Request received to update data "+requestBody);
 		
 		logger.info("Authorization header " + request.getHeader("authorization"));
+		
+		String makerip = request.getRemoteAddr();
+		logger.info("putCompanies ip  " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -267,6 +273,7 @@ public class CorporateController implements CorporateoffersApi {
 				corpstg.setId(corpoff.getId());
 				corpstg.setCreatedBy(subject);
 				corpstg.setUpdatedBy("-");
+				corpstg.setMakerip(makerip);
 				campaignUploadService.saveCorpOffer(corpstg);
 			}else {
 				CorporateStagingEntity corpstg = new CorporateStagingEntity();
@@ -277,6 +284,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				corpstg.setCreatedBy(subject);
 				corpstg.setUpdatedBy("-");
+				corpstg.setMakerip(makerip);
+
 				campaignUploadService.saveCorpOffer(corpstg);
 			}
 		}
@@ -294,6 +303,9 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("Request received to approve record data " + id);
 		
 		logger.info("Authorization header " + request.getHeader("authorization"));
+		
+		String checkerip = request.getRemoteAddr();
+		logger.info("postRecord ip  " + checkerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -320,6 +332,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpfinals.setApprovalstatus(APPROVED);
 				corpfinals.setCreatedBy(corpstg.getCreatedBy());
 				corpfinals.setUpdatedBy(subject);
+				corpfinals.setCheckerip(checkerip);
+				corpfinals.setMakerip(corpstg.getMakerip());
 				corpfinals.setCorporateStagingEntity(corpstg);		
 				if(cmfinal!=null)
 					corpfinals.setCompanyfinalEntity(cmfinal);
@@ -338,6 +352,8 @@ public class CorporateController implements CorporateoffersApi {
 				corpfinal.setCreatedBy(corpstg.getCreatedBy());
 				corpfinal.setUpdatedBy(subject);
 				corpfinal.setApprovalstatus(APPROVED);
+				corpfinal.setCheckerip(checkerip);
+				corpfinal.setMakerip(corpstg.getMakerip());
 				
 				logger.info("BAnnerFinalEntity entity going for save " + corpfinal);
 				campaignUploadService.saveCorpFinal(corpfinal);
@@ -349,6 +365,7 @@ public class CorporateController implements CorporateoffersApi {
 			CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithFileId(Integer.parseInt(id));
 			corpstg.setApprovalstatus(REJECTED);
 			corpstg.setUpdatedBy(subject);
+			corpstg.setCheckerip(checkerip);
 			logger.info("YTStagingEntity entity going for save " + corpstg);
 			campaignUploadService.saveCorpOffer(corpstg);
 		}

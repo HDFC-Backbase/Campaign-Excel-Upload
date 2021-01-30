@@ -178,6 +178,9 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		logger.info("Request received to Upload data");
 		
+		String makerip = request.getRemoteAddr();
+		logger.info(" PartneroffersPostResponseBody ip  " + makerip);
+		
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String authorization = request.getHeader("authorization").substring(7);
@@ -190,7 +193,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (ExcelHelper.hasExcelFormat(file)) {
 			try {
 				String filename = saveFiletoLocation(file, uploadedBy);
-				campaignUploadService.save(file, "PartnerOffer", uploadedBy, filename);
+				campaignUploadService.save(file, "PartnerOffer", uploadedBy, filename,makerip);
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
 				partneroffersPostResponseBody.setStatuscode("200");
 				partneroffersPostResponseBody.setMessage(message);
@@ -240,6 +243,9 @@ public class PartnerOffersController implements PartneroffersApi {
 		logger.info("Request received to update data");
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
+		
+		String makerip = request.getRemoteAddr();
+		logger.info("putCompanies ip  " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -257,6 +263,7 @@ public class PartnerOffersController implements PartneroffersApi {
 				prtstag.setId(prtoffer.getId());
 				prtstag.setCreatedBy(subject);
 				prtstag.setUpdatedBy("-");
+				prtstag.setMakerip(makerip);
 				campaignUploadService.savePartnerOffer(prtstag);
 			} else {
 				PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
@@ -265,6 +272,7 @@ public class PartnerOffersController implements PartneroffersApi {
 				prtstag.setOffertext(prtoffer.getOffertext());
 				prtstag.setCreatedBy(subject);
 				prtstag.setUpdatedBy("-");
+				prtstag.setMakerip(makerip);
 				prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
 				campaignUploadService.savePartnerOffer(prtstag);
 			}
@@ -283,6 +291,9 @@ public class PartnerOffersController implements PartneroffersApi {
 		logger.info("Request received to approve record data " + id);
 		
 		logger.info("Authorization header " + request.getHeader("authorization"));
+		
+		String checkerip = request.getRemoteAddr();
+		logger.info("postRecord ip  " + checkerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -306,6 +317,8 @@ public class PartnerOffersController implements PartneroffersApi {
 				ptfinals.setPartoffstagentity(prtstag);
 				ptfinals.setCreatedBy(prtstag.getCreatedBy());
 				ptfinals.setUpdatedBy(subject);
+				ptfinals.setCheckerip(checkerip);
+				ptfinals.setMakerip(prtstag.getMakerip());
 				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 				campaignUploadService.savePTFinal(ptfinals);
 			} else {
@@ -315,6 +328,8 @@ public class PartnerOffersController implements PartneroffersApi {
 				ptfinal.setApprovalstatus(APPROVED);
 				ptfinal.setCreatedBy(prtstag.getCreatedBy());
 				ptfinal.setUpdatedBy(subject);
+				ptfinal.setCheckerip(checkerip);
+				ptfinal.setMakerip(prtstag.getMakerip());
 				logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
 				campaignUploadService.savePTFinal(ptfinal);
 			}
@@ -325,6 +340,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			PartnerOffersStagingEntity ptstg = campaignUploadService.getPTWithFileId(Integer.parseInt(id));
 			ptstg.setApprovalstatus(REJECTED);
 			ptstg.setUpdatedBy(subject);
+			ptstg.setCheckerip(checkerip);
 			logger.info("PartnerOffersStagingEntity entity going for save " + ptstg);
 			campaignUploadService.savePartnerOffer(ptstg);
 		}

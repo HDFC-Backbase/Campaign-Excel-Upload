@@ -49,7 +49,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	CorporateFinalUploadRepo corporateFinalUploadRepo;
 
 	@Override
-	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename) {
+	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip) {
 		try {
 			List<PartnerOffersStagingEntity> companyfileuploads = ExcelHelper.excelToTutorials(file.getInputStream());
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
@@ -65,6 +65,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 				ce.setUpdatedBy("-");
 				ce.setFileApproveEntity(savedFile);
 				ce.setApprovalstatus(PENDING);
+				ce.setMakerip(makerip);
 			});
 
 			partnerOfferRepo.saveAll(companyfileuploads);
@@ -80,7 +81,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename) {
+	public void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip) {
 		try {
 			List<CorporateStagingEntity> corptaglist = ExcelHelper.excelToCorporateStaging(file.getInputStream(),
 					companyupload);
@@ -96,6 +97,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 				corp.setUpdatedBy("-");
 				corp.setCorpfileApproveEntity(savedFile);
 				corp.setApprovalstatus(PENDING);
+				corp.setMakerip(makerip);
 
 			});
 			corporateOfferRepo.saveAll(corptaglist);

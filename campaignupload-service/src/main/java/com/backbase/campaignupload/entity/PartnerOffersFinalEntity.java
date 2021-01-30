@@ -37,6 +37,13 @@ public class PartnerOffersFinalEntity {
 	@Column(name = "updated_by")
 	private String updatedBy;
 	
+	
+	@Column(name = "checker_ip")
+	private String checkerip;
+	
+	@Column(name = "maker_ip")
+	private String makerip;
+	
 	@OneToOne
 	@JoinColumn(name = "partoff_id", nullable = false)
 	private PartnerOffersStagingEntity partoffstagentity;
@@ -106,10 +113,29 @@ public class PartnerOffersFinalEntity {
 		this.partoffstagentity = partoffstagentity;
 	}
 
+	public String getCheckerip() {
+		return checkerip;
+	}
+
+	public void setCheckerip(String checkerip) {
+		this.checkerip = checkerip;
+	}
+
+	public String getMakerip() {
+		return makerip;
+	}
+
+	public void setMakerip(String makerip) {
+		this.makerip = makerip;
+	}
+
 	@Override
 	public String toString() {
 		return "PartnerOffersFinalEntity [id=" + id + ", offertext=" + offertext + ", title=" + title
-				+ ", approvalstatus=" + approvalstatus + ", logo=" + logo + "]";
+				+ ", approvalstatus=" + approvalstatus + ", logo=" + logo + ", createdBy=" + createdBy + ", updatedBy="
+				+ updatedBy + ", checkerip=" + checkerip + ", makerip=" + makerip + "]";
 	}
+
+	
 
 }
