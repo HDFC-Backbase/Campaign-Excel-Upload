@@ -22,7 +22,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 	"companyId",
     "approvalStatus",
 	"id",
-	"live",
 	"createdBy",
 	"updatedBy"
 })
@@ -60,8 +59,6 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * Additional Properties
      * 
      */
-	@JsonProperty("live")
-	private boolean live;
 	
 	@JsonProperty("createdBy")
 	private String createdBy;
@@ -156,14 +153,6 @@ public class CorporateOffer implements AdditionalPropertiesAware
 	}
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	
-	public boolean isLive() {
-		return live;
-	}
-
-	public void setLive(boolean live) {
-		this.live = live;
 	}
 	
 	public String getCreatedBy() {

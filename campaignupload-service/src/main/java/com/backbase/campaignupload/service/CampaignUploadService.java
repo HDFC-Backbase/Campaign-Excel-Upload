@@ -17,38 +17,37 @@ public interface CampaignUploadService {
 
 	List<PartnerOffersStagingEntity> getPartnerOffers();
 
-	void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip);
+	void saveCorporateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip);
 
 	List<CorporateStagingEntity> getCorporateOffers();
-
-
-	void savePartnerOffer(PartnerOffersStagingEntity entity);
-
-
-	List<PartnerOffersStagingEntity> getLiveApprovedPartnerOffer();
 	
 	//corporate
 	
 	CorporateStagingEntity getCorpOffer(Integer id);
 
 	void saveCorpOffer(CorporateStagingEntity entity);
+	
+	void saveCorpFinal(CorporateFinalEntity entity);
 
-	//void deleteFinalCorpOffer(CorporateStagingEntity entity);
+	CorporateStagingEntity getCorporateWithOutFileId(Integer id);
+	
+	CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity);
 
-	List<CorporateStagingEntity> getLiveApprovedCorp();
+	void delete(CorporateFinalEntity corpfinal);
+	
+	//partner
 
-	PartnerOffersStagingEntity getPTWithFileId(Integer id);
+	void savePartnerOffer(PartnerOffersStagingEntity entity);
+	
+	PartnerOffersStagingEntity getPTWithOutFileId(Integer id);
 	
 	void savePTFinal(PartnerOffersFinalEntity entity);
 	
 	PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity);
 	
-
-	void saveCorpFinal(CorporateFinalEntity entity);
-
-	CorporateStagingEntity getCorporateWithFileId(Integer id);
+	void delete(PartnerOffersFinalEntity ptfinal);
 	
-	CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity);
+	// company
 	CompanyFinalEntity getCompany(String name);
 
 

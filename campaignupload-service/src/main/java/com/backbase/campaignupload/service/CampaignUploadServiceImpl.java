@@ -66,6 +66,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 				ce.setFileApproveEntity(savedFile);
 				ce.setApprovalstatus(PENDING);
 				ce.setMakerip(makerip);
+				ce.setCheckerip("-");
 			});
 
 			partnerOfferRepo.saveAll(companyfileuploads);
@@ -81,7 +82,8 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public void savecarpoateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip) {
+	public void saveCorporateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename,
+			String makerip) {
 		try {
 			List<CorporateStagingEntity> corptaglist = ExcelHelper.excelToCorporateStaging(file.getInputStream(),
 					companyupload);
@@ -98,7 +100,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 				corp.setCorpfileApproveEntity(savedFile);
 				corp.setApprovalstatus(PENDING);
 				corp.setMakerip(makerip);
-
+				corp.setCheckerip("-");
 			});
 			corporateOfferRepo.saveAll(corptaglist);
 		} catch (IOException e) {
@@ -114,20 +116,13 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public PartnerOffersStagingEntity getPTWithFileId(Integer id) {
-		return partnerOfferRepo.getPTWithFileId(id);
+	public PartnerOffersStagingEntity getPTWithOutFileId(Integer id) {
+		return partnerOfferRepo.getPTWithOutFileId(id);
 	}
 
 	@Override
 	public void savePartnerOffer(PartnerOffersStagingEntity entity) {
 		partnerOfferRepo.save(entity);
-
-	}
-
-
-	@Override
-	public List<PartnerOffersStagingEntity> getLiveApprovedPartnerOffer() {
-		return partnerOfferRepo.getLiveApprovedPT();
 
 	}
 
@@ -141,12 +136,6 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	public void saveCorpOffer(CorporateStagingEntity entity) {
 		corporateOfferRepo.save(entity);
 
-	}
-
-
-	@Override
-	public List<CorporateStagingEntity> getLiveApprovedCorp() {
-		return corporateOfferRepo.getLiveApprovedCorporate();
 	}
 
 	@Override
@@ -166,21 +155,29 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public CorporateStagingEntity getCorporateWithFileId(Integer id) {
+	public CorporateStagingEntity getCorporateWithOutFileId(Integer id) {
 
-		return corporateOfferRepo.getCorporateWithFileId(id);
+		return corporateOfferRepo.getCorporateWithOutFileId(id);
 	}
 
 	@Override
 	public CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity) {
-		// TODO Auto-generated method stub
 		return corporateFinalUploadRepo.getFinalEntitybyStagId(entity);
 	}
 
 	@Override
 	public CompanyFinalEntity getCompany(String name) {
-		// TODO Auto-generated method stub
 		return companyupload.getCompany(name);
+	}
+
+	@Override
+	public void delete(PartnerOffersFinalEntity ptfinal) {
+		partnerFinalUploadRepo.delete(ptfinal);
+	}
+
+	@Override
+	public void delete(CorporateFinalEntity corpfinal) {
+		corporateFinalUploadRepo.delete(corpfinal);
 	}
 
 }

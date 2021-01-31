@@ -20,9 +20,6 @@
 		"id": {
 			"type": "number"
 		},
-		"live": {
-			"type": "boolean"
-		},
 		"createdBy": {
 			"type": "string"
 		},

@@ -43,6 +43,9 @@ public class PartnerOffersStagingEntity {
 	@Column(name = "maker_ip")
 	private String makerip;
 	
+	@Column(name = "updated_on")
+	private String updatedon;
+	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
 	private FileApproveEntity fileApproveEntity;
@@ -143,14 +146,20 @@ public class PartnerOffersStagingEntity {
 		this.makerip = makerip;
 	}
 
+	
+	public String getUpdatedon() {
+		return updatedon;
+	}
+
+	public void setUpdatedon(String updatedon) {
+		this.updatedon = updatedon;
+	}
+
 	@Override
 	public String toString() {
 		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
 				+ offertext + ", approvalstatus=" + approvalstatus + ", createdBy=" + createdBy + ", updatedBy="
-				+ updatedBy + ", checkerip=" + checkerip + ", makerip=" + makerip + "]";
+				+ updatedBy + "]";
 	}
-
-	
-
 	
 }
