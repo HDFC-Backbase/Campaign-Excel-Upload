@@ -134,6 +134,7 @@ public class CorporateController implements CorporateoffersApi {
 		headerslist.add(hdId);
 
 		Header hdlive = new Header();
+		hdlive.setHeaderName("action");
 		hdlive.setField("live");
 		hdlive.setType("liveColumn");
 		if (role.contains(maker))

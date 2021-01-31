@@ -136,6 +136,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		headerslist.add(hdId);
 
 		Header hdlive = new Header();
+		hdlive.setHeaderName("action");
 		hdlive.setField("live");
 		hdlive.setType("liveColumn");
 		if (role.contains(maker))
