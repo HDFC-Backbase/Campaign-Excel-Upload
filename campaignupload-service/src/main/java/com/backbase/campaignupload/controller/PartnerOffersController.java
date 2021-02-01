@@ -136,11 +136,12 @@ public class PartnerOffersController implements PartneroffersApi {
 		headerslist.add(hdId);
 
 		Header hdlive = new Header();
-		hdlive.setHeaderName("action");
+		hdlive.setHeaderName("Action");
 		hdlive.setField("live");
-		hdlive.setType("liveColumn");
-		if (role.contains(maker))
-			hdlive.setHide(true);
+		if (role.contains(maker)) {
+			hdlive.setType("liveMakerColumn");
+		} else
+			hdlive.setType("liveCheckerColumn");
 		headerslist.add(hdlive);
 
 		List<PartnerOffersStagingEntity> compent = campaignUploadService.getPartnerOffers();
@@ -292,6 +293,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			throw new CustomBadRequestException("Maker can only edit data");
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@PostMapping("/record/{id}")
 	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
 			HttpServletRequest request, HttpServletResponse arg2) {
@@ -325,36 +327,72 @@ public class PartnerOffersController implements PartneroffersApi {
 					PartnerOffersFinalEntity ptfinal = campaignUploadService.getFinalEntitybyStagId(prtstag);
 
 					if (action.equalsIgnoreCase("A")) {
-						prtstag.setApprovalstatus(APPROVED);
-						prtstag.setUpdatedBy(subject);
-						prtstag.setCheckerip(checkerip);
-						logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
-						campaignUploadService.savePartnerOffer(prtstag);
 
-						if (prtstag.getFileApproveEntity() == null && ptfinal == null) {
-							PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
-							ptfinals.setTitle(prtstag.getTitle());
-							ptfinals.setLogo(prtstag.getLogo());
-							ptfinals.setOffertext(prtstag.getOffertext());
-							ptfinals.setApprovalstatus(APPROVED);
-							ptfinals.setPartoffstagentity(prtstag);
-							ptfinals.setCreatedBy(prtstag.getCreatedBy());
-							ptfinals.setUpdatedBy(subject);
-							ptfinals.setCheckerip(checkerip);
-							ptfinals.setMakerip(prtstag.getMakerip());
-							logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
-							campaignUploadService.savePTFinal(ptfinals);
+						if (prtstag.getApprovalstatus().equals(DELETE_PENDING)) {
+							prtstag.setApprovalstatus(DELETED);
+							prtstag.setUpdatedBy(subject);
+							prtstag.setCheckerip(checkerip);
+							logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
+							campaignUploadService.savePartnerOffer(prtstag);
+							if (ptfinal != null)
+								campaignUploadService.delete(ptfinal);
+
 						} else {
-							ptfinal.setTitle(prtstag.getTitle());
-							ptfinal.setLogo(prtstag.getLogo());
-							ptfinal.setOffertext(prtstag.getOffertext());
-							ptfinal.setApprovalstatus(APPROVED);
-							ptfinal.setCreatedBy(prtstag.getCreatedBy());
-							ptfinal.setUpdatedBy(subject);
-							ptfinal.setCheckerip(checkerip);
-							ptfinal.setMakerip(prtstag.getMakerip());
-							logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
-							campaignUploadService.savePTFinal(ptfinal);
+							prtstag.setApprovalstatus(APPROVED);
+							prtstag.setUpdatedBy(subject);
+							prtstag.setCheckerip(checkerip);
+							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
+							campaignUploadService.savePartnerOffer(prtstag);
+
+							if (prtstag.getFileApproveEntity() == null && ptfinal == null) {
+								
+								List<PartnerOffersFinalEntity> pofinallist = campaignUploadService.findAllPT();
+								
+								if (pofinallist.contains(prtstag)) {
+									PartnerOffersFinalEntity ptfinals = pofinallist.get(pofinallist.indexOf(prtstag));
+									ptfinals.setTitle(prtstag.getTitle());
+									ptfinals.setLogo(prtstag.getLogo());
+									ptfinals.setOffertext(prtstag.getOffertext());
+									ptfinals.setApprovalstatus(APPROVED);
+
+									PartnerOffersStagingEntity pst = ptfinals.getPartoffstagentity();
+									pst.setApprovalstatus(DELETED);
+									logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
+									campaignUploadService.savePartnerOffer(pst);
+
+									ptfinals.setPartoffstagentity(prtstag);
+									ptfinals.setCreatedBy(prtstag.getCreatedBy());
+									ptfinals.setUpdatedBy(subject);
+									ptfinals.setCheckerip(checkerip);
+									ptfinals.setMakerip(prtstag.getMakerip());
+									logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
+									campaignUploadService.savePTFinal(ptfinals);
+								} else {
+									PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
+									ptfinals.setTitle(prtstag.getTitle());
+									ptfinals.setLogo(prtstag.getLogo());
+									ptfinals.setOffertext(prtstag.getOffertext());
+									ptfinals.setApprovalstatus(APPROVED);
+									ptfinals.setPartoffstagentity(prtstag);
+									ptfinals.setCreatedBy(prtstag.getCreatedBy());
+									ptfinals.setUpdatedBy(subject);
+									ptfinals.setCheckerip(checkerip);
+									ptfinals.setMakerip(prtstag.getMakerip());
+									logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
+									campaignUploadService.savePTFinal(ptfinals);
+								}
+							} else {
+								ptfinal.setTitle(prtstag.getTitle());
+								ptfinal.setLogo(prtstag.getLogo());
+								ptfinal.setOffertext(prtstag.getOffertext());
+								ptfinal.setApprovalstatus(APPROVED);
+								ptfinal.setCreatedBy(prtstag.getCreatedBy());
+								ptfinal.setUpdatedBy(subject);
+								ptfinal.setCheckerip(checkerip);
+								ptfinal.setMakerip(prtstag.getMakerip());
+								logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
+								campaignUploadService.savePTFinal(ptfinal);
+							}
 						}
 
 					} else if (action.equalsIgnoreCase("R")) {
@@ -366,14 +404,6 @@ public class PartnerOffersController implements PartneroffersApi {
 						prtstag.setCheckerip(checkerip);
 						logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 						campaignUploadService.savePartnerOffer(prtstag);
-					} else if (action.equals("D")) {
-						prtstag.setApprovalstatus(DELETED);
-						prtstag.setUpdatedBy(subject);
-						prtstag.setCheckerip(checkerip);
-						logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
-						campaignUploadService.savePartnerOffer(prtstag);
-						if (ptfinal != null)
-							campaignUploadService.delete(ptfinal);
 					}
 
 					CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
@@ -424,7 +454,8 @@ public class PartnerOffersController implements PartneroffersApi {
 
 				if (postg != null) {
 					postg.setApprovalstatus(DELETE_PENDING);
-					postg.setUpdatedBy(subject);
+					postg.setCreatedBy(subject);
+					postg.setUpdatedBy("-");
 					postg.setMakerip(makerip);
 					postg.setCheckerip("-");
 					campaignUploadService.savePartnerOffer(postg);

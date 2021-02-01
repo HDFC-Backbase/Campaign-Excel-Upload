@@ -172,9 +172,15 @@ public class CorporateStagingEntity {
 	@Override
 	public String toString() {
 		return "CorporateStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext=" + offertext
-				+ ", approvalstatus=" + approvalstatus + ", companyId=" + companyId + ", createdBy=" + createdBy
-				+ ", updatedBy=" + updatedBy + "]";
+				+ ", approvalstatus=" + approvalstatus + ", companyId=" + companyId + "]";
 	}
 
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CorporateFinalEntity) {
+			CorporateFinalEntity cofinal = (CorporateFinalEntity) obj;
+			return this.getOffertext().equals(cofinal.getOffertext()) && this.getCompanyId().equals(cofinal.getCompanyfinalEntity().getCompany_Id());
+		}
+		return false;
+	}
 }

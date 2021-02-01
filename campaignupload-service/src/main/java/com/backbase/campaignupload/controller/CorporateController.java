@@ -134,11 +134,12 @@ public class CorporateController implements CorporateoffersApi {
 		headerslist.add(hdId);
 
 		Header hdlive = new Header();
-		hdlive.setHeaderName("action");
+		hdlive.setHeaderName("Action");
 		hdlive.setField("live");
-		hdlive.setType("liveColumn");
-		if (role.contains(maker))
-			hdlive.setHide(true);
+		if (role.contains(maker)) {
+			hdlive.setType("liveMakerColumn");
+		} else
+			hdlive.setType("liveCheckerColumn");
 		headerslist.add(hdlive);
 
 		List<CorporateStagingEntity> allcorp = campaignUploadService.getCorporateOffers();
@@ -237,7 +238,7 @@ public class CorporateController implements CorporateoffersApi {
 	}
 
 	@PutMapping
-	public CampaignPutResponse putCompanies(@RequestBody CorporateOfferPutRequest requestBody,
+	public CampaignPutResponse putCorporate(@RequestBody CorporateOfferPutRequest requestBody,
 			HttpServletRequest request, HttpServletResponse arg2) {
 
 		logger.info("Request received to update data " + requestBody);
@@ -245,7 +246,8 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String makerip = request.getRemoteAddr();
-		logger.info("putCompanies ip  " + makerip);
+		
+		logger.info("Corporate Update maker ip " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -298,6 +300,7 @@ public class CorporateController implements CorporateoffersApi {
 			throw new CustomBadRequestException("Maker can only edit data");
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@PostMapping("/record/{id}")
 	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
 			HttpServletRequest request, HttpServletResponse arg2) {
@@ -307,7 +310,8 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String checkerip = request.getRemoteAddr();
-		logger.info("postRecord ip  " + checkerip);
+		
+		logger.info("Corporate Approve checker ip  " + checkerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -327,49 +331,81 @@ public class CorporateController implements CorporateoffersApi {
 					CorporateFinalEntity corpfinal = campaignUploadService.getcorpFinalEntitybyStagId(corpstg);
 
 					if (action.equalsIgnoreCase("A")) {
-						corpstg.setApprovalstatus(APPROVED);
-						corpstg.setUpdatedBy(subject);
-						corpstg.setCheckerip(checkerip);
-						logger.info("CorporateStagingEntity entity going for save " + corpstg);
-						campaignUploadService.saveCorpOffer(corpstg);
-						CompanyFinalEntity cmfinal = campaignUploadService.getCompany(corpstg.getCompanyId());
 
-						if (corpstg.getCorpfileApproveEntity() == null && corpfinal == null) {
-							CorporateFinalEntity corpfinals = new CorporateFinalEntity();
-							corpfinals.setTitle(corpstg.getTitle());
-							corpfinals.setLogo(corpstg.getLogo());
-							corpfinals.setOffertext(corpstg.getOffertext());
-							corpfinals.setApprovalstatus(APPROVED);
-							corpfinals.setCreatedBy(corpstg.getCreatedBy());
-							corpfinals.setUpdatedBy(subject);
-							corpfinals.setCheckerip(checkerip);
-							corpfinals.setMakerip(corpstg.getMakerip());
-							corpfinals.setCorporateStagingEntity(corpstg);
-							if (cmfinal != null)
-								corpfinals.setCompanyfinalEntity(cmfinal);
-							else
-								throw new CustomBadRequestException("No Company Mapping Found");
-							logger.info("CorporateFinalEntity entity going for save " + corpfinals);
-							campaignUploadService.saveCorpFinal(corpfinals);
+						if (corpstg.getApprovalstatus().equals(DELETE_PENDING)) {
+							corpstg.setApprovalstatus(DELETED);
+							corpstg.setUpdatedBy(subject);
+							corpstg.setCheckerip(checkerip);
+							logger.info("CorporateStagingEntity entity going for delete " + corpstg);
+							campaignUploadService.saveCorpOffer(corpstg);
+							if (corpfinal != null)
+								campaignUploadService.delete(corpfinal);
 						} else {
-							if (cmfinal != null)
-								corpfinal.setCompanyfinalEntity(cmfinal);
-							else
-								throw new CustomBadRequestException("No Company Mapping Found");
-							corpfinal.setTitle(corpstg.getTitle());
-							corpfinal.setLogo(corpstg.getLogo());
-							corpfinal.setOffertext(corpstg.getOffertext());
-							corpfinal.setCreatedBy(corpstg.getCreatedBy());
-							corpfinal.setUpdatedBy(subject);
-							corpfinal.setApprovalstatus(APPROVED);
-							corpfinal.setCheckerip(checkerip);
-							corpfinal.setMakerip(corpstg.getMakerip());
 
-							logger.info("CorporateFinalEntity entity going for save " + corpfinal);
-							campaignUploadService.saveCorpFinal(corpfinal);
+							CompanyFinalEntity cmfinal = campaignUploadService.getCompany(corpstg.getCompanyId());
+							if (cmfinal != null) {
+								corpstg.setApprovalstatus(APPROVED);
+								corpstg.setUpdatedBy(subject);
+								corpstg.setCheckerip(checkerip);
+								logger.info("CorporateStagingEntity entity going for save " + corpstg);
+								campaignUploadService.saveCorpOffer(corpstg);
+
+								if (corpstg.getCorpfileApproveEntity() == null && corpfinal == null) {
+
+									List<CorporateFinalEntity> corpfinallist = campaignUploadService.findAllCORP();
+									if (corpfinallist.contains(corpstg)) {
+
+										CorporateFinalEntity corpfinals = corpfinallist
+												.get(corpfinallist.indexOf(corpstg));
+
+										corpfinals.setTitle(corpstg.getTitle());
+										corpfinals.setLogo(corpstg.getLogo());
+										corpfinals.setOffertext(corpstg.getOffertext());
+										corpfinals.setApprovalstatus(APPROVED);
+										
+										CorporateStagingEntity cs=corpfinals.getCorporateStagingEntity();
+										cs.setApprovalstatus(DELETED);
+										campaignUploadService.saveCorpOffer(cs);
+										
+										corpfinals.setCreatedBy(corpstg.getCreatedBy());
+										corpfinals.setUpdatedBy(subject);
+										corpfinals.setCheckerip(checkerip);
+										corpfinals.setMakerip(corpstg.getMakerip());
+										corpfinals.setCorporateStagingEntity(corpstg);
+										logger.info("CorporateFinalEntity entity going for save " + corpfinals);
+										campaignUploadService.saveCorpFinal(corpfinals);
+									} else {
+										CorporateFinalEntity corpfinals = new CorporateFinalEntity();
+										corpfinals.setTitle(corpstg.getTitle());
+										corpfinals.setLogo(corpstg.getLogo());
+										corpfinals.setOffertext(corpstg.getOffertext());
+										corpfinals.setApprovalstatus(APPROVED);
+										corpfinals.setCreatedBy(corpstg.getCreatedBy());
+										corpfinals.setUpdatedBy(subject);
+										corpfinals.setCheckerip(checkerip);
+										corpfinals.setMakerip(corpstg.getMakerip());
+										corpfinals.setCorporateStagingEntity(corpstg);
+										logger.info("CorporateFinalEntity entity going for save " + corpfinals);
+										campaignUploadService.saveCorpFinal(corpfinals);
+									}
+								} else {
+									corpfinal.setTitle(corpstg.getTitle());
+									corpfinal.setLogo(corpstg.getLogo());
+									corpfinal.setOffertext(corpstg.getOffertext());
+									corpfinal.setCreatedBy(corpstg.getCreatedBy());
+									corpfinal.setUpdatedBy(subject);
+									corpfinal.setApprovalstatus(APPROVED);
+									corpfinal.setCheckerip(checkerip);
+									corpfinal.setMakerip(corpstg.getMakerip());
+
+									logger.info("CorporateFinalEntity entity going for save " + corpfinal);
+									campaignUploadService.saveCorpFinal(corpfinal);
+								}
+							} else
+								throw new CustomBadRequestException("No Company Mapping Found");
 						}
 					} else if (action.equalsIgnoreCase("R")) {
-						if(corpstg.getApprovalstatus().equals(DELETE_PENDING))
+						if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
 							corpstg.setApprovalstatus(APPROVED);
 						else
 							corpstg.setApprovalstatus(REJECTED);
@@ -377,14 +413,6 @@ public class CorporateController implements CorporateoffersApi {
 						corpstg.setCheckerip(checkerip);
 						logger.info("CorporateStagingEntity entity going for save " + corpstg);
 						campaignUploadService.saveCorpOffer(corpstg);
-					} else if (action.equals("D")) {
-						corpstg.setApprovalstatus(DELETED);
-						corpstg.setUpdatedBy(subject);
-						corpstg.setCheckerip(checkerip);
-						logger.info("CorporateStagingEntity entity going for delete " + corpstg);
-						campaignUploadService.saveCorpOffer(corpstg);
-						if (corpfinal != null)
-							campaignUploadService.delete(corpfinal);
 					}
 				} else
 					throw new CustomBadRequestException("No staging entity found with Id " + id);
@@ -436,7 +464,8 @@ public class CorporateController implements CorporateoffersApi {
 
 				if (corpstg != null) {
 					corpstg.setApprovalstatus(DELETE_PENDING);
-					corpstg.setUpdatedBy(subject);
+					corpstg.setCreatedBy(subject);
+					corpstg.setUpdatedBy("-");
 					corpstg.setMakerip(makerip);
 					corpstg.setCheckerip("-");
 					campaignUploadService.saveCorpOffer(corpstg);

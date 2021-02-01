@@ -180,4 +180,14 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 		corporateFinalUploadRepo.delete(corpfinal);
 	}
 
+	@Override
+	public List<PartnerOffersFinalEntity> findAllPT() {		
+		return partnerFinalUploadRepo.findAll();
+	}
+
+	@Override
+	public List<CorporateFinalEntity> findAllCORP() {
+		return corporateFinalUploadRepo.findAll();
+	}
+
 }

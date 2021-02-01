@@ -47,7 +47,7 @@ public class PartnerOffersStagingEntity {
 	private String updatedon;
 	
 	@ManyToOne
-	@JoinColumn(name = "file_id", nullable = false)
+	@JoinColumn(name = "file_id", nullable = true)
 	private FileApproveEntity fileApproveEntity;
 
 	public PartnerOffersStagingEntity() {
@@ -158,8 +158,17 @@ public class PartnerOffersStagingEntity {
 	@Override
 	public String toString() {
 		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
-				+ offertext + ", approvalstatus=" + approvalstatus + ", createdBy=" + createdBy + ", updatedBy="
-				+ updatedBy + "]";
+				+ offertext + ", approvalstatus=" + approvalstatus + "]";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PartnerOffersFinalEntity) {
+			PartnerOffersFinalEntity pofinal = (PartnerOffersFinalEntity) obj;
+			return this.getOffertext().equals(pofinal.getOffertext());
+		}
+		return false;
+	}
+
 	
 }
