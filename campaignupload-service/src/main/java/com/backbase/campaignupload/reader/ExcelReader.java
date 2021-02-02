@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -36,8 +35,8 @@ public class ExcelReader {
 	@Value("${excelfile.partner.noOfcolumns}")
 	private String noOfcolumns;
 
-	@Value("${excelfile.corporate.headers.title}")
-	private String companyId;
+	@Value("${excelfile.corporate.headers.companyId}")
+	private String corpcompanyId;
 
 	@Value("${excelfile.corporate.headers.title}")
 	private String corptitle;
@@ -203,7 +202,7 @@ public class ExcelReader {
 			Iterator<Cell> celllist = row0.cellIterator();
 			while (celllist.hasNext()) {
 				Cell cell = celllist.next();
-				if (!cell.getStringCellValue().equals(companyId) && !cell.getStringCellValue().equals(corptitle)
+				if (!cell.getStringCellValue().equals(corpcompanyId) && !cell.getStringCellValue().equals(corptitle)
 						&& !cell.getStringCellValue().equals(corplogo)
 						&& !cell.getStringCellValue().equals(corproffertext)) {
 					workbook.close();
@@ -214,25 +213,29 @@ public class ExcelReader {
 
 			logger.info("No of Rows " + sheet.getLastRowNum());
 
-			row: for (int row = 1; row <= sheet.getLastRowNum(); row++) {
+			row: for (int rowno = 1; rowno <= sheet.getLastRowNum(); rowno++) {
 
-				logger.info("Current Row " + row);
+				logger.info("Current Row " + rowno);
 
 				CorporateStagingEntity corpdata = new CorporateStagingEntity();
 
-				logger.info("No of cells " + sheet.getRow(row).getLastCellNum());
+				Row row = sheet.getRow(rowno);
 
-				for (int cell = 0; cell < sheet.getRow(row).getLastCellNum(); cell++) {
+				logger.info("No of cells " + row.getLastCellNum());
 
-					HSSFCell currentCell = sheet.getRow(row).getCell(cell);
+				for (int cell = 0; cell < row.getLastCellNum(); cell++) {
 
-					if (sheet.getRow(row).getCell(0) == null)
+					Cell currentCell = row.getCell(cell);
+
+					if (currentCell == null)
 						continue row;
 
 					logger.info("Current Cell " + currentCell);
 
-					switch (cell) {
-					case 0:
+					// getting header name
+					String headername = sheet.getRow(0).getCell(cell).getStringCellValue();
+					
+					if (corpcompanyId.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
 								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
 							Long countofentities = companyupload.countByCompany_Id(currentCell.getStringCellValue());
@@ -241,29 +244,21 @@ public class ExcelReader {
 							else
 								corpdata.setCompanyId(currentCell.getStringCellValue());
 						}
-						break;
-					case 1:
+					} else if (corptitle.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
 								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
 							corpdata.setTitle(currentCell.getStringCellValue());
 						}
-						break;
-
-					case 2:
+					} else if (corplogo.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
 								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
 							corpdata.setLogo(currentCell.getStringCellValue());
 						}
-						break;
-					case 3:
+					} else if (corproffertext.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
 								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
 							corpdata.setOffertext(currentCell.getStringCellValue());
 						}
-						break;
-
-					default:
-						break;
 					}
 
 				}

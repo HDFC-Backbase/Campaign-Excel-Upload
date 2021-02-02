@@ -72,7 +72,7 @@ excelfile:
         offertext: offertext
    corporate: 
       filename: corporate-offer
-      sheetname: PartnerOffer
+      sheetname: CorporateOffer
       noOfcolumns: 4
       headers:
         companyId: CompanyId
