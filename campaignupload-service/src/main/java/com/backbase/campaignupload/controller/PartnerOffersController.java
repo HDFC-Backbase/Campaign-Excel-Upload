@@ -31,22 +31,23 @@ import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
-import com.backbase.campaignupload.helper.ExcelHelper;
 import com.backbase.campaignupload.pojo.CampaignPutResponse;
 import com.backbase.campaignupload.pojo.PartnerOfferPutRequest;
+import com.backbase.campaignupload.reader.ExcelReader;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.Header;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartnerOffer;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersApi;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.service.CampaignUploadService;
-import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
 
 @RestController
 public class PartnerOffersController implements PartneroffersApi {
+
+	private static final String PENDING = "Pending";
 
 	private static final Logger logger = LoggerFactory.getLogger(PartnerOffersController.class);
 
@@ -65,6 +66,12 @@ public class PartnerOffersController implements PartneroffersApi {
 
 	@Value("${role.checker}")
 	private String checker;
+
+	@Value("${excelfile.partner.filename}")
+	private String partfilename;
+
+	@Value("${excelfile.partner.sheetname}")
+	private String partsheetname;
 
 	private static final String APPROVED = "Approved";
 
@@ -186,21 +193,25 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (role.contains(maker)) {
 			PartneroffersPostResponseBody partneroffersPostResponseBody = new PartneroffersPostResponseBody();
 			String message = "";
-			if (ExcelHelper.hasExcelFormat(file)) {
+			if (ExcelReader.hasExcelFormat(file)) {
 				try {
+					if (!FilenameUtils.removeExtension(file.getOriginalFilename()).equals(partfilename))
+						throw new CustomBadRequestException("Excel file name incorrect");
 					String filename = saveFiletoLocation(file, uploadedBy);
-					campaignUploadService.save(file, "PartnerOffer", uploadedBy, filename, makerip);
+					campaignUploadService.save(file, partsheetname, uploadedBy, filename, makerip);
 					message = "Uploaded the file successfully: " + file.getOriginalFilename();
 					partneroffersPostResponseBody.setStatuscode("200");
 					partneroffersPostResponseBody.setMessage(message);
 					return partneroffersPostResponseBody;
+				} catch (CustomBadRequestException e) {
+					throw e;
 				} catch (Exception e) {
 					logger.info(e.getMessage());
 					throw new CustomInternalServerException(
 							"Could not upload the file: " + file.getOriginalFilename() + "!");
 				}
 			} else
-				throw new CustomBadRequestException("Please upload an excel file!");
+				throw new CustomBadRequestException("Please upload an excel .xls file!");
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
 	}
@@ -261,16 +272,19 @@ public class PartnerOffersController implements PartneroffersApi {
 			for (PartnerOffer prtoffer : requestBody.getUpdates()) {
 				if (prtoffer.getId() > 0) {
 					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(prtoffer.getId());
-					prtstag.setTitle(prtoffer.getTitle());
-					prtstag.setLogo(prtoffer.getLogo());
-					prtstag.setOffertext(prtoffer.getOffertext());
-					prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
-					prtstag.setId(prtoffer.getId());
-					prtstag.setCreatedBy(subject);
-					prtstag.setUpdatedBy("-");
-					prtstag.setMakerip(makerip);
-					prtstag.setCheckerip("-");
-					campaignUploadService.savePartnerOffer(prtstag);
+					if (prtstag!=null) {
+						prtstag.setTitle(prtoffer.getTitle());
+						prtstag.setLogo(prtoffer.getLogo());
+						prtstag.setOffertext(prtoffer.getOffertext());
+						prtstag.setApprovalstatus(PENDING);
+						prtstag.setId(prtoffer.getId());
+						prtstag.setCreatedBy(subject);
+						prtstag.setUpdatedBy("-");
+						prtstag.setMakerip(makerip);
+						prtstag.setCheckerip("-");
+						campaignUploadService.savePartnerOffer(prtstag);
+					} else
+						throw new CustomBadRequestException("No Entity found with Id "+prtoffer.getId());
 				} else {
 					PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
 					prtstag.setTitle(prtoffer.getTitle());
@@ -280,7 +294,7 @@ public class PartnerOffersController implements PartneroffersApi {
 					prtstag.setUpdatedBy("-");
 					prtstag.setMakerip(makerip);
 					prtstag.setCheckerip("-");
-					prtstag.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+					prtstag.setApprovalstatus(PENDING);
 					campaignUploadService.savePartnerOffer(prtstag);
 				}
 			}
@@ -338,18 +352,17 @@ public class PartnerOffersController implements PartneroffersApi {
 								campaignUploadService.delete(ptfinal);
 
 						} else {
-							prtstag.setApprovalstatus(APPROVED);
-							prtstag.setUpdatedBy(subject);
-							prtstag.setCheckerip(checkerip);
-							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
-							campaignUploadService.savePartnerOffer(prtstag);
+							if (!prtstag.getApprovalstatus().equals(PENDING))
+								throw new CustomBadRequestException("Only Pending records can be Approved");
 
-							if (prtstag.getFileApproveEntity() == null && ptfinal == null) {
-								
+							if (/* prtstag.getFileApproveEntity() == null && */ ptfinal == null) {
+
 								List<PartnerOffersFinalEntity> pofinallist = campaignUploadService.findAllPT();
-								
+
 								if (pofinallist.contains(prtstag)) {
+
 									PartnerOffersFinalEntity ptfinals = pofinallist.get(pofinallist.indexOf(prtstag));
+									logger.info("Overriding existing PartnerOffersFinalEntity " + ptfinals);
 									ptfinals.setTitle(prtstag.getTitle());
 									ptfinals.setLogo(prtstag.getLogo());
 									ptfinals.setOffertext(prtstag.getOffertext());
@@ -368,6 +381,7 @@ public class PartnerOffersController implements PartneroffersApi {
 									logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 									campaignUploadService.savePTFinal(ptfinals);
 								} else {
+									logger.info("Creating new PartnerOffersFinalEntity");
 									PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
 									ptfinals.setTitle(prtstag.getTitle());
 									ptfinals.setLogo(prtstag.getLogo());
@@ -382,6 +396,7 @@ public class PartnerOffersController implements PartneroffersApi {
 									campaignUploadService.savePTFinal(ptfinals);
 								}
 							} else {
+								logger.info("Updating existing PartnerOffersFinalEntity");
 								ptfinal.setTitle(prtstag.getTitle());
 								ptfinal.setLogo(prtstag.getLogo());
 								ptfinal.setOffertext(prtstag.getOffertext());
@@ -393,13 +408,20 @@ public class PartnerOffersController implements PartneroffersApi {
 								logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
 								campaignUploadService.savePTFinal(ptfinal);
 							}
+							prtstag.setApprovalstatus(APPROVED);
+							prtstag.setUpdatedBy(subject);
+							prtstag.setCheckerip(checkerip);
+							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
+							campaignUploadService.savePartnerOffer(prtstag);
 						}
 
 					} else if (action.equalsIgnoreCase("R")) {
 						if (prtstag.getApprovalstatus().equals(DELETE_PENDING))
 							prtstag.setApprovalstatus(APPROVED);
-						else
+						else if (prtstag.getApprovalstatus().equals(PENDING))
 							prtstag.setApprovalstatus(REJECTED);
+						else
+							throw new CustomBadRequestException("Only Pending records can be rejected");
 						prtstag.setUpdatedBy(subject);
 						prtstag.setCheckerip(checkerip);
 						logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
@@ -453,12 +475,16 @@ public class PartnerOffersController implements PartneroffersApi {
 					throw new CustomBadRequestException("Record is already in pending state");
 
 				if (postg != null) {
-					postg.setApprovalstatus(DELETE_PENDING);
-					postg.setCreatedBy(subject);
-					postg.setUpdatedBy("-");
-					postg.setMakerip(makerip);
-					postg.setCheckerip("-");
-					campaignUploadService.savePartnerOffer(postg);
+					if (postg.getApprovalstatus().equals(APPROVED)) {
+						postg.setApprovalstatus(DELETE_PENDING);
+						postg.setCreatedBy(subject);
+						postg.setUpdatedBy("-");
+						postg.setMakerip(makerip);
+						postg.setCheckerip("-");
+						campaignUploadService.savePartnerOffer(postg);
+					}else
+						throw new CustomBadRequestException("Approved Records can be deleted");
+					
 				}
 
 				CampaignPutResponse youtubePutResponse = new CampaignPutResponse();

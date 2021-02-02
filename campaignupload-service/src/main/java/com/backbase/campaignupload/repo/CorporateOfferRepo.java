@@ -9,6 +9,6 @@ import com.backbase.campaignupload.entity.CorporateStagingEntity;
 
 public interface CorporateOfferRepo extends JpaRepository<CorporateStagingEntity,Integer>,CorporateStagCustomRepo{
 
-	@Query("SELECT u FROM CorporateStagingEntity u ORDER BY u.updatedon desc")
+	@Query(value="SELECT * FROM corporate_offer_staging u ORDER BY u.updated_on desc",nativeQuery=true)
 	public List<CorporateStagingEntity> findAll();
 }

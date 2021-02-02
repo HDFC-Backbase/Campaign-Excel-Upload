@@ -60,6 +60,25 @@ spring:
 role:
   maker: ROLE_USER
   checker: ROLE_ADMIN
+
+excelfile:
+   partner: 
+      filename: partner-offer
+      sheetname: PartnerOffer
+      noOfcolumns: 3
+      headers:
+        title: Title
+        logo: Logo
+        offertext: offertext
+   corporate: 
+      filename: corporate-offer
+      sheetname: PartnerOffer
+      noOfcolumns: 4
+      headers:
+        companyId: CompanyId
+        title: Title
+        logo: Logo
+        offertext: offertext
 #Configuration for sever.
 
 #spring:

@@ -45,9 +45,6 @@ public class CorporateStagingEntity {
 	
 	@Column(name = "maker_ip")
 	private String makerip;
-
-	@Column(name = "updated_on")
-	private String updatedon;
 	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
@@ -159,14 +156,6 @@ public class CorporateStagingEntity {
 
 	public void setMakerip(String makerip) {
 		this.makerip = makerip;
-	}
-
-	public String getUpdatedon() {
-		return updatedon;
-	}
-
-	public void setUpdatedon(String updatedon) {
-		this.updatedon = updatedon;
 	}
 
 	@Override

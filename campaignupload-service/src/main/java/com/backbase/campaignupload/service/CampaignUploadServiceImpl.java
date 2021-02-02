@@ -15,7 +15,8 @@ import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
-import com.backbase.campaignupload.helper.ExcelHelper;
+import com.backbase.campaignupload.exception.CustomBadRequestException;
+import com.backbase.campaignupload.reader.ExcelReader;
 import com.backbase.campaignupload.repo.CompanyUploadRepo;
 import com.backbase.campaignupload.repo.CorporateFinalUploadRepo;
 import com.backbase.campaignupload.repo.CorporateOfferRepo;
@@ -48,10 +49,14 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	@Autowired
 	CorporateFinalUploadRepo corporateFinalUploadRepo;
 
+	@Autowired
+	ExcelReader excelreader;
+
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip) {
 		try {
-			List<PartnerOffersStagingEntity> companyfileuploads = ExcelHelper.excelToTutorials(file.getInputStream());
+			List<PartnerOffersStagingEntity> companyfileuploads = excelreader.excelToTutorials(file.getInputStream(),
+					sheetname);
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
 			fileApproveEntity.setFilestatus(PENDING);
 			fileApproveEntity.setCreatedby(uploadedBy);
@@ -70,6 +75,8 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 			});
 
 			partnerOfferRepo.saveAll(companyfileuploads);
+		} catch (CustomBadRequestException e) {
+			throw e;
 		} catch (IOException e) {
 			throw new RuntimeException("fail to store excel data: " + e.getMessage());
 		}
@@ -85,7 +92,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	public void saveCorporateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename,
 			String makerip) {
 		try {
-			List<CorporateStagingEntity> corptaglist = ExcelHelper.excelToCorporateStaging(file.getInputStream(),
+			List<CorporateStagingEntity> corptaglist = excelreader.excelToCorporateStaging(file.getInputStream(),sheetname,
 					companyupload);
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
 			fileApproveEntity.setCreatedby(uploadedBy);
@@ -103,6 +110,8 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 				corp.setCheckerip("-");
 			});
 			corporateOfferRepo.saveAll(corptaglist);
+		} catch (CustomBadRequestException e) {
+			throw e;
 		} catch (IOException e) {
 			throw new RuntimeException("Fail to store excel data: " + e.getMessage());
 		}
@@ -181,7 +190,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public List<PartnerOffersFinalEntity> findAllPT() {		
+	public List<PartnerOffersFinalEntity> findAllPT() {
 		return partnerFinalUploadRepo.findAll();
 	}
 

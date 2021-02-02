@@ -43,9 +43,6 @@ public class PartnerOffersStagingEntity {
 	@Column(name = "maker_ip")
 	private String makerip;
 	
-	@Column(name = "updated_on")
-	private String updatedon;
-	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = true)
 	private FileApproveEntity fileApproveEntity;
@@ -144,15 +141,6 @@ public class PartnerOffersStagingEntity {
 
 	public void setMakerip(String makerip) {
 		this.makerip = makerip;
-	}
-
-	
-	public String getUpdatedon() {
-		return updatedon;
-	}
-
-	public void setUpdatedon(String updatedon) {
-		this.updatedon = updatedon;
 	}
 
 	@Override
