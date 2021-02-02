@@ -278,7 +278,6 @@ public class CorporateController implements CorporateoffersApi {
 			for (CorporateOffer corpoff : requestBody.getUpdates()) {
 				if (corpoff.getId() > 0) {
 					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
-					if (corpstg.getApprovalstatus().equals(APPROVED)) {
 						corpstg.setCompanyId(corpoff.getCompanyid());
 						corpstg.setTitle(corpoff.getTitle());
 						corpstg.setLogo(corpoff.getLogo());
@@ -290,8 +289,6 @@ public class CorporateController implements CorporateoffersApi {
 						corpstg.setMakerip(makerip);
 						corpstg.setCheckerip("-");
 						campaignUploadService.saveCorpOffer(corpstg);
-					}else
-						throw new CustomBadRequestException("Only Approved Records can be edited");
 				} else {
 					CorporateStagingEntity corpstg = new CorporateStagingEntity();
 					corpstg.setCompanyId(corpoff.getCompanyid());
