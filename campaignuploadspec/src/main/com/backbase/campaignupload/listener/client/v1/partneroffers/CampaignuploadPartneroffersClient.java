@@ -1,6 +1,7 @@
 
 package com.backbase.campaignupload.listener.client.v1.partneroffers;
 
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRequestBody;
@@ -51,5 +52,22 @@ public interface CampaignuploadPartneroffersClient {
      *     {@link ResponseEntity }{@code <}{@link PartneroffersPutResponseBody }{@code >}
      */
     public ResponseEntity<PartneroffersPutResponseBody> putPartneroffers(PartneroffersPutRequestBody partneroffersPutRequestBody);
+
+    /**
+     * <pre>POST /v1/partner-offers/record/{id}</pre>
+     * 
+     * <p>Approve/Reject specific record</p>
+     * 
+     * 
+     * 
+     * @param postIdQueryParameters
+     *     {@link PostIdQueryParameters }
+     * @param id
+     *     <p>string</p>
+     *     
+     * @return
+     *     {@link ResponseEntity }{@code <}{@link IdPostResponseBody }{@code >}
+     */
+    public ResponseEntity<IdPostResponseBody> postId(String id, PostIdQueryParameters postIdQueryParameters);
 
 }

@@ -5,6 +5,7 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersG
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutRequestBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdPostResponseBody;
 import org.springframework.http.ResponseEntity;
 
 
@@ -51,5 +52,22 @@ public interface CampaignuploadCorporateoffersClient {
      *     {@link ResponseEntity }{@code <}{@link CorporateoffersPutResponseBody }{@code >}
      */
     public ResponseEntity<CorporateoffersPutResponseBody> putCorporateoffers(CorporateoffersPutRequestBody corporateoffersPutRequestBody);
+
+    /**
+     * <pre>POST /v1/corporate-offers/record/{id}</pre>
+     * 
+     * <p>Approve/Reject specific record</p>
+     * 
+     * 
+     * 
+     * @param postIdQueryParameters
+     *     {@link PostIdQueryParameters }
+     * @param id
+     *     <p>string</p>
+     *     
+     * @return
+     *     {@link ResponseEntity }{@code <}{@link IdPostResponseBody }{@code >}
+     */
+    public ResponseEntity<IdPostResponseBody> postId(String id, PostIdQueryParameters postIdQueryParameters);
 
 }

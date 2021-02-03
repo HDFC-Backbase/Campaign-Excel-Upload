@@ -2,10 +2,14 @@
 package com.backbase.campaignupload.listener.client.v1.partneroffers;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import com.backbase.buildingblocks.backend.communication.http.HttpClientUtils;
 import com.backbase.buildingblocks.backend.communication.http.HttpCommunicationConstants;
+import com.backbase.buildingblocks.backend.communication.http.UriQueryBuilder;
 import com.backbase.buildingblocks.backend.internalrequest.InternalRequestContext;
-import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
+import com.backbase.buildingblocks.presentation.errors.BadRequestException;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRequestBody;
@@ -23,6 +27,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 
 
 /**
@@ -137,7 +142,7 @@ public class CampaignuploadPartneroffersClientHttpImpl implements Campaignupload
             throw exception;
         } catch (Exception exception) {
             LOG.debug("Unexpected error sending request.", exception);
-            throw new InternalServerErrorException(exception.getMessage(), exception);
+            throw new com.backbase.buildingblocks.presentation.errors.InternalServerErrorException(exception.getMessage(), exception);
         }
     }
 
@@ -171,7 +176,7 @@ public class CampaignuploadPartneroffersClientHttpImpl implements Campaignupload
             throw exception;
         } catch (Exception exception) {
             LOG.debug("Unexpected error sending request.", exception);
-            throw new InternalServerErrorException(exception.getMessage(), exception);
+            throw new com.backbase.buildingblocks.presentation.errors.InternalServerErrorException(exception.getMessage(), exception);
         }
     }
 
@@ -205,7 +210,51 @@ public class CampaignuploadPartneroffersClientHttpImpl implements Campaignupload
             throw exception;
         } catch (Exception exception) {
             LOG.debug("Unexpected error sending request.", exception);
-            throw new InternalServerErrorException(exception.getMessage(), exception);
+            throw new com.backbase.buildingblocks.presentation.errors.InternalServerErrorException(exception.getMessage(), exception);
+        }
+    }
+
+    public ResponseEntity<IdPostResponseBody> postId(String id, PostIdQueryParameters queryParameters) {
+        try {
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(((scheme +"://")+ serviceId)).path((baseUri +"/partner-offers/record/{id}"));
+            // If uriString is passed to restTemplate.exchange below, it ends up double-encoding the query string
+            // part.  So first, it is converted to a URI, which will get handled properly in RestTemplate:
+            UriQueryBuilder uriQueryBuilder = UriQueryBuilder.instance();
+            // Add all query parameters from the method call.
+            uriQueryBuilder.addParameterIfNotNull("action", queryParameters.getAction());
+            String queryPart = uriQueryBuilder.build();
+            String uriString = (uriBuilder.buildAndExpand(UriUtils.encodePathSegment(id, StandardCharsets.UTF_8 .name())).toUriString()+ queryPart);
+            URI uri = new URI(uriString);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            addHeaderIfNotEmpty(httpHeaders, HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+            if (RequestContextHolder.getRequestAttributes()!= null) {
+                InternalRequestContext internalRequestContext = this.internalRequestContext;
+                String authToken = internalRequestContext.getUserToken();
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USER_TOKEN, authToken);
+                // Add information sent over HTTP in the internalRequestContext as request headers.
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REMOTE_USER, internalRequestContext.getRemoteUser());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_FORWARDED_FOR, internalRequestContext.getRemoteAddress());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTTIME, String.valueOf(internalRequestContext.getRequestTime()));
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USERAGENT, internalRequestContext.getUserAgent());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_CHANNELID, internalRequestContext.getChannelId());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTUUID, internalRequestContext.getRequestUuid());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_AUTHSTATUS, String.valueOf(internalRequestContext.getAuthStatus()));
+            }
+            HttpEntity httpEntity = new HttpEntity(httpHeaders);
+            ResponseEntity<IdPostResponseBody> response = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, IdPostResponseBody.class);
+            return response;
+        } catch (RestClientResponseException exception) {
+            switch (exception.getRawStatusCode()) {
+                case  400 :
+                    throw HttpClientUtils.extractException(objectMapper, restTemplate.getMessageConverters(), exception, BadRequestException.class);
+                case  500 :
+                    throw HttpClientUtils.extractException(objectMapper, restTemplate.getMessageConverters(), exception, com.backbase.buildingblocks.presentation.errors.InternalServerErrorException.class);
+                default:
+                    throw exception;
+            }
+        } catch (Exception exception) {
+            LOG.debug("Unexpected error sending request.", exception);
+            throw new com.backbase.buildingblocks.presentation.errors.InternalServerErrorException(exception.getMessage(), exception);
         }
     }
 

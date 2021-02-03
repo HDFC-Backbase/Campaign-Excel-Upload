@@ -12,23 +12,31 @@ baseUri: "/{version}"
 mediaType:  application/json
 protocols: [ HTTP, HTTPS ]
 types:
-  headers: !include schemas/body/headers.json
-  header: !include schemas/body/header.json
 
   getPartnerOffersResponseObject: !include schemas/body/get-partner-offers.json
-  partnerOffersData: !include schemas/body/partner-offer-data.json
   partnerOffer: !include schemas/body/partner-offer.json
+
   postPartnerOffersResponseObject: !include schemas/body/post-partner-offers.json
+
   putPartnerOffersResponseObject: !include schemas/body/put-partner-offers.json
   putPartnerOffersRequestObject: !include schemas/body/put-partner-offers-request.json
 
+  postPartnerOffersRecordResponseObject: !include schemas/body/post-partner-offers-record.json
+  deletePartnerOffersResponseObject: !include schemas/body/delete-partner-offers.json
+
+
 
   getCorporateOffersResponseObject: !include schemas/body/get-corporate-offers.json
-  corporateBenefitsData: !include schemas/body/corporate-offer-data.json
   corporateOffer: !include schemas/body/corporate-offer.json
+
   postCorporateOffersResponseObject: !include schemas/body/post-corporate-offers.json 
+
   putCorporateOffersResponseObject: !include schemas/body/put-corporate-offers.json
   putCorporateOffersRequestObject: !include schemas/body/put-corporate-offers-request.json
+
+  postCorporateOffersRecordResponseObject: !include schemas/body/post-corporate-offers-record.json
+  deleteCorporateOffersResponseObject: !include schemas/body/delete-corporate-offers.json
+
 #===============================================================
 # API resource definitions
 #===============================================================
@@ -68,6 +76,35 @@ types:
               application/json:
                 schema: putPartnerOffersResponseObject
                 example: !include examples/body/example-put-partner-offers-response.json
+  /{id}:
+    description: Delete specific record
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+                schema: deletePartnerOffersResponseObject
+                example: !include examples/body/example-delete-partner-offers.json
+  /record:
+    /{id}:
+      uriParameters: 
+              id:
+                type: string
+      post:
+        is: [traits.BadRequestError, traits.InternalServerError]
+        description: Approve/Reject specific record
+        queryParameters:
+          action:
+            description: "Action To Take"
+            required: true
+            type: string
+        responses:
+          200:
+            description: approve/reject record
+            body:
+              application/json:
+                schema: postPartnerOffersRecordResponseObject
+                example: !include examples/body/example-post-partner-offers-record.json 
 
 /corporate-offers:
   post:
@@ -105,3 +142,32 @@ types:
               application/json:
                 schema: putCorporateOffersResponseObject
                 example: !include examples/body/example-put-corporate-offers-response.json
+  /{id}:
+    description: Delete specific record
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+                schema: deleteCorporateOffersResponseObject
+                example: !include examples/body/example-delete-corporate-offers.json
+  /record:
+    /{id}:
+      uriParameters: 
+              id:
+                type: string
+      post:
+        is: [traits.BadRequestError, traits.InternalServerError]
+        description: Approve/Reject specific record
+        queryParameters:
+          action:
+            description: "Action To Take"
+            required: true
+            type: string
+        responses:
+          200:
+            description: approve/reject record
+            body:
+              application/json:
+                schema: postCorporateOffersRecordResponseObject
+                example: !include examples/body/example-post-corporate-offers-record.json 
