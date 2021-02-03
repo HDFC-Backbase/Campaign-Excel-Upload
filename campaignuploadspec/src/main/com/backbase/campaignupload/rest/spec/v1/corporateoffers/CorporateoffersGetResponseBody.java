@@ -20,7 +20,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "headers",
     "data"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,19 +31,10 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      */
-    @JsonProperty("headers")
-    @Valid
-    @NotNull
-    private List<Header> headers = new ArrayList<Header>();
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("data")
     @Valid
     @NotNull
-    private List<Object> data = new ArrayList<Object>();
+    private List<Datum> data = new ArrayList<Datum>();
     /**
      * Additional Properties
      * 
@@ -57,39 +47,10 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      * @return
-     *     The headers
-     */
-    @JsonProperty("headers")
-    public List<Header> getHeaders() {
-        return headers;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     * @param headers
-     *     The headers
-     */
-    @JsonProperty("headers")
-    public void setHeaders(List<Header> headers) {
-        this.headers = headers;
-    }
-
-    public CorporateoffersGetResponseBody withHeaders(List<Header> headers) {
-        this.headers = headers;
-        return this;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     * @return
      *     The data
      */
     @JsonProperty("data")
-    public List<Object> getData() {
+    public List<Datum> getData() {
         return data;
     }
 
@@ -101,11 +62,11 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
      *     The data
      */
     @JsonProperty("data")
-    public void setData(List<Object> data) {
+    public void setData(List<Datum> data) {
         this.data = data;
     }
 
-    public CorporateoffersGetResponseBody withData(List<Object> data) {
+    public CorporateoffersGetResponseBody withData(List<Datum> data) {
         this.data = data;
         return this;
     }
@@ -117,7 +78,7 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(headers).append(data).toHashCode();
+        return new HashCodeBuilder().append(data).toHashCode();
     }
 
     @Override
@@ -129,7 +90,7 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
             return false;
         }
         CorporateoffersGetResponseBody rhs = ((CorporateoffersGetResponseBody) other);
-        return new EqualsBuilder().append(headers, rhs.headers).append(data, rhs.data).isEquals();
+        return new EqualsBuilder().append(data, rhs.data).isEquals();
     }
 
     /**

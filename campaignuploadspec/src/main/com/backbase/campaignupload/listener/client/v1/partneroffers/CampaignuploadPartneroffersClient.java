@@ -1,6 +1,7 @@
 
 package com.backbase.campaignupload.listener.client.v1.partneroffers;
 
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdDeleteResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
@@ -52,6 +53,21 @@ public interface CampaignuploadPartneroffersClient {
      *     {@link ResponseEntity }{@code <}{@link PartneroffersPutResponseBody }{@code >}
      */
     public ResponseEntity<PartneroffersPutResponseBody> putPartneroffers(PartneroffersPutRequestBody partneroffersPutRequestBody);
+
+    /**
+     * <pre>DELETE /v1/partner-offers/{id}</pre>
+     * 
+     * <p>Delete specific record</p>
+     * 
+     * 
+     * 
+     * @param id
+     *     <p>string</p>
+     *     
+     * @return
+     *     {@link ResponseEntity }{@code <}{@link IdDeleteResponseBody }{@code >}
+     */
+    public ResponseEntity<IdDeleteResponseBody> deleteId(String id);
 
     /**
      * <pre>POST /v1/partner-offers/record/{id}</pre>

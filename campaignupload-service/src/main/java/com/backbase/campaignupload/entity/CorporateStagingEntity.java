@@ -13,8 +13,6 @@ import javax.persistence.Table;
 @Table(name = "corporate_offer_staging")
 public class CorporateStagingEntity {
 
-
-
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +34,18 @@ public class CorporateStagingEntity {
 	@Column(name = "company_id")
 	private String companyId;
 	
+	@Column(name = "created_by")
+	private String createdBy;
 	
-
+	@Column(name = "updated_by")
+	private String updatedBy;
+	
+	@Column(name = "checker_ip")
+	private String checkerip;
+	
+	@Column(name = "maker_ip")
+	private String makerip;
+	
 	@ManyToOne
 	@JoinColumn(name = "file_id", nullable = false)
 	private FileApproveEntity corpfileApproveEntity;
@@ -117,11 +125,51 @@ public class CorporateStagingEntity {
 	public void setCompanyId(String companyId) {
 		this.companyId = companyId;
 	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getCheckerip() {
+		return checkerip;
+	}
+
+	public void setCheckerip(String checkerip) {
+		this.checkerip = checkerip;
+	}
+
+	public String getMakerip() {
+		return makerip;
+	}
+
+	public void setMakerip(String makerip) {
+		this.makerip = makerip;
+	}
 
 	@Override
 	public String toString() {
 		return "CorporateStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext=" + offertext
-				+ ", approvalstatus=" + approvalstatus + ", companyId=" + companyId + ", corpfileApproveEntity="
-				+ corpfileApproveEntity + "]";
+				+ ", approvalstatus=" + approvalstatus + ", companyId=" + companyId + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CorporateFinalEntity) {
+			CorporateFinalEntity cofinal = (CorporateFinalEntity) obj;
+			return this.getOffertext().equals(cofinal.getOffertext()) && this.getCompanyId().equals(cofinal.getCompanyfinalEntity().getCompany_Id());
+		}
+		return false;
 	}
 }

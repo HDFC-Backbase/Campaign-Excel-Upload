@@ -30,8 +30,21 @@ public class PartnerOffersStagingEntity {
 
 	@Column(name = "approval_status")
 	private String approvalstatus;
+	
+	@Column(name = "created_by")
+	private String createdBy;
+	
+	@Column(name = "updated_by")
+	private String updatedBy;	
+	
+	@Column(name = "checker_ip")
+	private String checkerip;
+	
+	@Column(name = "maker_ip")
+	private String makerip;
+	
 	@ManyToOne
-	@JoinColumn(name = "file_id", nullable = false)
+	@JoinColumn(name = "file_id", nullable = true)
 	private FileApproveEntity fileApproveEntity;
 
 	public PartnerOffersStagingEntity() {
@@ -97,9 +110,53 @@ public class PartnerOffersStagingEntity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getCheckerip() {
+		return checkerip;
+	}
+
+	public void setCheckerip(String checkerip) {
+		this.checkerip = checkerip;
+	}
+
+	public String getMakerip() {
+		return makerip;
+	}
+
+	public void setMakerip(String makerip) {
+		this.makerip = makerip;
+	}
+
 	@Override
 	public String toString() {
-		return "CampaignStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext=" + offertext
-				+ ", approvalstatus=" + approvalstatus + ", fileApproveEntity=" + fileApproveEntity + "]";
+		return "PartnerOffersStagingEntity [id=" + id + ", title=" + title + ", logo=" + logo + ", offertext="
+				+ offertext + ", approvalstatus=" + approvalstatus + "]";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PartnerOffersFinalEntity) {
+			PartnerOffersFinalEntity pofinal = (PartnerOffersFinalEntity) obj;
+			return this.getOffertext().equals(pofinal.getOffertext());
+		}
+		return false;
+	}
+
+	
 }

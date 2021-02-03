@@ -44,6 +44,14 @@ public interface CorporateoffersApi {
         @Valid
         CorporateoffersPutRequestBody corporateoffersPutRequestBody, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = {
+        "application/json"
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public IdDeleteResponseBody deleteId(
+        @PathVariable("id")
+        String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
+
     @RequestMapping(method = RequestMethod.POST, value = "/record/{id}", produces = {
         "application/json"
     })

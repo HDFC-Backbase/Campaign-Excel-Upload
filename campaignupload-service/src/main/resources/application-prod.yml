@@ -1,0 +1,103 @@
+server:
+  port: 9921
+
+# API Registry client configuration
+eureka:
+  instance:
+    metadata-map:
+      public: true
+      role: live
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/registry/eureka/
+
+# Configure Internal JWT handler
+sso:
+  jwt:
+    internal:
+      signature:
+        key:
+          type: ENV
+          value: SIG_SECRET_KEY
+
+# Spring health monitoring
+management:
+  health:
+    jms:
+     enabled: false
+     
+logging:
+  level:
+    com.backbase: INFO
+    org.springframework: INFO
+     
+#backbase:
+  #security:
+    #public:
+      #paths: /**
+      
+buildingblocks:
+  security:
+    csrf:
+      enabled: false
+          
+#spring:
+  #h2:
+    #console:
+      #enabled: true
+  #datasource:
+    #url: jdbc:mysql://localhost:3306/practice
+    #username: root
+    #password: root
+    #continue-on-error: true
+  #jpa:
+    #generate-ddl: false
+#Configuration for sever.
+
+spring:
+  active:
+    profiles: prod
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    driver: oracle.jdbc.driver.OracleDriver
+    username: microsite_admin
+    password: root123
+    continue-on-error: true
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+role:
+  maker: ROLE_MAKER
+  checker: ROLE_CHECKER
+
+excelfile:
+   partner: 
+      filename: partner-offer
+      sheetname: PartnerOffer
+      noOfcolumns: 3
+      headers:
+        title: Title
+        logo: Logo
+        offertext: offertext
+   corporate: 
+      filename: corporate-offer
+      sheetname: CorporateOffer
+      noOfcolumns: 4
+      headers:
+        companyId: CompanyId
+        title: Title
+        logo: Logo
+        offertext: offertext
+
+file:
+  location: 'C:\Program Files (x86)\Backbase\SourceCode\Services\Excel_Upload_Services\Files'
+
+LOG_FILE: C:/Program Files (x86)/Backbase/SourceCode/Services/Logs/campaign-upload/campaign-upload.log
+LOG_FILE_ARCHIVED: C:/Program Files (x86)/Backbase/SourceCode/Services/Logs/campaign-upload/archived/campaign-upload.log

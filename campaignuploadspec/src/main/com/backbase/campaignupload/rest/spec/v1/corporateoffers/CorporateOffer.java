@@ -20,7 +20,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "logo",
     "offerText",
 	"companyId",
-    "approvalStatus"
+    "approvalStatus",
+	"id",
+	"createdBy",
+	"updatedBy"
 })
 public class CorporateOffer implements AdditionalPropertiesAware
 {
@@ -56,6 +59,13 @@ public class CorporateOffer implements AdditionalPropertiesAware
      * Additional Properties
      * 
      */
+	
+	@JsonProperty("createdBy")
+	private String createdBy;
+	
+    @JsonProperty("updatedBy")
+	private String updatedBy;
+	
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> additions = new HashMap<String, String>();
 
@@ -143,6 +153,22 @@ public class CorporateOffer implements AdditionalPropertiesAware
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
     public CorporateOffer withOffertext(String offertext) {

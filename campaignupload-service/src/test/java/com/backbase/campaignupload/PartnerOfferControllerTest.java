@@ -111,7 +111,7 @@ public class PartnerOfferControllerTest {
 				bytes);
 
 		this.mvc.perform(
-				MockMvcRequestBuilders.multipart("/v1/partner-offers").file(file).param("uploadedBy", "Deepti Surve").header("Authorization",TEST_JWT))
+				MockMvcRequestBuilders.multipart("/v1/partner-offers").file(file).header("Authorization",TEST_JWT))
 				.andDo(print()).andExpect(status().isOk());
 	}
 
@@ -122,14 +122,14 @@ public class PartnerOfferControllerTest {
 				.accept(MediaType.APPLICATION_JSON);
 
 		this.mvc.perform(requestBuilderget).andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.headers").isArray()).andExpect(jsonPath("$.headers", hasSize(4)))
-				.andExpect(jsonPath("$.headers[0].id", is("title"))).andExpect(jsonPath("$.headers[1].id", is("logo")))
-				.andExpect(jsonPath("$.headers[2].id", is("offertext")))
-				.andExpect(jsonPath("$.headers[3].id", is("approvalstatus")))
+				.andExpect(jsonPath("$.headers").isArray()).andExpect(jsonPath("$.headers", hasSize(5)))
+				.andExpect(jsonPath("$.headers[0].field", is("title"))).andExpect(jsonPath("$.headers[1].field", is("logo")))
+				.andExpect(jsonPath("$.headers[2].field", is("offerText")))
+				.andExpect(jsonPath("$.headers[3].field", is("approvalStatus")))
 				.andExpect(jsonPath("$.data[0].title", is("Salary Family Account")))
 				.andExpect(jsonPath("$.data[0].logo", is("Talisma Corporation")))
-				.andExpect(jsonPath("$.data[0].approvalstatus", is("Pending")))
-				.andExpect(jsonPath("$.data[0].offertext", is("Get Your Family Similar Benefits That You Enjoy")));
+				.andExpect(jsonPath("$.data[0].approvalStatus", is("Pending")))
+				.andExpect(jsonPath("$.data[0].offerText", is("Get Your Family Similar Benefits That You Enjoy")));
 	}
 
 }

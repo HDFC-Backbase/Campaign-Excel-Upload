@@ -117,5 +117,13 @@ public class CompanyStagingEntity {
 	}
 
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CompanyFinalEntity) {
+			CompanyFinalEntity cmp = (CompanyFinalEntity) obj;
+			return this.getCompany_Id().equals(cmp.getCompany_Id());
+		}
+		return false;
+	}
 
 }

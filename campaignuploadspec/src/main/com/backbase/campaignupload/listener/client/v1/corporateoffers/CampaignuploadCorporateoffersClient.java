@@ -5,6 +5,7 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersG
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutRequestBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdDeleteResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdPostResponseBody;
 import org.springframework.http.ResponseEntity;
 
@@ -52,6 +53,21 @@ public interface CampaignuploadCorporateoffersClient {
      *     {@link ResponseEntity }{@code <}{@link CorporateoffersPutResponseBody }{@code >}
      */
     public ResponseEntity<CorporateoffersPutResponseBody> putCorporateoffers(CorporateoffersPutRequestBody corporateoffersPutRequestBody);
+
+    /**
+     * <pre>DELETE /v1/corporate-offers/{id}</pre>
+     * 
+     * <p>Delete specific record</p>
+     * 
+     * 
+     * 
+     * @param id
+     *     <p>string</p>
+     *     
+     * @return
+     *     {@link ResponseEntity }{@code <}{@link IdDeleteResponseBody }{@code >}
+     */
+    public ResponseEntity<IdDeleteResponseBody> deleteId(String id);
 
     /**
      * <pre>POST /v1/corporate-offers/record/{id}</pre>

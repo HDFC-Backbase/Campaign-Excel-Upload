@@ -1,4 +1,4 @@
 {
   "message": "File Uploaded succesfully",
-  "statuscode": "200"
+  "statuscode": 200
 }

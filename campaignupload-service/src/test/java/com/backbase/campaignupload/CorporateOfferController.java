@@ -47,15 +47,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 @WebAppConfiguration
 @ActiveProfiles("test")
-
-/*
- * @Sql(scripts = {"classpath:drop_tables.sql","classpath:schema.sql",
- * "classpath:insert_file_master.sql",
- * "classpath:insert_corporateoffer_stag.sql" })
- */
 @Sql(scripts = { "classpath:drop_tables.sql", "classpath:schema.sql", "classpath:insert_file_master.sql",
 		"classpath:insert_cmp_stag.sql" })
-public class CorporateOfferControllerTest {
+public class CorporateOfferController {
 
 	public static final String TEST_JWT = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxk"
 			+ "ZXIiLCJpYXQiOjE0ODQ4MjAxOTYsImV4cCI6MTUxNjM1NjE5NiwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJv"
@@ -121,7 +115,7 @@ public class CorporateOfferControllerTest {
 				bytes);
 
 		this.mvc.perform(MockMvcRequestBuilders.multipart("/v1/corporate-offers").file(file)
-				.param("uploadedBy", "Deepti Surve").header("Authorization", TEST_JWT)).andDo(print())
+				.header("Authorization", TEST_JWT)).andDo(print())
 				.andExpect(status().isOk());
 	}
 
@@ -129,22 +123,23 @@ public class CorporateOfferControllerTest {
 	 * @Test public void getAllcorporateUpload() throws Exception {
 	 * 
 	 * RequestBuilder requestBuilderget =
-	 * MockMvcRequestBuilders.get("/v1/corporate-offers").header("Authorization",
-	 * TEST_JWT) .accept(MediaType.APPLICATION_JSON);
+	 * MockMvcRequestBuilders.get("/v1/corporate-offers") .header("Authorization",
+	 * TEST_JWT).accept(MediaType.APPLICATION_JSON);
 	 * 
 	 * this.mvc.perform(requestBuilderget).andDo(print()).andExpect(status().isOk())
 	 * .andExpect(jsonPath("$.headers").isArray()).andExpect(jsonPath("$.headers",
-	 * hasSize(5))) .andExpect(jsonPath("$.headers[0].id",
-	 * is("title"))).andExpect(jsonPath("$.headers[1].id", is("logo")))
-	 * .andExpect(jsonPath("$.headers[2].id", is("offertext")))
-	 * .andExpect(jsonPath("$.headers[3].id", is("companyid")))
-	 * .andExpect(jsonPath("$.headers[4].id", is("approvalstatus")))
+	 * hasSize(4))) .andExpect(jsonPath("$.headers[0].field",
+	 * is("title"))).andExpect(jsonPath("$.headers[1].field", is("logo")))
+	 * .andExpect(jsonPath("$.headers[2].field", is("offerText")))
+	 * .andExpect(jsonPath("$.headers[3].field", is("companyid")))
+	 * .andExpect(jsonPath("$.headers[4].field", is("approvalStatus")))
 	 * .andExpect(jsonPath("$.data[0].title", is("Travel")))
 	 * .andExpect(jsonPath("$.data[0].logo", is(
 	 * "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgD514Sz3-HFz9n3C98n4KBlIwlEVjgXABzA&usqp=CAU"
-	 * ))) .andExpect(jsonPath("$.data[0].offertext",
+	 * ))) .andExpect(jsonPath("$.data[0].offerText",
 	 * is("Enjoy 50% off on purchases above 1,500")))
 	 * .andExpect(jsonPath("$.data[0].companyid", is("bostongroup")))
-	 * .andExpect(jsonPath("$.data[0].approvalstatus", is("Approved"))); }
+	 * .andExpect(jsonPath("$.data[0].approvalStatus", is("Approved"))); }
 	 */
+
 }

@@ -1,6 +1,7 @@
 
 package com.backbase.campaignupload.rest.spec.v1.partneroffers;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -31,7 +32,7 @@ public class PartneroffersPostResponseBody implements AdditionalPropertiesAware
      */
     @JsonProperty("statuscode")
     @NotNull
-    private String statuscode;
+    private BigDecimal statuscode;
     /**
      * 
      * (Required)
@@ -55,7 +56,7 @@ public class PartneroffersPostResponseBody implements AdditionalPropertiesAware
      *     The statuscode
      */
     @JsonProperty("statuscode")
-    public String getStatuscode() {
+    public BigDecimal getStatuscode() {
         return statuscode;
     }
 
@@ -67,11 +68,11 @@ public class PartneroffersPostResponseBody implements AdditionalPropertiesAware
      *     The statuscode
      */
     @JsonProperty("statuscode")
-    public void setStatuscode(String statuscode) {
+    public void setStatuscode(BigDecimal statuscode) {
         this.statuscode = statuscode;
     }
 
-    public PartneroffersPostResponseBody withStatuscode(String statuscode) {
+    public PartneroffersPostResponseBody withStatuscode(BigDecimal statuscode) {
         this.statuscode = statuscode;
         return this;
     }

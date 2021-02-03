@@ -1,46 +1,31 @@
 {
-	"headers": [
-		{
-			"field": "title"
-		},
-		{
-			"field": "logo",
-			"type": "imageColumn"
-		},
-		{
-			"field": "offerText",
-			"type": "largeTextColumn"
-		},
-		{
-			"field": "approvalStatus",
-			"editable": false
-		},
-		{
-			"field": "id",
-			"hide": true
-		}
-	],
 	"data": [
 		{
-			"title": "abc",
-			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offerText": "This is the offertext",
-			"approvalStatus": "Pending",
-			"id": 1
+			"title": "Tata Aia Life Insurance ",
+			"logo": "www.hdfcbank.com/tataaia",
+			"offerText": "Free Insurance Upto 20Lacs",
+			"approvalStatus": "Deleted",
+			"id": 103,
+			"createdBy": "rupesh",
+			"updatedBy": "mayur"
 		},
 		{
-			"title": "abc",
-			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offerText": "This is the offertext",
-			"approvalStatus": "Pending",
-			"id": 1
+			"title": "Free Platinum Debit Card",
+			"logo": "www.hdfcbank.com/talisma",
+			"offerText": "Enjoy 1% cashback on shopping accident cover",
+			"approvalStatus": "Deleted",
+			"id": 102,
+			"createdBy": "rupesh",
+			"updatedBy": "mayur"
 		},
 		{
-			"title": "abc",
-			"logo": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/56e41640-803e-4913-a41a-e1a169e6366a/Personal/Home/content/Latest%20offers/Oct%202020/2nd%20Oct%202020/PL_208x88.jpg",
-			"offerText": "This is the offertext",
-			"approvalStatus": "Pending",
-			"id": 1
+			"title": "Complimentry Insurance",
+			"logo": "www.hdfcbank.com/aarvi",
+			"offerText": " Boston Consulting Group",
+			"approvalStatus": "Deleted",
+			"id": 104,
+			"createdBy": "rupesh",
+			"updatedBy": "mayur"
 		}
 	]
 }

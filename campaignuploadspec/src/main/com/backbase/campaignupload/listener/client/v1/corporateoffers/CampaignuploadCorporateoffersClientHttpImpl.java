@@ -13,6 +13,7 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersG
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutRequestBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdDeleteResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdPostResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -204,6 +205,40 @@ public class CampaignuploadCorporateoffersClientHttpImpl implements Campaignuplo
             }
             HttpEntity httpEntity = new HttpEntity(corporateoffersPutRequestBody, httpHeaders);
             ResponseEntity<CorporateoffersPutResponseBody> response = restTemplate.exchange(uri, HttpMethod.PUT, httpEntity, CorporateoffersPutResponseBody.class);
+            return response;
+        } catch (RestClientResponseException exception) {
+            //Re-throw the exception if not part of the API
+            throw exception;
+        } catch (Exception exception) {
+            LOG.debug("Unexpected error sending request.", exception);
+            throw new com.backbase.buildingblocks.presentation.errors.InternalServerErrorException(exception.getMessage(), exception);
+        }
+    }
+
+    public ResponseEntity<IdDeleteResponseBody> deleteId(String id) {
+        try {
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(((scheme +"://")+ serviceId)).path((baseUri +"/corporate-offers/{id}"));
+            // If uriString is passed to restTemplate.exchange below, it ends up double-encoding the query string
+            // part.  So first, it is converted to a URI, which will get handled properly in RestTemplate:
+            String uriString = uriBuilder.buildAndExpand(UriUtils.encodePathSegment(id, StandardCharsets.UTF_8 .name())).toUriString();
+            URI uri = new URI(uriString);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            addHeaderIfNotEmpty(httpHeaders, HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+            if (RequestContextHolder.getRequestAttributes()!= null) {
+                InternalRequestContext internalRequestContext = this.internalRequestContext;
+                String authToken = internalRequestContext.getUserToken();
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USER_TOKEN, authToken);
+                // Add information sent over HTTP in the internalRequestContext as request headers.
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REMOTE_USER, internalRequestContext.getRemoteUser());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_FORWARDED_FOR, internalRequestContext.getRemoteAddress());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTTIME, String.valueOf(internalRequestContext.getRequestTime()));
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_USERAGENT, internalRequestContext.getUserAgent());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_CHANNELID, internalRequestContext.getChannelId());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_REQUESTUUID, internalRequestContext.getRequestUuid());
+                addHeaderIfNotEmpty(httpHeaders, HttpCommunicationConstants.X_CXT_AUTHSTATUS, String.valueOf(internalRequestContext.getAuthStatus()));
+            }
+            HttpEntity httpEntity = new HttpEntity(httpHeaders);
+            ResponseEntity<IdDeleteResponseBody> response = restTemplate.exchange(uri, HttpMethod.DELETE, httpEntity, IdDeleteResponseBody.class);
             return response;
         } catch (RestClientResponseException exception) {
             //Re-throw the exception if not part of the API

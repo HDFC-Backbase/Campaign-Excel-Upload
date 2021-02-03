@@ -12,16 +12,22 @@
 			"type": "string"
 		},
 		"companyId": {
-			"type": "integer"
+			"type": "string"
 		},
 		"approvalStatus": {
 			"type": "string"
 		},
-		"id":{
-		   "type": "number"
+		"id": {
+			"type": "number"
+		},
+		"createdBy": {
+			"type": "string"
+		},
+		"updatedBy": {
+			"type": "string"
 		}
 	},
-	"required":[
+	"required": [
 		"logo",
 		"offerText",
 		"title",

@@ -1,14 +1,22 @@
 <configuration>
+	<springProperty scope="context" name="ACTIVE_PROFILE"
+		source="spring.profiles.active" />
 
-	<property file="src/main/resources/application.yml" />
+	<if condition='property("ACTIVE_PROFILE").contains("prod")'>
+		<then>
+			<property file="src/main/resources/application-prod.yml" />
+		</then>
+		<else>
+			<property file="src/main/resources/application.yml" />
+		</else>
+	</if>
 
-	<!-- <property name="HOME_LOG" value="E:/BackbaseLogs/companyexcelupload/companyexcelupload.log" 
-		/> -->
+	<!-- <property name="HOME_LOG" value="E:/BackbaseLogs/rmupload/rmupload.log"/> -->
+
 
 	<appender name="FILE-ROLLING"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_FILE}</file>
-
 
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -22,6 +30,7 @@
 			<!-- 60 days to keep -->
 			<maxHistory>20</maxHistory>
 		</rollingPolicy>
+
 		<encoder>
 			<pattern>%d %p %c{1.} [%t] %m%n</pattern>
 		</encoder>
@@ -30,19 +39,20 @@
 	<appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -
+				%msg%n</pattern>
 		</encoder>
 	</appender>
-	<logger name="com.backbase.campaignupload" level="info"
+	<logger name="com.backbase.companyexcelupload" level="debug"
 		additivity="false">
 		<appender-ref ref="FILE-ROLLING" />
 		<appender-ref ref="CONSOLE" />
 	</logger>
+
 	<root level="info">
 		<appender-ref ref="FILE-ROLLING" />
 		<appender-ref ref="CONSOLE" />
 	</root>
-
 
 
 </configuration>
