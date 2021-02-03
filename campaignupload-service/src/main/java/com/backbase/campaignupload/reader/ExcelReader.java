@@ -138,7 +138,7 @@ public class ExcelReader {
 						}
 					} else if (logo.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
+								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ") && currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
 							campaigndata.setLogo(currentCell.getStringCellValue());
 						}
 					} else if (offertext.equals(headername)) {
@@ -237,7 +237,7 @@ public class ExcelReader {
 					
 					if (corpcompanyId.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
+								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ") && currentCell.getStringCellValue().matches("^[a-zA-Z ]*$")) {
 							Long countofentities = companyupload.countByCompany_Id(currentCell.getStringCellValue());
 							if (countofentities == 0)
 								continue row;
@@ -251,7 +251,7 @@ public class ExcelReader {
 						}
 					} else if (corplogo.equals(headername)) {
 						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
+								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ") && currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
 							corpdata.setLogo(currentCell.getStringCellValue());
 						}
 					} else if (corproffertext.equals(headername)) {

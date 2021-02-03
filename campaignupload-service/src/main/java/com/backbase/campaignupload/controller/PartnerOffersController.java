@@ -270,9 +270,14 @@ public class PartnerOffersController implements PartneroffersApi {
 			CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
 			for (PartnerOffer prtoffer : requestBody.getUpdates()) {
+				
+				if (prtoffer.getLogo() != null && !prtoffer.getLogo().equals(null)
+						&& !prtoffer.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
+					throw new CustomBadRequestException("Logo format is invalid");
+
 				if (prtoffer.getId() > 0) {
 					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(prtoffer.getId());
-					if (prtstag!=null) {
+					if (prtstag != null) {
 						prtstag.setTitle(prtoffer.getTitle());
 						prtstag.setLogo(prtoffer.getLogo());
 						prtstag.setOffertext(prtoffer.getOffertext());
@@ -284,7 +289,7 @@ public class PartnerOffersController implements PartneroffersApi {
 						prtstag.setCheckerip("-");
 						campaignUploadService.savePartnerOffer(prtstag);
 					} else
-						throw new CustomBadRequestException("No Entity found with Id "+prtoffer.getId());
+						throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
 				} else {
 					PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
 					prtstag.setTitle(prtoffer.getTitle());
@@ -482,9 +487,9 @@ public class PartnerOffersController implements PartneroffersApi {
 						postg.setMakerip(makerip);
 						postg.setCheckerip("-");
 						campaignUploadService.savePartnerOffer(postg);
-					}else
+					} else
 						throw new CustomBadRequestException("Approved Records can be deleted");
-					
+
 				}
 
 				CampaignPutResponse youtubePutResponse = new CampaignPutResponse();

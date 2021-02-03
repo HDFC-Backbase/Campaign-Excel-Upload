@@ -41,7 +41,6 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersG
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Header;
 import com.backbase.campaignupload.service.CampaignUploadService;
-import com.backbase.campaignupload.service.CampaignUploadServiceImpl;
 import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
@@ -276,26 +275,37 @@ public class CorporateController implements CorporateoffersApi {
 			CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
 
 			for (CorporateOffer corpoff : requestBody.getUpdates()) {
+				if (corpoff.getCompanyid() != null && !corpoff.getCompanyid().equals(null)
+						&& !corpoff.getCompanyid().matches("^[a-zA-Z ]*$"))
+					throw new CustomBadRequestException("Company Id should contain alphabets");
+
+				if (corpoff.getLogo() != null && !corpoff.getLogo().equals(null)
+						&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
+					throw new CustomBadRequestException("Logo format is invalid");
+
 				if (corpoff.getId() > 0) {
 					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
+					if (corpstg != null) {
 						corpstg.setCompanyId(corpoff.getCompanyid());
 						corpstg.setTitle(corpoff.getTitle());
 						corpstg.setLogo(corpoff.getLogo());
 						corpstg.setOffertext(corpoff.getOffertext());
-						corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+						corpstg.setApprovalstatus(PENDING);
 						corpstg.setId(corpoff.getId());
 						corpstg.setCreatedBy(subject);
 						corpstg.setUpdatedBy("-");
 						corpstg.setMakerip(makerip);
 						corpstg.setCheckerip("-");
 						campaignUploadService.saveCorpOffer(corpstg);
+					} else
+						throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
 				} else {
 					CorporateStagingEntity corpstg = new CorporateStagingEntity();
 					corpstg.setCompanyId(corpoff.getCompanyid());
 					corpstg.setTitle(corpoff.getTitle());
 					corpstg.setLogo(corpoff.getLogo());
 					corpstg.setOffertext(corpoff.getOffertext());
-					corpstg.setApprovalstatus(CampaignUploadServiceImpl.PENDING);
+					corpstg.setApprovalstatus(PENDING);
 					corpstg.setCreatedBy(subject);
 					corpstg.setUpdatedBy("-");
 					corpstg.setMakerip(makerip);
@@ -354,9 +364,9 @@ public class CorporateController implements CorporateoffersApi {
 								campaignUploadService.delete(corpfinal);
 						} else {
 
-							if(!corpstg.getApprovalstatus().equals(PENDING))
+							if (!corpstg.getApprovalstatus().equals(PENDING))
 								throw new CustomBadRequestException("Only Pending records can be Approved");
-							
+
 							CompanyFinalEntity cmfinal = campaignUploadService.getCompany(corpstg.getCompanyId());
 							if (cmfinal != null) {
 

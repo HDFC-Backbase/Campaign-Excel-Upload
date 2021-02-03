@@ -9,6 +9,7 @@ import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
 public interface PartnerOfferRepo extends JpaRepository<PartnerOffersStagingEntity,Integer>,PTStagCustomRepo{
 
-	@Query(value="SELECT * FROM partner_offer_staging u ORDER BY u.updated_on desc",nativeQuery=true)
+	
+	@Query(value="select * from partner_offer_staging p where p.id not in(select pstg.id from partner_offer_staging pstg where pstg.approval_status='Pending' and pstg.file_id is not null) order by p.updated_on desc",nativeQuery=true)
 	public List<PartnerOffersStagingEntity> findAll();
 }
