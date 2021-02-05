@@ -4,28 +4,19 @@
 			"title": "Tata Aia Life Insurance ",
 			"logo": "www.hdfcbank.com/tataaia",
 			"offerText": "Free Insurance Upto 20Lacs",
-			"approvalStatus": "Deleted",
-			"id": 103,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 103
 		},
 		{
 			"title": "Free Platinum Debit Card",
 			"logo": "www.hdfcbank.com/talisma",
 			"offerText": "Enjoy 1% cashback on shopping accident cover",
-			"approvalStatus": "Deleted",
-			"id": 102,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 102
 		},
 		{
 			"title": "Complimentry Insurance",
 			"logo": "www.hdfcbank.com/aarvi",
 			"offerText": " Boston Consulting Group",
-			"approvalStatus": "Deleted",
-			"id": 104,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 104
 		}
 	]
 }

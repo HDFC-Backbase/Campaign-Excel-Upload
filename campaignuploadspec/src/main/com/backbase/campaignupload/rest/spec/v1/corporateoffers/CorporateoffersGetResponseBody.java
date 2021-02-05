@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "data"
+    "corporates"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
@@ -31,10 +31,10 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      */
-    @JsonProperty("data")
+    @JsonProperty("corporates")
     @Valid
     @NotNull
-    private List<Datum> data = new ArrayList<Datum>();
+    private List<Corporate> corporates = new ArrayList<Corporate>();
     /**
      * Additional Properties
      * 
@@ -47,27 +47,27 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      * @return
-     *     The data
+     *     The corporates
      */
-    @JsonProperty("data")
-    public List<Datum> getData() {
-        return data;
+    @JsonProperty("corporates")
+    public List<Corporate> getCorporates() {
+        return corporates;
     }
 
     /**
      * 
      * (Required)
      * 
-     * @param data
-     *     The data
+     * @param corporates
+     *     The corporates
      */
-    @JsonProperty("data")
-    public void setData(List<Datum> data) {
-        this.data = data;
+    @JsonProperty("corporates")
+    public void setCorporates(List<Corporate> corporates) {
+        this.corporates = corporates;
     }
 
-    public CorporateoffersGetResponseBody withData(List<Datum> data) {
-        this.data = data;
+    public CorporateoffersGetResponseBody withCorporates(List<Corporate> corporates) {
+        this.corporates = corporates;
         return this;
     }
 
@@ -78,7 +78,7 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(data).toHashCode();
+        return new HashCodeBuilder().append(corporates).toHashCode();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class CorporateoffersGetResponseBody implements AdditionalPropertiesAware
             return false;
         }
         CorporateoffersGetResponseBody rhs = ((CorporateoffersGetResponseBody) other);
-        return new EqualsBuilder().append(data, rhs.data).isEquals();
+        return new EqualsBuilder().append(corporates, rhs.corporates).isEquals();
     }
 
     /**

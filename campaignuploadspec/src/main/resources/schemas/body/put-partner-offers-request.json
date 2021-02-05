@@ -5,7 +5,7 @@
 		"updates": {
 			"type":"array",
 			"items": {
-				"$ref":"partner-offer.json"
+				"$ref":"update-partner-offer.json"
 			}		}
 	},
 	"required": [

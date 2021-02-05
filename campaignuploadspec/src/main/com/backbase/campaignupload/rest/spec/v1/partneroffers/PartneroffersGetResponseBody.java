@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "data"
+    "partners"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PartneroffersGetResponseBody implements AdditionalPropertiesAware
@@ -31,10 +31,10 @@ public class PartneroffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      */
-    @JsonProperty("data")
+    @JsonProperty("partners")
     @Valid
     @NotNull
-    private List<Datum> data = new ArrayList<Datum>();
+    private List<Partner> partners = new ArrayList<Partner>();
     /**
      * Additional Properties
      * 
@@ -47,27 +47,27 @@ public class PartneroffersGetResponseBody implements AdditionalPropertiesAware
      * (Required)
      * 
      * @return
-     *     The data
+     *     The partners
      */
-    @JsonProperty("data")
-    public List<Datum> getData() {
-        return data;
+    @JsonProperty("partners")
+    public List<Partner> getPartners() {
+        return partners;
     }
 
     /**
      * 
      * (Required)
      * 
-     * @param data
-     *     The data
+     * @param partners
+     *     The partners
      */
-    @JsonProperty("data")
-    public void setData(List<Datum> data) {
-        this.data = data;
+    @JsonProperty("partners")
+    public void setPartners(List<Partner> partners) {
+        this.partners = partners;
     }
 
-    public PartneroffersGetResponseBody withData(List<Datum> data) {
-        this.data = data;
+    public PartneroffersGetResponseBody withPartners(List<Partner> partners) {
+        this.partners = partners;
         return this;
     }
 
@@ -78,7 +78,7 @@ public class PartneroffersGetResponseBody implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(data).toHashCode();
+        return new HashCodeBuilder().append(partners).toHashCode();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PartneroffersGetResponseBody implements AdditionalPropertiesAware
             return false;
         }
         PartneroffersGetResponseBody rhs = ((PartneroffersGetResponseBody) other);
-        return new EqualsBuilder().append(data, rhs.data).isEquals();
+        return new EqualsBuilder().append(partners, rhs.partners).isEquals();
     }
 
     /**

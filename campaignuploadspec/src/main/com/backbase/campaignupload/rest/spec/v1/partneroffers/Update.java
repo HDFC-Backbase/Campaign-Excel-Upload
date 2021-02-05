@@ -1,11 +1,9 @@
 
-package com.backbase.campaignupload.rest.spec.v1.corporateoffers;
+package com.backbase.campaignupload.rest.spec.v1.partneroffers;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.validation.constraints.NotNull;
 import com.backbase.buildingblocks.persistence.model.AdditionalPropertiesAware;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,63 +18,24 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "title",
     "logo",
     "offerText",
-    "companyId",
     "approvalStatus",
     "id",
     "createdBy",
     "updatedBy"
 })
-public class Datum implements AdditionalPropertiesAware
+public class Update implements AdditionalPropertiesAware
 {
 
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("title")
-    @NotNull
     private String title;
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("logo")
-    @NotNull
     private String logo;
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("offerText")
-    @NotNull
     private String offerText;
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("companyId")
-    @NotNull
-    private String companyId;
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("approvalStatus")
-    @NotNull
     private String approvalStatus;
-    /**
-     * 
-     * (Required)
-     * 
-     */
     @JsonProperty("id")
-    @NotNull
-    private BigDecimal id;
+    private Integer id;
     @JsonProperty("createdBy")
     private String createdBy;
     @JsonProperty("updatedBy")
@@ -90,8 +49,6 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @return
      *     The title
      */
@@ -102,8 +59,6 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @param title
      *     The title
      */
@@ -112,14 +67,12 @@ public class Datum implements AdditionalPropertiesAware
         this.title = title;
     }
 
-    public Datum withTitle(String title) {
+    public Update withTitle(String title) {
         this.title = title;
         return this;
     }
 
     /**
-     * 
-     * (Required)
      * 
      * @return
      *     The logo
@@ -131,8 +84,6 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @param logo
      *     The logo
      */
@@ -141,14 +92,12 @@ public class Datum implements AdditionalPropertiesAware
         this.logo = logo;
     }
 
-    public Datum withLogo(String logo) {
+    public Update withLogo(String logo) {
         this.logo = logo;
         return this;
     }
 
     /**
-     * 
-     * (Required)
      * 
      * @return
      *     The offerText
@@ -160,8 +109,6 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @param offerText
      *     The offerText
      */
@@ -170,43 +117,12 @@ public class Datum implements AdditionalPropertiesAware
         this.offerText = offerText;
     }
 
-    public Datum withOfferText(String offerText) {
+    public Update withOfferText(String offerText) {
         this.offerText = offerText;
         return this;
     }
 
     /**
-     * 
-     * (Required)
-     * 
-     * @return
-     *     The companyId
-     */
-    @JsonProperty("companyId")
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     * @param companyId
-     *     The companyId
-     */
-    @JsonProperty("companyId")
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
-
-    public Datum withCompanyId(String companyId) {
-        this.companyId = companyId;
-        return this;
-    }
-
-    /**
-     * 
-     * (Required)
      * 
      * @return
      *     The approvalStatus
@@ -218,8 +134,6 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
-     * (Required)
-     * 
      * @param approvalStatus
      *     The approvalStatus
      */
@@ -228,36 +142,32 @@ public class Datum implements AdditionalPropertiesAware
         this.approvalStatus = approvalStatus;
     }
 
-    public Datum withApprovalStatus(String approvalStatus) {
+    public Update withApprovalStatus(String approvalStatus) {
         this.approvalStatus = approvalStatus;
         return this;
     }
 
     /**
      * 
-     * (Required)
-     * 
      * @return
      *     The id
      */
     @JsonProperty("id")
-    public BigDecimal getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * 
-     * (Required)
-     * 
      * @param id
      *     The id
      */
     @JsonProperty("id")
-    public void setId(BigDecimal id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Datum withId(BigDecimal id) {
+    public Update withId(Integer id) {
         this.id = id;
         return this;
     }
@@ -282,7 +192,7 @@ public class Datum implements AdditionalPropertiesAware
         this.createdBy = createdBy;
     }
 
-    public Datum withCreatedBy(String createdBy) {
+    public Update withCreatedBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
@@ -307,7 +217,7 @@ public class Datum implements AdditionalPropertiesAware
         this.updatedBy = updatedBy;
     }
 
-    public Datum withUpdatedBy(String updatedBy) {
+    public Update withUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
         return this;
     }
@@ -319,7 +229,7 @@ public class Datum implements AdditionalPropertiesAware
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(title).append(logo).append(offerText).append(companyId).append(approvalStatus).append(id).append(createdBy).append(updatedBy).toHashCode();
+        return new HashCodeBuilder().append(title).append(logo).append(offerText).append(approvalStatus).append(id).append(createdBy).append(updatedBy).toHashCode();
     }
 
     @Override
@@ -327,11 +237,11 @@ public class Datum implements AdditionalPropertiesAware
         if (other == this) {
             return true;
         }
-        if ((other instanceof Datum) == false) {
+        if ((other instanceof Update) == false) {
             return false;
         }
-        Datum rhs = ((Datum) other);
-        return new EqualsBuilder().append(title, rhs.title).append(logo, rhs.logo).append(offerText, rhs.offerText).append(companyId, rhs.companyId).append(approvalStatus, rhs.approvalStatus).append(id, rhs.id).append(createdBy, rhs.createdBy).append(updatedBy, rhs.updatedBy).isEquals();
+        Update rhs = ((Update) other);
+        return new EqualsBuilder().append(title, rhs.title).append(logo, rhs.logo).append(offerText, rhs.offerText).append(approvalStatus, rhs.approvalStatus).append(id, rhs.id).append(createdBy, rhs.createdBy).append(updatedBy, rhs.updatedBy).isEquals();
     }
 
     /**

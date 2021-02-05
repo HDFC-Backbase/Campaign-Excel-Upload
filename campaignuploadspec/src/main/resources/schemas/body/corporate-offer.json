@@ -18,7 +18,7 @@
 			"type": "string"
 		},
 		"id": {
-			"type": "number"
+			"type": "integer"
 		},
 		"createdBy": {
 			"type": "string"
@@ -33,6 +33,8 @@
 		"title",
 		"companyId",
 		"approvalStatus",
-		"id"
+		"id",
+		"createdBy",
+		"updatedBy"
 	]
 }

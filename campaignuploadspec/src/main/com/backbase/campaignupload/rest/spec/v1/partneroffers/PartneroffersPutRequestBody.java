@@ -34,7 +34,7 @@ public class PartneroffersPutRequestBody implements AdditionalPropertiesAware
     @JsonProperty("updates")
     @Valid
     @NotNull
-    private List<Datum> updates = new ArrayList<Datum>();
+    private List<Update> updates = new ArrayList<Update>();
     /**
      * Additional Properties
      * 
@@ -50,7 +50,7 @@ public class PartneroffersPutRequestBody implements AdditionalPropertiesAware
      *     The updates
      */
     @JsonProperty("updates")
-    public List<Datum> getUpdates() {
+    public List<Update> getUpdates() {
         return updates;
     }
 
@@ -62,11 +62,11 @@ public class PartneroffersPutRequestBody implements AdditionalPropertiesAware
      *     The updates
      */
     @JsonProperty("updates")
-    public void setUpdates(List<Datum> updates) {
+    public void setUpdates(List<Update> updates) {
         this.updates = updates;
     }
 
-    public PartneroffersPutRequestBody withUpdates(List<Datum> updates) {
+    public PartneroffersPutRequestBody withUpdates(List<Update> updates) {
         this.updates = updates;
         return this;
     }

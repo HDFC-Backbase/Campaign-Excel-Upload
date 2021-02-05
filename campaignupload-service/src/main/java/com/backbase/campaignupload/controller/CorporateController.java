@@ -1,45 +1,38 @@
 package com.backbase.campaignupload.controller;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.buildingblocks.presentation.errors.BadRequestException;
+import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
 import com.backbase.campaignupload.entity.CompanyFinalEntity;
 import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
-import com.backbase.campaignupload.pojo.CampaignPutResponse;
-import com.backbase.campaignupload.pojo.CorporateOfferPutRequest;
 import com.backbase.campaignupload.reader.ExcelReader;
-import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateOffer;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Corporate;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersApi;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutRequestBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.CorporateoffersPutResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Header;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdDeleteResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Update;
 import com.backbase.campaignupload.service.CampaignUploadService;
 import com.backbase.validate.jwt.ValidateJwt;
 
@@ -97,66 +90,50 @@ public class CorporateController implements CorporateoffersApi {
 
 		CorporateoffersGetResponseBody corporateoffersGetResponseBody = new CorporateoffersGetResponseBody();
 
-		List<Header> headerslist = new ArrayList<Header>();
+		//List<Header> headerslist = new ArrayList<Header>();
 
-		List<Object> dataList = new ArrayList<Object>();
+		List<Corporate> dataList = new ArrayList<Corporate>();
 
-		setHeaders(headerslist, "title", role, checker);
-		setHeaders(headerslist, "companyId", role, checker);
+		/*
+		 * setHeaders(headerslist, "title", role, checker); setHeaders(headerslist,
+		 * "companyId", role, checker);
+		 */
 
-		Header hdclogo = new Header();
-		hdclogo.setField("logo");
-		hdclogo.setType("imageColumn");
-		if (role.contains(checker))
-			hdclogo.setEditable(false);
-		headerslist.add(hdclogo);
-
-		Header hdcoffertext = new Header();
-		hdcoffertext.setField("offerText");
-		hdcoffertext.setType("largeTextColumn");
-		if (role.contains(checker))
-			hdcoffertext.setEditable(false);
-		headerslist.add(hdcoffertext);
-
-		Header hdapproval = new Header();
-		hdapproval.setField("approvalStatus");
-		hdapproval.setEditable(false);
-		headerslist.add(hdapproval);
-
-		Header hdcreatedBy = new Header();
-		hdcreatedBy.setField("createdBy");
-		hdcreatedBy.setEditable(false);
-		headerslist.add(hdcreatedBy);
-
-		Header hdupdatedBy = new Header();
-		hdupdatedBy.setField("updatedBy");
-		hdupdatedBy.setEditable(false);
-		headerslist.add(hdupdatedBy);
-
-		Header hdId = new Header();
-		hdId.setField("id");
-		hdId.setHide(true);
-		if (role.contains(checker))
-			hdId.setEditable(false);
-		headerslist.add(hdId);
-
-		Header hdlive = new Header();
-		hdlive.setHeaderName("Action");
-		hdlive.setField("live");
-		if (role.contains(maker)) {
-			hdlive.setType("liveMakerColumn");
-		} else
-			hdlive.setType("liveCheckerColumn");
-		headerslist.add(hdlive);
+		/*
+		 * Header hdclogo = new Header(); hdclogo.setField("logo");
+		 * hdclogo.setType("imageColumn"); if (role.contains(checker))
+		 * hdclogo.setEditable(false); headerslist.add(hdclogo);
+		 * 
+		 * Header hdcoffertext = new Header(); hdcoffertext.setField("offerText");
+		 * hdcoffertext.setType("largeTextColumn"); if (role.contains(checker))
+		 * hdcoffertext.setEditable(false); headerslist.add(hdcoffertext);
+		 * 
+		 * Header hdapproval = new Header(); hdapproval.setField("approvalStatus");
+		 * hdapproval.setEditable(false); headerslist.add(hdapproval);
+		 * 
+		 * Header hdcreatedBy = new Header(); hdcreatedBy.setField("createdBy");
+		 * hdcreatedBy.setEditable(false); headerslist.add(hdcreatedBy);
+		 * 
+		 * Header hdupdatedBy = new Header(); hdupdatedBy.setField("updatedBy");
+		 * hdupdatedBy.setEditable(false); headerslist.add(hdupdatedBy);
+		 * 
+		 * Header hdId = new Header(); hdId.setField("id"); hdId.setHide(true); if
+		 * (role.contains(checker)) hdId.setEditable(false); headerslist.add(hdId);
+		 * 
+		 * Header hdlive = new Header(); hdlive.setHeaderName("Action");
+		 * hdlive.setField("live"); if (role.contains(maker)) {
+		 * hdlive.setType("liveMakerColumn"); } else
+		 * hdlive.setType("liveCheckerColumn"); headerslist.add(hdlive);
+		 */
 
 		List<CorporateStagingEntity> allcorp = campaignUploadService.getCorporateOffers();
 		allcorp.stream().forEach(corp -> {
-			CorporateOffer corpdata = new CorporateOffer();
+			Corporate corpdata = new Corporate();
 			corpdata.setTitle(corp.getTitle());
 			corpdata.setLogo(corp.getLogo());
-			corpdata.setOffertext(corp.getOffertext());
-			corpdata.setCompanyid(corp.getCompanyId());
-			corpdata.setApprovalstatus(corp.getApprovalstatus());
+			corpdata.setOfferText(corp.getOffertext());
+			corpdata.setCompanyId(corp.getCompanyId());
+			corpdata.setApprovalStatus(corp.getApprovalstatus());
 			corpdata.setCreatedBy(corp.getCreatedBy());
 			corpdata.setUpdatedBy(corp.getUpdatedBy());
 			corpdata.setId(corp.getId());
@@ -164,8 +141,7 @@ public class CorporateController implements CorporateoffersApi {
 
 		});
 
-		corporateoffersGetResponseBody.setHeaders(headerslist);
-		corporateoffersGetResponseBody.setData(dataList);
+		corporateoffersGetResponseBody.setCorporates(dataList);
 
 		return corporateoffersGetResponseBody;
 
@@ -198,10 +174,9 @@ public class CorporateController implements CorporateoffersApi {
 				try {
 					if (!FilenameUtils.removeExtension(file.getOriginalFilename()).equals(corpfilename))
 						throw new CustomBadRequestException("Excel file name incorrect");
-					String filename = saveFiletoLocation(file, uploadedBy);
-					campaignUploadService.saveCorporateoffer(file, corpsheetname, uploadedBy, filename, makerip);
+					campaignUploadService.saveCorporateoffer(file, corpsheetname, uploadedBy, dir, makerip);
 					message = "Uploaded the file successfully: " + file.getOriginalFilename();
-					corporateoffersPostResponseBody.setStatuscode("200");
+					corporateoffersPostResponseBody.setStatuscode(HttpStatus.SC_OK);
 					corporateoffersPostResponseBody.setMessage(message);
 					return corporateoffersPostResponseBody;
 				} catch (CustomBadRequestException e) {
@@ -226,107 +201,62 @@ public class CorporateController implements CorporateoffersApi {
 		headerslist.add(header);
 	}
 
-	public String saveFiletoLocation(MultipartFile file, String uploadedBy) {
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String dateWithoutTime = dateFormat.format(new Date());
-
-		String fileNameWithOutExt = FilenameUtils.removeExtension(file.getOriginalFilename());
-
-		String filename = fileNameWithOutExt + "_" + dateWithoutTime + "_" + LocalDateTime.now().getHour() + "_"
-				+ LocalDateTime.now().getMinute() + "_" + uploadedBy + ".xls";
-
-		Path filepath = Paths.get(dir.toString(), filename.trim());
-		try {
-			file.transferTo(filepath);
-		} catch (IllegalStateException e) {
-			logger.info(e.getMessage());
-		} catch (IOException e) {
-			logger.info(e.getMessage());
-		}
-
-		return filename;
-	}
-
-	@PutMapping
-	public CampaignPutResponse putCorporate(@RequestBody CorporateOfferPutRequest requestBody,
-			HttpServletRequest request, HttpServletResponse arg2) {
-
-		logger.info("Request received to update data " + requestBody);
+	@Override
+	public IdDeleteResponseBody deleteId(String id, HttpServletRequest request, HttpServletResponse arg2) {
+		logger.info("Request received to delete data");
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String makerip = request.getRemoteAddr();
 
-		logger.info("Corporate Update maker ip " + makerip);
+		logger.info("Corporate Delete Record Maker ip  " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
 		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
-
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
+
+		logger.info("User in JWT " + subject);
 
 		logger.info("Role in JWT " + role);
 
 		if (role.contains(maker)) {
 
-			CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
+			if (id != null && !id.equals(null)) {
+				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(Integer.parseInt(id));
 
-			for (CorporateOffer corpoff : requestBody.getUpdates()) {
-				if (corpoff.getCompanyid() != null && !corpoff.getCompanyid().equals(null)
-						&& !corpoff.getCompanyid().matches("^[a-zA-Z ]*$"))
-					throw new CustomBadRequestException("Company Id should contain alphabets");
+				if (corpstg == null || corpstg.equals(null))
+					throw new CustomBadRequestException("No entity found with id " + id);
 
-				if (corpoff.getLogo() != null && !corpoff.getLogo().equals(null)
-						&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
-					throw new CustomBadRequestException("Logo format is invalid");
+				if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
+					throw new CustomBadRequestException("Record is already in pending state");
 
-				if (corpoff.getId() > 0) {
-					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
-					if (corpstg != null) {
-						corpstg.setCompanyId(corpoff.getCompanyid());
-						corpstg.setTitle(corpoff.getTitle());
-						corpstg.setLogo(corpoff.getLogo());
-						corpstg.setOffertext(corpoff.getOffertext());
-						corpstg.setApprovalstatus(PENDING);
-						corpstg.setId(corpoff.getId());
-						corpstg.setCreatedBy(subject);
-						corpstg.setUpdatedBy("-");
-						corpstg.setMakerip(makerip);
-						corpstg.setCheckerip("-");
-						campaignUploadService.saveCorpOffer(corpstg);
-					} else
-						throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
-				} else {
-					CorporateStagingEntity corpstg = new CorporateStagingEntity();
-					corpstg.setCompanyId(corpoff.getCompanyid());
-					corpstg.setTitle(corpoff.getTitle());
-					corpstg.setLogo(corpoff.getLogo());
-					corpstg.setOffertext(corpoff.getOffertext());
-					corpstg.setApprovalstatus(PENDING);
+				if (corpstg != null) {
+					corpstg.setApprovalstatus(DELETE_PENDING);
 					corpstg.setCreatedBy(subject);
 					corpstg.setUpdatedBy("-");
 					corpstg.setMakerip(makerip);
 					corpstg.setCheckerip("-");
 					campaignUploadService.saveCorpOffer(corpstg);
 				}
-			}
 
-			campaignPutResponse.setMessage("Successfully update data in table");
-			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+				IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
+				youtubePutResponse.setMessage("Successfully updated data in table");
+				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
 
-			return campaignPutResponse;
+				return youtubePutResponse;
+			} else
+				throw new CustomBadRequestException("Id cannot be null");
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
-	@PostMapping("/record/{id}")
-	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
-			HttpServletRequest request, HttpServletResponse arg2) {
-
+	@Override
+	public IdPostResponseBody postId(String id, String action, HttpServletRequest request, HttpServletResponse arg3)
+			throws BadRequestException, InternalServerErrorException {
 		logger.info("Request received to approve record data " + id);
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
@@ -448,7 +378,7 @@ public class CorporateController implements CorporateoffersApi {
 			} else
 				throw new CustomBadRequestException("Id cannot be null");
 
-			CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
+			IdPostResponseBody campaignPutResponse = new IdPostResponseBody();
 
 			campaignPutResponse.setMessage("Successfully update data in table");
 			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
@@ -458,58 +388,77 @@ public class CorporateController implements CorporateoffersApi {
 			throw new CustomBadRequestException("Checker can only Approve data");
 	}
 
-	@DeleteMapping("/{id}")
-	public CampaignPutResponse deleteCorp(@PathVariable String id, HttpServletRequest request,
-			HttpServletResponse arg2) {
-
-		logger.info("Request received to delete data");
+	@Override
+	public CorporateoffersPutResponseBody putCorporateoffers(@Valid CorporateoffersPutRequestBody requestBody,
+			HttpServletRequest request, HttpServletResponse arg2) {
+		logger.info("Request received to update data " + requestBody);
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String makerip = request.getRemoteAddr();
 
-		logger.info("Corporate Delete Record Maker ip  " + makerip);
+		logger.info("Corporate Update maker ip " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
 		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
-
 		logger.info("User in JWT " + subject);
+
+		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		logger.info("Role in JWT " + role);
 
 		if (role.contains(maker)) {
 
-			if (id != null && !id.equals(null)) {
-				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(Integer.parseInt(id));
+			CorporateoffersPutResponseBody campaignPutResponse = new CorporateoffersPutResponseBody();
 
-				if (corpstg == null || corpstg.equals(null))
-					throw new CustomBadRequestException("No entity found with id " + id);
+			for (Update corpoff : requestBody.getUpdates()) {
+				if (corpoff.getCompanyId() != null && !corpoff.getCompanyId().equals(null)
+						&& !corpoff.getCompanyId().matches("^[a-zA-Z ]*$"))
+					throw new CustomBadRequestException("Company Id should contain alphabets");
 
-				if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
-					throw new CustomBadRequestException("Record is already in pending state");
+				if (corpoff.getLogo() != null && !corpoff.getLogo().equals(null)
+						&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
+					throw new CustomBadRequestException("Logo format is invalid");
 
-				if (corpstg != null) {
-					corpstg.setApprovalstatus(DELETE_PENDING);
+				if (corpoff.getId() > 0) {
+					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
+					if (corpstg != null) {
+						corpstg.setCompanyId(corpoff.getCompanyId());
+						corpstg.setTitle(corpoff.getTitle());
+						corpstg.setLogo(corpoff.getLogo());
+						corpstg.setOffertext(corpoff.getOfferText());
+						corpstg.setApprovalstatus(PENDING);
+						corpstg.setId(corpoff.getId());
+						corpstg.setCreatedBy(subject);
+						corpstg.setUpdatedBy("-");
+						corpstg.setMakerip(makerip);
+						corpstg.setCheckerip("-");
+						campaignUploadService.saveCorpOffer(corpstg);
+					} else
+						throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
+				} else {
+					CorporateStagingEntity corpstg = new CorporateStagingEntity();
+					corpstg.setCompanyId(corpoff.getCompanyId());
+					corpstg.setTitle(corpoff.getTitle());
+					corpstg.setLogo(corpoff.getLogo());
+					corpstg.setOffertext(corpoff.getOfferText());
+					corpstg.setApprovalstatus(PENDING);
 					corpstg.setCreatedBy(subject);
 					corpstg.setUpdatedBy("-");
 					corpstg.setMakerip(makerip);
 					corpstg.setCheckerip("-");
 					campaignUploadService.saveCorpOffer(corpstg);
 				}
+			}
 
-				CampaignPutResponse youtubePutResponse = new CampaignPutResponse();
-				youtubePutResponse.setMessage("Successfully updated data in table");
-				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
+			campaignPutResponse.setMessage("Successfully update data in table");
+			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
-				return youtubePutResponse;
-			} else
-				throw new CustomBadRequestException("Id cannot be null");
+			return campaignPutResponse;
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
-
 	}
 
 }

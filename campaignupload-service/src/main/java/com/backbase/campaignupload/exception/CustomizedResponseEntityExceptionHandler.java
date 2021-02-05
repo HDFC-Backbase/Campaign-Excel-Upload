@@ -20,7 +20,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	@ExceptionHandler(CustomBadRequestException.class)
 	public final ResponseEntity<PartneroffersPostResponseBody> handleNotFoundException(CustomBadRequestException ex, WebRequest request) {
 		PartneroffersPostResponseBody uploadPartnerOfferPostResponseBody=new PartneroffersPostResponseBody();
-		uploadPartnerOfferPostResponseBody.setStatuscode("400");
+		uploadPartnerOfferPostResponseBody.setStatuscode(400);
 		uploadPartnerOfferPostResponseBody.setMessage(ex.getMessage());
 		
 		return new ResponseEntity<PartneroffersPostResponseBody>(uploadPartnerOfferPostResponseBody, HttpStatus.BAD_REQUEST);
@@ -29,7 +29,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	@ExceptionHandler(CustomInternalServerException.class)
 	public final ResponseEntity<PartneroffersPostResponseBody> handleInternalServerException(CustomInternalServerException ex, WebRequest request) {
 		PartneroffersPostResponseBody uploadPartnerOfferPostResponseBody = new PartneroffersPostResponseBody();
-		uploadPartnerOfferPostResponseBody.setStatuscode("500");
+		uploadPartnerOfferPostResponseBody.setStatuscode(500);
 		uploadPartnerOfferPostResponseBody.setMessage(ex.getMessage());
 		
 		return new ResponseEntity<PartneroffersPostResponseBody>(uploadPartnerOfferPostResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);

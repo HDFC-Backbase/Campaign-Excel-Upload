@@ -1,10 +1,18 @@
 package com.backbase.campaignupload.service;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +38,8 @@ import liquibase.util.file.FilenameUtils;
 @Transactional
 public class CampaignUploadServiceImpl implements CampaignUploadService {
 	public static final String PENDING = "Pending";
+	
+	private static final Logger logger = LoggerFactory.getLogger(CampaignUploadServiceImpl.class);
 
 	@Autowired
 	PartnerOfferRepo partnerOfferRepo;
@@ -53,13 +63,14 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	ExcelReader excelreader;
 
 	@Override
-	public void save(MultipartFile file, String sheetname, String uploadedBy, String filename, String makerip) {
+	public void save(MultipartFile file, String sheetname, String uploadedBy, String dir, String makerip) {
 		try {
 			List<PartnerOffersStagingEntity> companyfileuploads = excelreader.excelToTutorials(file.getInputStream(),
 					sheetname);
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
 			fileApproveEntity.setFilestatus(PENDING);
 			fileApproveEntity.setCreatedby(uploadedBy);
+			String filename = saveFiletoLocation(file, uploadedBy,dir);
 			fileApproveEntity.setFilename(filename);
 			fileApproveEntity.setDisplayfilename(file.getOriginalFilename());
 			fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
@@ -89,7 +100,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public void saveCorporateoffer(MultipartFile file, String sheetname, String uploadedBy, String filename,
+	public void saveCorporateoffer(MultipartFile file, String sheetname, String uploadedBy, String dir,
 			String makerip) {
 		try {
 			List<CorporateStagingEntity> corptaglist = excelreader.excelToCorporateStaging(file.getInputStream(),sheetname,
@@ -97,6 +108,7 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 			FileApproveEntity fileApproveEntity = new FileApproveEntity();
 			fileApproveEntity.setCreatedby(uploadedBy);
 			fileApproveEntity.setFilestatus(PENDING);
+			String filename = saveFiletoLocation(file, uploadedBy,dir);
 			fileApproveEntity.setFilename(filename);
 			fileApproveEntity.setDisplayfilename(file.getOriginalFilename());
 			fileApproveEntity.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
@@ -116,6 +128,28 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 			throw new RuntimeException("Fail to store excel data: " + e.getMessage());
 		}
 
+	}
+	
+	public String saveFiletoLocation(MultipartFile file, String uploadedBy, String dir) {
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String dateWithoutTime = dateFormat.format(new Date());
+
+		String fileNameWithOutExt = FilenameUtils.removeExtension(file.getOriginalFilename());
+
+		String filename = fileNameWithOutExt + "_" + dateWithoutTime + "_" + LocalDateTime.now().getHour() + "_"
+				+ LocalDateTime.now().getMinute() + "_" + uploadedBy + ".xls";
+
+		Path filepath = Paths.get(dir.toString(), filename.trim());
+		try {
+			file.transferTo(filepath);
+		} catch (IllegalStateException e) {
+			logger.info(e.getMessage());
+		} catch (IOException e) {
+			logger.info(e.getMessage());
+		}
+
+		return filename;
 	}
 
 	@Override

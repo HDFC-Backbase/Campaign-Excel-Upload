@@ -1,7 +1,6 @@
 
 package com.backbase.campaignupload.rest.spec.v1.corporateoffers;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -32,7 +31,7 @@ public class CorporateoffersPostResponseBody implements AdditionalPropertiesAwar
      */
     @JsonProperty("statuscode")
     @NotNull
-    private BigDecimal statuscode;
+    private Integer statuscode;
     /**
      * 
      * (Required)
@@ -56,7 +55,7 @@ public class CorporateoffersPostResponseBody implements AdditionalPropertiesAwar
      *     The statuscode
      */
     @JsonProperty("statuscode")
-    public BigDecimal getStatuscode() {
+    public Integer getStatuscode() {
         return statuscode;
     }
 
@@ -68,11 +67,11 @@ public class CorporateoffersPostResponseBody implements AdditionalPropertiesAwar
      *     The statuscode
      */
     @JsonProperty("statuscode")
-    public void setStatuscode(BigDecimal statuscode) {
+    public void setStatuscode(Integer statuscode) {
         this.statuscode = statuscode;
     }
 
-    public CorporateoffersPostResponseBody withStatuscode(BigDecimal statuscode) {
+    public CorporateoffersPostResponseBody withStatuscode(Integer statuscode) {
         this.statuscode = statuscode;
         return this;
     }

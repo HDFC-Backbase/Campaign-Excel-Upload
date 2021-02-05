@@ -1,44 +1,37 @@
 package com.backbase.campaignupload.controller;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backbase.buildingblocks.presentation.errors.BadRequestException;
+import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.exception.CustomInternalServerException;
-import com.backbase.campaignupload.pojo.CampaignPutResponse;
-import com.backbase.campaignupload.pojo.PartnerOfferPutRequest;
 import com.backbase.campaignupload.reader.ExcelReader;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.Header;
-import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartnerOffer;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdDeleteResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.IdPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.Partner;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersApi;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersGetResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPostResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRequestBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutResponseBody;
+import com.backbase.campaignupload.rest.spec.v1.partneroffers.Update;
 import com.backbase.campaignupload.service.CampaignUploadService;
 import com.backbase.validate.jwt.ValidateJwt;
 
@@ -96,76 +89,54 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
-		List<Header> headerslist = new ArrayList<Header>();
+		//List<Header> headerslist = new ArrayList<Header>();
 
-		List<Object> dataList = new ArrayList<Object>();
+		List<Partner> dataList = new ArrayList<Partner>();
 
-		Header hdctitle = new Header();
-		hdctitle.setField("title");
-		if (role.contains(checker))
-			hdctitle.setEditable(false);
-		headerslist.add(hdctitle);
-
-		Header hdclogo = new Header();
-		hdclogo.setField("logo");
-		hdclogo.setType("imageColumn");
-		if (role.contains(checker))
-			hdclogo.setEditable(false);
-		headerslist.add(hdclogo);
-
-		Header hdcoffertext = new Header();
-		hdcoffertext.setField("offerText");
-		hdcoffertext.setType("largeTextColumn");
-		if (role.contains(checker))
-			hdcoffertext.setEditable(false);
-		headerslist.add(hdcoffertext);
-
-		Header hdapproval = new Header();
-		hdapproval.setField("approvalStatus");
-		hdapproval.setEditable(false);
-		headerslist.add(hdapproval);
-
-		Header hdcreatedBy = new Header();
-		hdcreatedBy.setField("createdBy");
-		hdcreatedBy.setEditable(false);
-		headerslist.add(hdcreatedBy);
-
-		Header hdupdatedBy = new Header();
-		hdupdatedBy.setField("updatedBy");
-		hdupdatedBy.setEditable(false);
-		headerslist.add(hdupdatedBy);
-
-		Header hdId = new Header();
-		hdId.setField("id");
-		hdId.setHide(true);
-		if (role.contains(checker))
-			hdId.setEditable(false);
-		headerslist.add(hdId);
-
-		Header hdlive = new Header();
-		hdlive.setHeaderName("Action");
-		hdlive.setField("live");
-		if (role.contains(maker)) {
-			hdlive.setType("liveMakerColumn");
-		} else
-			hdlive.setType("liveCheckerColumn");
-		headerslist.add(hdlive);
-
+		/*
+		 * Header hdctitle = new Header(); hdctitle.setField("title"); if
+		 * (role.contains(checker)) hdctitle.setEditable(false);
+		 * headerslist.add(hdctitle);
+		 * 
+		 * Header hdclogo = new Header(); hdclogo.setField("logo");
+		 * hdclogo.setType("imageColumn"); if (role.contains(checker))
+		 * hdclogo.setEditable(false); headerslist.add(hdclogo);
+		 * 
+		 * Header hdcoffertext = new Header(); hdcoffertext.setField("offerText");
+		 * hdcoffertext.setType("largeTextColumn"); if (role.contains(checker))
+		 * hdcoffertext.setEditable(false); headerslist.add(hdcoffertext);
+		 * 
+		 * Header hdapproval = new Header(); hdapproval.setField("approvalStatus");
+		 * hdapproval.setEditable(false); headerslist.add(hdapproval);
+		 * 
+		 * Header hdcreatedBy = new Header(); hdcreatedBy.setField("createdBy");
+		 * hdcreatedBy.setEditable(false); headerslist.add(hdcreatedBy);
+		 * 
+		 * Header hdupdatedBy = new Header(); hdupdatedBy.setField("updatedBy");
+		 * hdupdatedBy.setEditable(false); headerslist.add(hdupdatedBy);
+		 * 
+		 * Header hdId = new Header(); hdId.setField("id"); hdId.setHide(true); if
+		 * (role.contains(checker)) hdId.setEditable(false); headerslist.add(hdId);
+		 * 
+		 * Header hdlive = new Header(); hdlive.setHeaderName("Action");
+		 * hdlive.setField("live"); if (role.contains(maker)) {
+		 * hdlive.setType("liveMakerColumn"); } else
+		 * hdlive.setType("liveCheckerColumn"); headerslist.add(hdlive);
+		 */
 		List<PartnerOffersStagingEntity> compent = campaignUploadService.getPartnerOffers();
 		compent.stream().forEach(ce -> {
-			PartnerOffer partnerofferresponse = new PartnerOffer();
+			Partner partnerofferresponse = new Partner();
 			partnerofferresponse.setTitle(ce.getTitle());
 			partnerofferresponse.setLogo(ce.getLogo());
-			partnerofferresponse.setOffertext(ce.getOffertext());
-			partnerofferresponse.setApprovalstatus(ce.getApprovalstatus());
+			partnerofferresponse.setOfferText(ce.getOffertext());
+			partnerofferresponse.setApprovalStatus(ce.getApprovalstatus());
 			partnerofferresponse.setCreatedBy(ce.getCreatedBy());
 			partnerofferresponse.setUpdatedBy(ce.getUpdatedBy());
 			partnerofferresponse.setId(ce.getId());
 			dataList.add(partnerofferresponse);
 
 		});
-		partneroffersGetResponseBody.setHeaders(headerslist);
-		partneroffersGetResponseBody.setData(dataList);
+		partneroffersGetResponseBody.setPartners(dataList);
 		return partneroffersGetResponseBody;
 	}
 
@@ -197,10 +168,9 @@ public class PartnerOffersController implements PartneroffersApi {
 				try {
 					if (!FilenameUtils.removeExtension(file.getOriginalFilename()).equals(partfilename))
 						throw new CustomBadRequestException("Excel file name incorrect");
-					String filename = saveFiletoLocation(file, uploadedBy);
-					campaignUploadService.save(file, partsheetname, uploadedBy, filename, makerip);
+					campaignUploadService.save(file, partsheetname, uploadedBy, dir, makerip);
 					message = "Uploaded the file successfully: " + file.getOriginalFilename();
-					partneroffersPostResponseBody.setStatuscode("200");
+					partneroffersPostResponseBody.setStatuscode(HttpStatus.SC_OK);
 					partneroffersPostResponseBody.setMessage(message);
 					return partneroffersPostResponseBody;
 				} catch (CustomBadRequestException e) {
@@ -223,39 +193,18 @@ public class PartnerOffersController implements PartneroffersApi {
 		headerslist.add(header);
 	}
 
-	public String saveFiletoLocation(MultipartFile file, String uploadedBy) {
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String dateWithoutTime = dateFormat.format(new Date());
 
-		String fileNameWithOutExt = FilenameUtils.removeExtension(file.getOriginalFilename());
 
-		String filename = fileNameWithOutExt + "_" + dateWithoutTime + "_" + LocalDateTime.now().getHour() + "_"
-				+ LocalDateTime.now().getMinute() + "_" + uploadedBy + ".xls";
-
-		Path filepath = Paths.get(dir.toString(), filename.trim());
-		try {
-			file.transferTo(filepath);
-		} catch (IllegalStateException e) {
-			logger.info(e.getMessage());
-		} catch (IOException e) {
-			logger.info(e.getMessage());
-		}
-
-		return filename;
-	}
-
-	@PutMapping
-	public CampaignPutResponse putCompanies(@RequestBody PartnerOfferPutRequest requestBody, HttpServletRequest request,
-			HttpServletResponse arg2) {
-
-		logger.info("Request received to update data");
+	@Override
+	public IdDeleteResponseBody deleteId(String id, HttpServletRequest request, HttpServletResponse arg2) {
+		logger.info("Request received to delete data");
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String makerip = request.getRemoteAddr();
 
-		logger.info("Partner Update Record maker ip  " + makerip);
+		logger.info("Partner Delete Record Maker ip  " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -263,60 +212,50 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
+		logger.info("User in JWT " + subject);
+
 		logger.info("Role in JWT " + role);
 
 		if (role.contains(maker)) {
 
-			CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
+			if (id != null && !id.equals(null)) {
+				PartnerOffersStagingEntity postg = campaignUploadService.getPTWithOutFileId(Integer.parseInt(id));
 
-			for (PartnerOffer prtoffer : requestBody.getUpdates()) {
-				
-				if (prtoffer.getLogo() != null && !prtoffer.getLogo().equals(null)
-						&& !prtoffer.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
-					throw new CustomBadRequestException("Logo format is invalid");
+				if (postg == null || postg.equals(null))
+					throw new CustomBadRequestException("No entity found with id " + id);
 
-				if (prtoffer.getId() > 0) {
-					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(prtoffer.getId());
-					if (prtstag != null) {
-						prtstag.setTitle(prtoffer.getTitle());
-						prtstag.setLogo(prtoffer.getLogo());
-						prtstag.setOffertext(prtoffer.getOffertext());
-						prtstag.setApprovalstatus(PENDING);
-						prtstag.setId(prtoffer.getId());
-						prtstag.setCreatedBy(subject);
-						prtstag.setUpdatedBy("-");
-						prtstag.setMakerip(makerip);
-						prtstag.setCheckerip("-");
-						campaignUploadService.savePartnerOffer(prtstag);
+				if (postg.getApprovalstatus().equals(DELETE_PENDING))
+					throw new CustomBadRequestException("Record is already in pending state");
+
+				if (postg != null) {
+					if (postg.getApprovalstatus().equals(APPROVED)) {
+						postg.setApprovalstatus(DELETE_PENDING);
+						postg.setCreatedBy(subject);
+						postg.setUpdatedBy("-");
+						postg.setMakerip(makerip);
+						postg.setCheckerip("-");
+						campaignUploadService.savePartnerOffer(postg);
 					} else
-						throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
-				} else {
-					PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
-					prtstag.setTitle(prtoffer.getTitle());
-					prtstag.setLogo(prtoffer.getLogo());
-					prtstag.setOffertext(prtoffer.getOffertext());
-					prtstag.setCreatedBy(subject);
-					prtstag.setUpdatedBy("-");
-					prtstag.setMakerip(makerip);
-					prtstag.setCheckerip("-");
-					prtstag.setApprovalstatus(PENDING);
-					campaignUploadService.savePartnerOffer(prtstag);
+						throw new CustomBadRequestException("Approved Records can be deleted");
+
 				}
-			}
 
-			campaignPutResponse.setMessage("Successfully update data in table");
-			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+				IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
+				youtubePutResponse.setMessage("Successfully updated data in table");
+				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
 
-			return campaignPutResponse;
+				return youtubePutResponse;
+			} else
+				throw new CustomBadRequestException("Id cannot be null");
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
+
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
-	@PostMapping("/record/{id}")
-	public CampaignPutResponse postRecord(@PathVariable String id, @RequestParam("action") String action,
-			HttpServletRequest request, HttpServletResponse arg2) {
-
+	@Override
+	public IdPostResponseBody postId(String id, String action, HttpServletRequest request, HttpServletResponse arg3)
+			throws BadRequestException, InternalServerErrorException {
 		logger.info("Request received to approve record data " + id);
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
@@ -433,7 +372,7 @@ public class PartnerOffersController implements PartneroffersApi {
 						campaignUploadService.savePartnerOffer(prtstag);
 					}
 
-					CampaignPutResponse campaignPutResponse = new CampaignPutResponse();
+					IdPostResponseBody campaignPutResponse = new IdPostResponseBody();
 
 					campaignPutResponse.setMessage("Successfully update data in table");
 					campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
@@ -447,16 +386,17 @@ public class PartnerOffersController implements PartneroffersApi {
 			throw new CustomBadRequestException("Checker can only Approve data");
 	}
 
-	@DeleteMapping("/{id}")
-	public CampaignPutResponse deletePO(@PathVariable String id, HttpServletRequest request, HttpServletResponse arg2) {
+	@Override
+	public PartneroffersPutResponseBody putPartneroffers(@Valid PartneroffersPutRequestBody requestBody,
+			HttpServletRequest request, HttpServletResponse arg2) {
 
-		logger.info("Request received to delete data");
+		logger.info("Request received to update data");
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
 
 		String makerip = request.getRemoteAddr();
 
-		logger.info("Partner Delete Record Maker ip  " + makerip);
+		logger.info("Partner Update Record maker ip  " + makerip);
 
 		String authorization = request.getHeader("authorization").substring(7);
 
@@ -464,43 +404,52 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
-
 		logger.info("Role in JWT " + role);
 
 		if (role.contains(maker)) {
 
-			if (id != null && !id.equals(null)) {
-				PartnerOffersStagingEntity postg = campaignUploadService.getPTWithOutFileId(Integer.parseInt(id));
+			PartneroffersPutResponseBody campaignPutResponse = new PartneroffersPutResponseBody();
 
-				if (postg == null || postg.equals(null))
-					throw new CustomBadRequestException("No entity found with id " + id);
+			for (Update prtoffer : requestBody.getUpdates()) {
+				
+				if (prtoffer.getLogo() != null && !prtoffer.getLogo().equals(null)
+						&& !prtoffer.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
+					throw new CustomBadRequestException("Logo format is invalid");
 
-				if (postg.getApprovalstatus().equals(DELETE_PENDING))
-					throw new CustomBadRequestException("Record is already in pending state");
-
-				if (postg != null) {
-					if (postg.getApprovalstatus().equals(APPROVED)) {
-						postg.setApprovalstatus(DELETE_PENDING);
-						postg.setCreatedBy(subject);
-						postg.setUpdatedBy("-");
-						postg.setMakerip(makerip);
-						postg.setCheckerip("-");
-						campaignUploadService.savePartnerOffer(postg);
+				if (prtoffer.getId() > 0) {
+					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(prtoffer.getId());
+					if (prtstag != null) {
+						prtstag.setTitle(prtoffer.getTitle());
+						prtstag.setLogo(prtoffer.getLogo());
+						prtstag.setOffertext(prtoffer.getOfferText());
+						prtstag.setApprovalstatus(PENDING);
+						prtstag.setId(prtoffer.getId());
+						prtstag.setCreatedBy(subject);
+						prtstag.setUpdatedBy("-");
+						prtstag.setMakerip(makerip);
+						prtstag.setCheckerip("-");
+						campaignUploadService.savePartnerOffer(prtstag);
 					} else
-						throw new CustomBadRequestException("Approved Records can be deleted");
-
+						throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
+				} else {
+					PartnerOffersStagingEntity prtstag = new PartnerOffersStagingEntity();
+					prtstag.setTitle(prtoffer.getTitle());
+					prtstag.setLogo(prtoffer.getLogo());
+					prtstag.setOffertext(prtoffer.getOfferText());
+					prtstag.setCreatedBy(subject);
+					prtstag.setUpdatedBy("-");
+					prtstag.setMakerip(makerip);
+					prtstag.setCheckerip("-");
+					prtstag.setApprovalstatus(PENDING);
+					campaignUploadService.savePartnerOffer(prtstag);
 				}
+			}
 
-				CampaignPutResponse youtubePutResponse = new CampaignPutResponse();
-				youtubePutResponse.setMessage("Successfully updated data in table");
-				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
+			campaignPutResponse.setMessage("Successfully update data in table");
+			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
-				return youtubePutResponse;
-			} else
-				throw new CustomBadRequestException("Id cannot be null");
+			return campaignPutResponse;
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
-
 	}
 }

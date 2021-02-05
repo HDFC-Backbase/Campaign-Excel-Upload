@@ -1,7 +1,6 @@
 
 package com.backbase.campaignupload.rest.spec.v1.partneroffers;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
@@ -25,7 +24,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "createdBy",
     "updatedBy"
 })
-public class Datum implements AdditionalPropertiesAware
+public class Partner implements AdditionalPropertiesAware
 {
 
     /**
@@ -67,10 +66,22 @@ public class Datum implements AdditionalPropertiesAware
      */
     @JsonProperty("id")
     @NotNull
-    private BigDecimal id;
+    private Integer id;
+    /**
+     * 
+     * (Required)
+     * 
+     */
     @JsonProperty("createdBy")
+    @NotNull
     private String createdBy;
+    /**
+     * 
+     * (Required)
+     * 
+     */
     @JsonProperty("updatedBy")
+    @NotNull
     private String updatedBy;
     /**
      * Additional Properties
@@ -103,7 +114,7 @@ public class Datum implements AdditionalPropertiesAware
         this.title = title;
     }
 
-    public Datum withTitle(String title) {
+    public Partner withTitle(String title) {
         this.title = title;
         return this;
     }
@@ -132,7 +143,7 @@ public class Datum implements AdditionalPropertiesAware
         this.logo = logo;
     }
 
-    public Datum withLogo(String logo) {
+    public Partner withLogo(String logo) {
         this.logo = logo;
         return this;
     }
@@ -161,7 +172,7 @@ public class Datum implements AdditionalPropertiesAware
         this.offerText = offerText;
     }
 
-    public Datum withOfferText(String offerText) {
+    public Partner withOfferText(String offerText) {
         this.offerText = offerText;
         return this;
     }
@@ -190,7 +201,7 @@ public class Datum implements AdditionalPropertiesAware
         this.approvalStatus = approvalStatus;
     }
 
-    public Datum withApprovalStatus(String approvalStatus) {
+    public Partner withApprovalStatus(String approvalStatus) {
         this.approvalStatus = approvalStatus;
         return this;
     }
@@ -203,7 +214,7 @@ public class Datum implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public BigDecimal getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -215,16 +226,18 @@ public class Datum implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public void setId(BigDecimal id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Datum withId(BigDecimal id) {
+    public Partner withId(Integer id) {
         this.id = id;
         return this;
     }
 
     /**
+     * 
+     * (Required)
      * 
      * @return
      *     The createdBy
@@ -236,6 +249,8 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
+     * (Required)
+     * 
      * @param createdBy
      *     The createdBy
      */
@@ -244,12 +259,14 @@ public class Datum implements AdditionalPropertiesAware
         this.createdBy = createdBy;
     }
 
-    public Datum withCreatedBy(String createdBy) {
+    public Partner withCreatedBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
 
     /**
+     * 
+     * (Required)
      * 
      * @return
      *     The updatedBy
@@ -261,6 +278,8 @@ public class Datum implements AdditionalPropertiesAware
 
     /**
      * 
+     * (Required)
+     * 
      * @param updatedBy
      *     The updatedBy
      */
@@ -269,7 +288,7 @@ public class Datum implements AdditionalPropertiesAware
         this.updatedBy = updatedBy;
     }
 
-    public Datum withUpdatedBy(String updatedBy) {
+    public Partner withUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
         return this;
     }
@@ -289,10 +308,10 @@ public class Datum implements AdditionalPropertiesAware
         if (other == this) {
             return true;
         }
-        if ((other instanceof Datum) == false) {
+        if ((other instanceof Partner) == false) {
             return false;
         }
-        Datum rhs = ((Datum) other);
+        Partner rhs = ((Partner) other);
         return new EqualsBuilder().append(title, rhs.title).append(logo, rhs.logo).append(offerText, rhs.offerText).append(approvalStatus, rhs.approvalStatus).append(id, rhs.id).append(createdBy, rhs.createdBy).append(updatedBy, rhs.updatedBy).isEquals();
     }
 

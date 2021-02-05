@@ -23,14 +23,5 @@
 		"updatedBy": {
 			"type": "string"
 		}
-	},
-	"required": [
-		"logo",
-		"offerText",
-		"title",
-		"approvalStatus",
-		"id",
-		"createdBy",
-		"updatedBy"
-	]
+	}
 }

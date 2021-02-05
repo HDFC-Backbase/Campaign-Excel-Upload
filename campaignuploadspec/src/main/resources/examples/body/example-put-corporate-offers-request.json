@@ -5,30 +5,21 @@
 			"logo": "www.hdfcbank.com/abb",
 			"offerText": "Get Your Family Similar Benefits That You Enjoy",
 			"companyId": "airtel",
-			"approvalStatus": "Deleted",
-			"id": 125,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 125
 		},
 		{
 			"title": "Salary Family Account",
 			"logo": "www.hdfcbank.com/bostongroup",
 			"offerText": "Get Your Family Similar Benefits That You Enjoy",
 			"companyId": "airtel",
-			"approvalStatus": "Approved",
-			"id": 128,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 128
 		},
 		{
 			"title": "Free Platinum Debit Card",
 			"logo": "www.hdfcbank.com/talisma",
 			"offerText": "Enjoy 1% cashback on shopping accident cover",
 			"companyId": "airtel",
-			"approvalStatus": "Approved",
-			"id": 129,
-			"createdBy": "rupesh",
-			"updatedBy": "mayur"
+			"id": 129
 		}
     ]
 }

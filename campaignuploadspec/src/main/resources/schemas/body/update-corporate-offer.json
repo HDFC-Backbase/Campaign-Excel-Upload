@@ -11,6 +11,9 @@
 		"offerText": {
 			"type": "string"
 		},
+		"companyId": {
+			"type": "string"
+		},
 		"approvalStatus": {
 			"type": "string"
 		},
@@ -23,14 +26,5 @@
 		"updatedBy": {
 			"type": "string"
 		}
-	},
-	"required": [
-		"logo",
-		"offerText",
-		"title",
-		"approvalStatus",
-		"id",
-		"createdBy",
-		"updatedBy"
-	]
+	}
 }
