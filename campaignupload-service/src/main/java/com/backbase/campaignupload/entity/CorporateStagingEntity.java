@@ -47,7 +47,7 @@ public class CorporateStagingEntity {
 	private String makerip;
 	
 	@ManyToOne
-	@JoinColumn(name = "file_id", nullable = false)
+	@JoinColumn(name = "file_id", nullable = true)
 	private FileApproveEntity corpfileApproveEntity;
 
 	

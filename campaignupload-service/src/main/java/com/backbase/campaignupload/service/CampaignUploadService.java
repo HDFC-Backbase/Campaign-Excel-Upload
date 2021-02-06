@@ -33,7 +33,7 @@ public interface CampaignUploadService {
 	
 	CorporateFinalEntity getcorpFinalEntitybyStagId(CorporateStagingEntity entity);
 
-	void delete(CorporateFinalEntity corpfinal);
+	void deleteCORP(CorporateFinalEntity corpfinal);
 	
 	List<CorporateFinalEntity> findAllCORP();
 	
@@ -47,7 +47,7 @@ public interface CampaignUploadService {
 	
 	PartnerOffersFinalEntity getFinalEntitybyStagId(PartnerOffersStagingEntity entity);
 	
-	void delete(PartnerOffersFinalEntity ptfinal);
+	void deletePT(PartnerOffersFinalEntity ptfinal);
 	
 	List<PartnerOffersFinalEntity> findAllPT();
 	

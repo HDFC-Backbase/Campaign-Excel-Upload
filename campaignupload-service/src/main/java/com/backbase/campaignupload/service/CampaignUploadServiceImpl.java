@@ -214,12 +214,12 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	}
 
 	@Override
-	public void delete(PartnerOffersFinalEntity ptfinal) {
+	public void deletePT(PartnerOffersFinalEntity ptfinal) {
 		partnerFinalUploadRepo.delete(ptfinal);
 	}
 
 	@Override
-	public void delete(CorporateFinalEntity corpfinal) {
+	public void deleteCORP(CorporateFinalEntity corpfinal) {
 		corporateFinalUploadRepo.delete(corpfinal);
 	}
 

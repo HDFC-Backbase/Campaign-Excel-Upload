@@ -132,8 +132,7 @@ public class PartnerOffersFinalEntity {
 	@Override
 	public String toString() {
 		return "PartnerOffersFinalEntity [id=" + id + ", offertext=" + offertext + ", title=" + title
-				+ ", approvalstatus=" + approvalstatus + ", logo=" + logo + ", createdBy=" + createdBy + ", updatedBy="
-				+ updatedBy + ", checkerip=" + checkerip + ", makerip=" + makerip + "]";
+				+ ", approvalstatus=" + approvalstatus + ", logo=" + logo + "]";
 	}
 
 	

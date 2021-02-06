@@ -89,7 +89,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		PartneroffersGetResponseBody partneroffersGetResponseBody = new PartneroffersGetResponseBody();
 
-		//List<Header> headerslist = new ArrayList<Header>();
+		// List<Header> headerslist = new ArrayList<Header>();
 
 		List<Partner> dataList = new ArrayList<Partner>();
 
@@ -193,9 +193,6 @@ public class PartnerOffersController implements PartneroffersApi {
 		headerslist.add(header);
 	}
 
-
-
-
 	@Override
 	public IdDeleteResponseBody deleteId(String id, HttpServletRequest request, HttpServletResponse arg2) {
 		logger.info("Request received to delete data");
@@ -241,7 +238,7 @@ public class PartnerOffersController implements PartneroffersApi {
 				}
 
 				IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
-				youtubePutResponse.setMessage("Successfully updated data in table");
+				youtubePutResponse.setMessage("Record delete requested");
 				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
 
 				return youtubePutResponse;
@@ -273,6 +270,8 @@ public class PartnerOffersController implements PartneroffersApi {
 		logger.info("User in JWT " + subject);
 
 		logger.info("Role in JWT " + role);
+		
+		IdPostResponseBody campaignPutResponse = new IdPostResponseBody();
 
 		if (role.contains(checker)) {
 
@@ -291,39 +290,23 @@ public class PartnerOffersController implements PartneroffersApi {
 							prtstag.setUpdatedBy(subject);
 							prtstag.setCheckerip(checkerip);
 							logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
+							campaignPutResponse.setMessage("Records Approved Successfully");
 							campaignUploadService.savePartnerOffer(prtstag);
 							if (ptfinal != null)
-								campaignUploadService.delete(ptfinal);
+								campaignUploadService.deletePT(ptfinal);
 
 						} else {
 							if (!prtstag.getApprovalstatus().equals(PENDING))
 								throw new CustomBadRequestException("Only Pending records can be Approved");
 
-							if (/* prtstag.getFileApproveEntity() == null && */ ptfinal == null) {
+							List<PartnerOffersFinalEntity> pofinallist = campaignUploadService.findAllPT();
 
-								List<PartnerOffersFinalEntity> pofinallist = campaignUploadService.findAllPT();
+							if (/* prtstag.getFileApproveEntity() == null && */ ptfinal == null) {
 
 								if (pofinallist.contains(prtstag)) {
 
-									PartnerOffersFinalEntity ptfinals = pofinallist.get(pofinallist.indexOf(prtstag));
-									logger.info("Overriding existing PartnerOffersFinalEntity " + ptfinals);
-									ptfinals.setTitle(prtstag.getTitle());
-									ptfinals.setLogo(prtstag.getLogo());
-									ptfinals.setOffertext(prtstag.getOffertext());
-									ptfinals.setApprovalstatus(APPROVED);
+									overrideFinal(prtstag, pofinallist, checkerip, subject);
 
-									PartnerOffersStagingEntity pst = ptfinals.getPartoffstagentity();
-									pst.setApprovalstatus(DELETED);
-									logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
-									campaignUploadService.savePartnerOffer(pst);
-
-									ptfinals.setPartoffstagentity(prtstag);
-									ptfinals.setCreatedBy(prtstag.getCreatedBy());
-									ptfinals.setUpdatedBy(subject);
-									ptfinals.setCheckerip(checkerip);
-									ptfinals.setMakerip(prtstag.getMakerip());
-									logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
-									campaignUploadService.savePTFinal(ptfinals);
 								} else {
 									logger.info("Creating new PartnerOffersFinalEntity");
 									PartnerOffersFinalEntity ptfinals = new PartnerOffersFinalEntity();
@@ -341,20 +324,29 @@ public class PartnerOffersController implements PartneroffersApi {
 								}
 							} else {
 								logger.info("Updating existing PartnerOffersFinalEntity");
-								ptfinal.setTitle(prtstag.getTitle());
-								ptfinal.setLogo(prtstag.getLogo());
-								ptfinal.setOffertext(prtstag.getOffertext());
-								ptfinal.setApprovalstatus(APPROVED);
-								ptfinal.setCreatedBy(prtstag.getCreatedBy());
-								ptfinal.setUpdatedBy(subject);
-								ptfinal.setCheckerip(checkerip);
-								ptfinal.setMakerip(prtstag.getMakerip());
-								logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
-								campaignUploadService.savePTFinal(ptfinal);
+
+								if (pofinallist.contains(prtstag)) {
+
+									overrideFinal(prtstag, pofinallist, checkerip, subject);
+									campaignUploadService.deletePT(ptfinal);
+
+								} else {
+									ptfinal.setTitle(prtstag.getTitle());
+									ptfinal.setLogo(prtstag.getLogo());
+									ptfinal.setOffertext(prtstag.getOffertext());
+									ptfinal.setApprovalstatus(APPROVED);
+									ptfinal.setCreatedBy(prtstag.getCreatedBy());
+									ptfinal.setUpdatedBy(subject);
+									ptfinal.setCheckerip(checkerip);
+									ptfinal.setMakerip(prtstag.getMakerip());
+									logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
+									campaignUploadService.savePTFinal(ptfinal);
+								}
 							}
 							prtstag.setApprovalstatus(APPROVED);
 							prtstag.setUpdatedBy(subject);
 							prtstag.setCheckerip(checkerip);
+							campaignPutResponse.setMessage("Record Approved successfully");
 							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 							campaignUploadService.savePartnerOffer(prtstag);
 						}
@@ -368,13 +360,11 @@ public class PartnerOffersController implements PartneroffersApi {
 							throw new CustomBadRequestException("Only Pending records can be rejected");
 						prtstag.setUpdatedBy(subject);
 						prtstag.setCheckerip(checkerip);
+						campaignPutResponse.setMessage("Record Rejected successfully");
 						logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 						campaignUploadService.savePartnerOffer(prtstag);
 					}
-
-					IdPostResponseBody campaignPutResponse = new IdPostResponseBody();
-
-					campaignPutResponse.setMessage("Successfully update data in table");
+					
 					campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
 					return campaignPutResponse;
@@ -411,7 +401,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			PartneroffersPutResponseBody campaignPutResponse = new PartneroffersPutResponseBody();
 
 			for (Update prtoffer : requestBody.getUpdates()) {
-				
+
 				if (prtoffer.getLogo() != null && !prtoffer.getLogo().equals(null)
 						&& !prtoffer.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
 					throw new CustomBadRequestException("Logo format is invalid");
@@ -445,11 +435,35 @@ public class PartnerOffersController implements PartneroffersApi {
 				}
 			}
 
-			campaignPutResponse.setMessage("Successfully update data in table");
+			campaignPutResponse.setMessage("Record Updated in table");
 			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
 			return campaignPutResponse;
 		} else
 			throw new CustomBadRequestException("Maker can only edit data");
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	public void overrideFinal(PartnerOffersStagingEntity prtstag, List<PartnerOffersFinalEntity> pofinallist,
+			String checkerip, String subject) {
+		PartnerOffersFinalEntity ptfinals = pofinallist.get(pofinallist.indexOf(prtstag));
+		logger.info("Overriding existing PartnerOffersFinalEntity " + ptfinals);
+		ptfinals.setTitle(prtstag.getTitle());
+		ptfinals.setLogo(prtstag.getLogo());
+		ptfinals.setOffertext(prtstag.getOffertext());
+		ptfinals.setApprovalstatus(APPROVED);
+
+		PartnerOffersStagingEntity pst = ptfinals.getPartoffstagentity();
+		pst.setApprovalstatus(DELETED);
+		logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
+		campaignUploadService.savePartnerOffer(pst);
+
+		ptfinals.setPartoffstagentity(prtstag);
+		ptfinals.setCreatedBy(prtstag.getCreatedBy());
+		ptfinals.setUpdatedBy(subject);
+		ptfinals.setCheckerip(checkerip);
+		ptfinals.setMakerip(prtstag.getMakerip());
+		logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
+		campaignUploadService.savePTFinal(ptfinals);
 	}
 }
