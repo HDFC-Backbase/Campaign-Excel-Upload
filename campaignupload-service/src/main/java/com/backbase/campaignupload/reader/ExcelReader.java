@@ -109,9 +109,9 @@ public class ExcelReader {
 
 			logger.info("No of Rows " + sheet.getLastRowNum());
 
-			row: for (int rowno = 1; rowno <= sheet.getLastRowNum(); rowno++) {
+			/* row: */ for (int rowno = 1; rowno <= sheet.getLastRowNum(); rowno++) {
 
-				logger.info("Current Row " + (rowno+1));
+				logger.info("Current Row " + (rowno + 1));
 
 				PartnerOffersStagingEntity campaigndata = new PartnerOffersStagingEntity();
 
@@ -123,8 +123,9 @@ public class ExcelReader {
 
 					Cell currentCell = row.getCell(cell);
 
-					if (currentCell == null)
-						continue row;
+					/*
+					 * if (currentCell == null) continue row;
+					 */
 
 					logger.info("Current Cell " + currentCell);
 
@@ -132,26 +133,27 @@ public class ExcelReader {
 					String headername = sheet.getRow(0).getCell(cell).getStringCellValue();
 
 					if (title.equals(headername)) {
-						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
+								&& !currentCell.getStringCellValue().equals(" ")) {
 							campaigndata.setTitle(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
 							throw new CustomBadRequestException(title + " is incorrect at row no " + (rowno + 1));
 						}
 					} else if (logo.equals(headername)) {
-						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ") && currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
+								&& !currentCell.getStringCellValue().equals(" ")
+								&& currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
 							campaigndata.setLogo(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
 							throw new CustomBadRequestException(logo + " is incorrect at row no " + (rowno + 1));
 						}
 					} else if (offertext.equals(headername)) {
-						if (!currentCell.getStringCellValue().equalsIgnoreCase(null)
-								&& !currentCell.getStringCellValue().equalsIgnoreCase(" ")) {
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
+								&& !currentCell.getStringCellValue().equals(" ")) {
 							campaigndata.setOffertext(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
 							throw new CustomBadRequestException(offertext + " is incorrect at row no " + (rowno + 1));
 						}
@@ -173,7 +175,7 @@ public class ExcelReader {
 		} catch (CustomBadRequestException e) {
 			logger.info(e.getMessage());
 			throw e;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Fail to parse Excel file: " + e.getMessage());
 		}
 	}
@@ -225,9 +227,9 @@ public class ExcelReader {
 
 			logger.info("No of Rows " + sheet.getLastRowNum());
 
-			row: for (int rowno = 1; rowno <= sheet.getLastRowNum(); rowno++) {
+			/* row: */ for (int rowno = 1; rowno <= sheet.getLastRowNum(); rowno++) {
 
-				logger.info("Current Row " + (rowno+1));
+				logger.info("Current Row " + (rowno + 1));
 
 				CorporateStagingEntity corpdata = new CorporateStagingEntity();
 
@@ -239,49 +241,56 @@ public class ExcelReader {
 
 					Cell currentCell = row.getCell(cell);
 
-					if (currentCell == null)
-						continue row;
+					/*
+					 * if (currentCell == null) continue row;
+					 */
 
 					logger.info("Current Cell " + currentCell);
 
 					// getting header name
 					String headername = sheet.getRow(0).getCell(cell).getStringCellValue();
-					
+
 					if (corpcompanyId.equals(headername)) {
-						if (!currentCell.getStringCellValue().equals(null)
-								&& !currentCell.getStringCellValue().equals(" ") && currentCell.getStringCellValue().matches("^[a-zA-Z0-9\\-]+$")) {
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
+								&& !currentCell.getStringCellValue().equals(" ")
+								&& currentCell.getStringCellValue().matches("^[a-zA-Z0-9\\-]+$")) {
 							Long countofentities = companyupload.countByCompany_Id(currentCell.getStringCellValue());
-							if (countofentities == 0)
-								continue row;
-							else
+							if (countofentities == 0) {
+								workbook.close();
+								throw new CustomBadRequestException(
+										corpcompanyId + " at row no." + (rowno + 1) + " not found in Company DB");
+							} else
 								corpdata.setCompanyId(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
-							throw new CustomBadRequestException(corpcompanyId + " is incorrect at row no " + (rowno + 1));
+							throw new CustomBadRequestException(
+									corpcompanyId + " should be alphanumeric row no." + (rowno + 1));
 						}
 					} else if (corptitle.equals(headername)) {
-						if (!currentCell.getStringCellValue().equals(null)
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
 								&& !currentCell.getStringCellValue().equals(" ")) {
 							corpdata.setTitle(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
-							throw new CustomBadRequestException(corptitle + " is incorrect at row no " + (rowno + 1));
+							throw new CustomBadRequestException(corptitle + " is incorrect at row no." + (rowno + 1));
 						}
 					} else if (corplogo.equals(headername)) {
-						if (!currentCell.getStringCellValue().equals(null)
-								&& !currentCell.getStringCellValue().equals(" ") && currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
+								&& !currentCell.getStringCellValue().equals(" ")
+								&& currentCell.getStringCellValue().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)")) {
 							corpdata.setLogo(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
-							throw new CustomBadRequestException(corplogo + " is incorrect at row no " + (rowno + 1));
+							throw new CustomBadRequestException(corplogo + " should be valid logo image row no." + (rowno + 1));
 						}
 					} else if (corproffertext.equals(headername)) {
-						if (!currentCell.getStringCellValue().equals(null)
+						if (currentCell!=null && !currentCell.getStringCellValue().equals(null)
 								&& !currentCell.getStringCellValue().equals(" ")) {
 							corpdata.setOffertext(currentCell.getStringCellValue());
-						}else {
+						} else {
 							workbook.close();
-							throw new CustomBadRequestException(corproffertext + " is incorrect at row no " + (rowno + 1));
+							throw new CustomBadRequestException(
+									corproffertext + " is incorrect at row no." + (rowno + 1));
 						}
 					}
 
