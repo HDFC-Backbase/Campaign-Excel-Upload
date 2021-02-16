@@ -75,7 +75,7 @@ public class Corporate implements AdditionalPropertiesAware
      */
     @JsonProperty("id")
     @NotNull
-    private Integer id;
+    private String id;
     /**
      * 
      * (Required)
@@ -252,7 +252,7 @@ public class Corporate implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -264,11 +264,11 @@ public class Corporate implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Corporate withId(Integer id) {
+    public Corporate withId(String id) {
         this.id = id;
         return this;
     }

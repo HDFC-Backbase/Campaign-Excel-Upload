@@ -38,7 +38,7 @@ public class Update implements AdditionalPropertiesAware
     @JsonProperty("approvalStatus")
     private String approvalStatus;
     @JsonProperty("id")
-    private Integer id;
+    private String id;
     @JsonProperty("createdBy")
     private String createdBy;
     @JsonProperty("updatedBy")
@@ -181,7 +181,7 @@ public class Update implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -191,11 +191,11 @@ public class Update implements AdditionalPropertiesAware
      *     The id
      */
     @JsonProperty("id")
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Update withId(Integer id) {
+    public Update withId(String id) {
         this.id = id;
         return this;
     }
