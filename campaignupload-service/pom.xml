@@ -93,6 +93,12 @@
 			<groupId>com.backbase.buildingblocks</groupId>
 			<artifactId>spring-security-csrf</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>encryption</groupId>
+			<artifactId>IdEncryption</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

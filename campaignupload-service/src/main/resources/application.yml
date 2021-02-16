@@ -99,3 +99,5 @@ file:
 
 LOG_FILE: D:/BackbaseLogs/campaignupload-service/campaignupload.log
 LOG_FILE_ARCHIVED: D:/BackbaseLogs/campaignupload-service/archived/campaignupload.log
+
+secret: backbasemicrosites09876

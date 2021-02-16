@@ -33,6 +33,7 @@ import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutRe
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.PartneroffersPutResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.partneroffers.Update;
 import com.backbase.campaignupload.service.CampaignUploadService;
+import com.backbase.encryption.EncryptionAES;
 import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
@@ -69,6 +70,9 @@ public class PartnerOffersController implements PartneroffersApi {
 	private static final String APPROVED = "Approved";
 
 	private static final String REJECTED = "Rejected";
+	
+	EncryptionAES aes = new EncryptionAES();
+
 
 	@Override
 	public PartneroffersGetResponseBody getPartneroffers(HttpServletRequest request, HttpServletResponse arg1) {
@@ -125,6 +129,9 @@ public class PartnerOffersController implements PartneroffersApi {
 		 */
 		List<PartnerOffersStagingEntity> compent = campaignUploadService.getPartnerOffers();
 		compent.stream().forEach(ce -> {
+			logger.info("Encryption started for getPartneroffers");
+			String getid = aes.encrypt(ce.getId());
+			logger.info("Encryption completed for getPartneroffers");
 			Partner partnerofferresponse = new Partner();
 			partnerofferresponse.setTitle(ce.getTitle());
 			partnerofferresponse.setLogo(ce.getLogo());
@@ -132,7 +139,7 @@ public class PartnerOffersController implements PartneroffersApi {
 			partnerofferresponse.setApprovalStatus(ce.getApprovalstatus());
 			partnerofferresponse.setCreatedBy(ce.getCreatedBy());
 			partnerofferresponse.setUpdatedBy(ce.getUpdatedBy());
-			partnerofferresponse.setId(ce.getId());
+			partnerofferresponse.setId(getid);
 			dataList.add(partnerofferresponse);
 
 		});
@@ -216,10 +223,13 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (role.contains(maker)) {
 
 			if (id != null && !id.equals(null)) {
-				PartnerOffersStagingEntity postg = campaignUploadService.getPTWithOutFileId(Integer.parseInt(id));
+				logger.info("Decryption started for deleteId partner upload");
+	            Integer deleteid = aes.decrypt(id);
+				logger.info("Decryption completed for deleteId partner upload");
+				PartnerOffersStagingEntity postg = campaignUploadService.getPTWithOutFileId(deleteid);
 
 				if (postg == null || postg.equals(null))
-					throw new CustomBadRequestException("No entity found with id " + id);
+					throw new CustomBadRequestException("No entity found with id " + deleteid);
 
 				if (postg.getApprovalstatus().equals(DELETE_PENDING))
 					throw new CustomBadRequestException("Record is already in pending state");
@@ -276,8 +286,10 @@ public class PartnerOffersController implements PartneroffersApi {
 		if (role.contains(checker)) {
 
 			if (id != null && !id.equals(null)) {
-
-				PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(Integer.parseInt(id));
+				logger.info("Decryption started for postrecord partner upload");
+	            Integer postid = aes.decrypt(id);
+				logger.info("Decryption completed for postrecord partner upload");
+				PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(postid);
 
 				if (prtstag != null) {
 
@@ -406,14 +418,18 @@ public class PartnerOffersController implements PartneroffersApi {
 						&& !prtoffer.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
 					throw new CustomBadRequestException("Logo format is invalid");
 
-				if (prtoffer.getId() > 0) {
-					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(prtoffer.getId());
+				//if (prtoffer.getId() > 0) {
+				if (prtoffer.getId() != null && prtoffer.getId() != "") {
+					logger.info("Decryption started for putPartneroffers");
+					Integer putid = aes.decrypt(prtoffer.getId());
+					logger.info("Decryption completed for putPartneroffers");
+					PartnerOffersStagingEntity prtstag = campaignUploadService.getPTWithOutFileId(putid);
 					if (prtstag != null) {
 						prtstag.setTitle(prtoffer.getTitle());
 						prtstag.setLogo(prtoffer.getLogo());
 						prtstag.setOffertext(prtoffer.getOfferText());
 						prtstag.setApprovalstatus(PENDING);
-						prtstag.setId(prtoffer.getId());
+						prtstag.setId(putid);
 						prtstag.setCreatedBy(subject);
 						prtstag.setUpdatedBy("-");
 						prtstag.setMakerip(makerip);

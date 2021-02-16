@@ -34,6 +34,7 @@ import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdDeleteResponse
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.IdPostResponseBody;
 import com.backbase.campaignupload.rest.spec.v1.corporateoffers.Update;
 import com.backbase.campaignupload.service.CampaignUploadService;
+import com.backbase.encryption.EncryptionAES;
 import com.backbase.validate.jwt.ValidateJwt;
 
 import liquibase.util.file.FilenameUtils;
@@ -70,6 +71,9 @@ public class CorporateController implements CorporateoffersApi {
 
 	@Value("${excelfile.corporate.sheetname}")
 	private String corpsheetname;
+	
+	EncryptionAES aes = new EncryptionAES();
+
 
 	@Override
 	public CorporateoffersGetResponseBody getCorporateoffers(HttpServletRequest request, HttpServletResponse arg1) {
@@ -129,6 +133,9 @@ public class CorporateController implements CorporateoffersApi {
 		List<CorporateStagingEntity> allcorp = campaignUploadService.getCorporateOffers();
 		allcorp.stream().forEach(corp -> {
 			Corporate corpdata = new Corporate();
+			logger.info("Encryption started for getCorporateoffers");
+			String getid = aes.encrypt(corp.getId());
+			logger.info("Encryption completed for getCorporateoffers");
 			corpdata.setTitle(corp.getTitle());
 			corpdata.setLogo(corp.getLogo());
 			corpdata.setOfferText(corp.getOffertext());
@@ -136,7 +143,7 @@ public class CorporateController implements CorporateoffersApi {
 			corpdata.setApprovalStatus(corp.getApprovalstatus());
 			corpdata.setCreatedBy(corp.getCreatedBy());
 			corpdata.setUpdatedBy(corp.getUpdatedBy());
-			corpdata.setId(corp.getId());
+			corpdata.setId(getid);
 			dataList.add(corpdata);
 
 		});
@@ -224,10 +231,13 @@ public class CorporateController implements CorporateoffersApi {
 		if (role.contains(maker)) {
 
 			if (id != null && !id.equals(null)) {
-				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(Integer.parseInt(id));
+				logger.info("Decryption started for deleteId corporate upload");
+	            Integer deleteid = aes.decrypt(id);
+				logger.info("Decryption completed for deleteId corporate upload");
+				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(deleteid);
 
 				if (corpstg == null || corpstg.equals(null))
-					throw new CustomBadRequestException("No entity found with id " + id);
+					throw new CustomBadRequestException("No entity found with id " + deleteid);
 
 				if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
 					throw new CustomBadRequestException("Record is already in pending state");
@@ -282,7 +292,10 @@ public class CorporateController implements CorporateoffersApi {
 		if (role.contains(checker)) {
 
 			if (id != null && !id.equals(null)) {
-				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(Integer.parseInt(id));
+				logger.info("Decryption started for postRecordId corporate upload ");
+				Integer postrecordid = aes.decrypt(id);
+				logger.info("Decryption completed for postRecordId corporate upload ");
+				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(postrecordid);
 				if (corpstg != null) {
 					CorporateFinalEntity corpfinal = campaignUploadService.getcorpFinalEntitybyStagId(corpstg);
 
@@ -416,15 +429,19 @@ public class CorporateController implements CorporateoffersApi {
 						&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
 					throw new CustomBadRequestException("Logo format is invalid");
 
-				if (corpoff.getId() > 0) {
-					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(corpoff.getId());
+				//if (corpoff.getId() > 0) {
+					if (corpoff.getId() != null && corpoff.getId() != "") {
+						logger.info("Decryption started for putCorporateoffers");
+						Integer putid = aes.decrypt(corpoff.getId());
+						logger.info("Decryption completed for putCorporateoffers");
+					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(putid);
 					if (corpstg != null) {
 						corpstg.setCompanyId(corpoff.getCompanyId());
 						corpstg.setTitle(corpoff.getTitle());
 						corpstg.setLogo(corpoff.getLogo());
 						corpstg.setOffertext(corpoff.getOfferText());
 						corpstg.setApprovalstatus(PENDING);
-						corpstg.setId(corpoff.getId());
+						corpstg.setId(putid);
 						corpstg.setCreatedBy(subject);
 						corpstg.setUpdatedBy("-");
 						corpstg.setMakerip(makerip);
