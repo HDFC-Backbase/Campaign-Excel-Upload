@@ -18,17 +18,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateAuditEntity;
 import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.FileApproveEntity;
+import com.backbase.campaignupload.entity.PartnerAuditEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
 import com.backbase.campaignupload.reader.ExcelReader;
 import com.backbase.campaignupload.repo.CompanyUploadRepo;
+import com.backbase.campaignupload.repo.CorporateAuditRepo;
 import com.backbase.campaignupload.repo.CorporateFinalUploadRepo;
 import com.backbase.campaignupload.repo.CorporateOfferRepo;
 import com.backbase.campaignupload.repo.FileApproveRepository;
+import com.backbase.campaignupload.repo.PartnerAuditRepo;
 import com.backbase.campaignupload.repo.PartnerFinalUploadRepo;
 import com.backbase.campaignupload.repo.PartnerOfferRepo;
 
@@ -61,6 +65,15 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 
 	@Autowired
 	ExcelReader excelreader;
+	
+	@Autowired
+    PartnerAuditRepo partnerAuditRepo;
+	
+	@Autowired
+    CorporateAuditRepo corporateAuditRepo;
+
+	
+	
 
 	@Override
 	public void save(MultipartFile file, String sheetname, String uploadedBy, String dir, String makerip) {
@@ -231,6 +244,16 @@ public class CampaignUploadServiceImpl implements CampaignUploadService {
 	@Override
 	public List<CorporateFinalEntity> findAllCORP() {
 		return corporateFinalUploadRepo.findAll();
+	}
+
+	@Override
+	public void saveCorpaudit(CorporateAuditEntity entity) {
+		corporateAuditRepo.save(entity);
+	}
+
+	@Override
+	public void savePartnaudit(PartnerAuditEntity entity) {
+		partnerAuditRepo.save(entity);	
 	}
 
 }

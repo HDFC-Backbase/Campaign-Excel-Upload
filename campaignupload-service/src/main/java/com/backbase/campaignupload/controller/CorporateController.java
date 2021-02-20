@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.backbase.buildingblocks.presentation.errors.BadRequestException;
 import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
 import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateAuditEntity;
 import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
@@ -257,6 +258,7 @@ public class CorporateController implements CorporateoffersApi {
 							corpstg.setMakerip(makerip);
 							corpstg.setCheckerip("-");
 							campaignUploadService.saveCorpOffer(corpstg);
+							corpauditsave(corpstg, DELETE_PENDING, subject, makerip, "-");
 						} else
 							throw new CustomBadRequestException("Only Approved records can be deleted");
 					}
@@ -322,6 +324,7 @@ public class CorporateController implements CorporateoffersApi {
 								logger.info("CorporateStagingEntity entity going for delete " + corpstg);
 								campaignPutResponse.setMessage("Records Approved Successfully");
 								campaignUploadService.saveCorpOffer(corpstg);
+								corpauditsave(corpstg, DELETED, subject, "-", checkerip);
 								if (corpfinal != null)
 									campaignUploadService.deleteCORP(corpfinal);
 							} else {
@@ -379,6 +382,7 @@ public class CorporateController implements CorporateoffersApi {
 									campaignPutResponse.setMessage("Records Approved Successfully");
 									logger.info("CorporateStagingEntity entity going for save " + corpstg);
 									campaignUploadService.saveCorpOffer(corpstg);
+									corpauditsave(corpstg, APPROVED, subject, "-", checkerip);
 								} else
 									throw new CustomBadRequestException("No Company Mapping Found");
 							}
@@ -394,6 +398,7 @@ public class CorporateController implements CorporateoffersApi {
 							campaignPutResponse.setMessage("Records Rejected Successfully");
 							logger.info("CorporateStagingEntity entity going for save " + corpstg);
 							campaignUploadService.saveCorpOffer(corpstg);
+							corpauditsave(corpstg, corpstg.getApprovalstatus(), subject, "-", checkerip);
 						}
 					} else
 						throw new CustomBadRequestException("No staging entity found with Id " + id);
@@ -466,6 +471,7 @@ public class CorporateController implements CorporateoffersApi {
 							corpstg.setMakerip(makerip);
 							corpstg.setCheckerip("-");
 							campaignUploadService.saveCorpOffer(corpstg);
+							corpauditsave(corpstg, PENDING, subject, makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
 					} else {
@@ -522,6 +528,26 @@ public class CorporateController implements CorporateoffersApi {
 		corpfinals.setCorporateStagingEntity(corpstg);
 		logger.info("CorporateFinalEntity entity going for save " + corpfinals);
 		campaignUploadService.saveCorpFinal(corpfinals);
+	}
+	
+	public void corpauditsave(CorporateStagingEntity corpStagingEntity, String approvalstatus,String subject,String makerip,String checkerip)
+	{
+		
+		logger.info("going to save audit data");
+		CorporateAuditEntity corpAud=new CorporateAuditEntity();
+		corpAud.setCompanyId(corpStagingEntity.getCompanyId());
+		corpAud.setTitle(corpStagingEntity.getTitle());
+		corpAud.setLogo(corpStagingEntity.getLogo());
+		corpAud.setOffertext(corpStagingEntity.getOffertext());
+		corpAud.setApprovalstatus(approvalstatus);
+		corpAud.setCreatedBy(subject);
+		corpAud.setUpdatedBy("-");
+		corpAud.setMakerip(makerip);
+		corpAud.setCheckerip(checkerip);
+		campaignUploadService.saveCorpaudit(corpAud);
+		logger.info("audit data save success");
+
+
 	}
 
 }

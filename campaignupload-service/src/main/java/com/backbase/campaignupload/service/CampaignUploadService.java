@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.campaignupload.entity.CompanyFinalEntity;
+import com.backbase.campaignupload.entity.CorporateAuditEntity;
 import com.backbase.campaignupload.entity.CorporateFinalEntity;
 import com.backbase.campaignupload.entity.CorporateStagingEntity;
+import com.backbase.campaignupload.entity.PartnerAuditEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
@@ -53,6 +55,12 @@ public interface CampaignUploadService {
 	
 	// company
 	CompanyFinalEntity getCompany(String name);
+	
+	
+	//audit
+	public void saveCorpaudit(CorporateAuditEntity entity);
+	public void savePartnaudit(PartnerAuditEntity entity);
+
 
 
 }

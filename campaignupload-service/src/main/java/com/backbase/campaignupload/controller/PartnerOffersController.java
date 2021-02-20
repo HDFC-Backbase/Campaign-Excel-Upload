@@ -17,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.buildingblocks.presentation.errors.BadRequestException;
 import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
+import com.backbase.campaignupload.entity.CorporateAuditEntity;
+import com.backbase.campaignupload.entity.CorporateStagingEntity;
+import com.backbase.campaignupload.entity.PartnerAuditEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 import com.backbase.campaignupload.exception.CustomBadRequestException;
@@ -248,6 +251,7 @@ public class PartnerOffersController implements PartneroffersApi {
 							postg.setMakerip(makerip);
 							postg.setCheckerip("-");
 							campaignUploadService.savePartnerOffer(postg);
+						partnauditsave(postg, DELETE_PENDING, subject, makerip, "-");
 						} else
 							throw new CustomBadRequestException("Approved Records can be deleted");
 
@@ -316,6 +320,7 @@ public class PartnerOffersController implements PartneroffersApi {
 								logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
 								campaignPutResponse.setMessage("Records Approved Successfully");
 								campaignUploadService.savePartnerOffer(prtstag);
+								partnauditsave(prtstag, DELETED, subject, "-", checkerip);
 								if (ptfinal != null)
 									campaignUploadService.deletePT(ptfinal);
 
@@ -373,6 +378,7 @@ public class PartnerOffersController implements PartneroffersApi {
 								campaignPutResponse.setMessage("Record Approved successfully");
 								logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 								campaignUploadService.savePartnerOffer(prtstag);
+								partnauditsave(prtstag, APPROVED, subject, "-", checkerip);
 							}
 
 						} else if (action.equalsIgnoreCase("R")) {
@@ -387,6 +393,7 @@ public class PartnerOffersController implements PartneroffersApi {
 							campaignPutResponse.setMessage("Record Rejected successfully");
 							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 							campaignUploadService.savePartnerOffer(prtstag);
+							partnauditsave(prtstag, prtstag.getApprovalstatus(), subject, "-", checkerip);
 						}
 
 						campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
@@ -453,6 +460,7 @@ public class PartnerOffersController implements PartneroffersApi {
 							prtstag.setMakerip(makerip);
 							prtstag.setCheckerip("-");
 							campaignUploadService.savePartnerOffer(prtstag);
+							partnauditsave(prtstag, PENDING, subject, makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
 					} else {
@@ -505,5 +513,24 @@ public class PartnerOffersController implements PartneroffersApi {
 		ptfinals.setMakerip(prtstag.getMakerip());
 		logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
 		campaignUploadService.savePTFinal(ptfinals);
+	}
+	
+	public void partnauditsave(PartnerOffersStagingEntity partnStagingEntity, String approvalstatus,String subject,String makerip,String checkerip)
+	{
+		
+		logger.info("going to save audit data");
+		PartnerAuditEntity partnAud=new PartnerAuditEntity();
+		partnAud.setTitle(partnStagingEntity.getTitle());
+		partnAud.setLogo(partnStagingEntity.getLogo());
+		partnAud.setOffertext(partnStagingEntity.getOffertext());
+		partnAud.setApprovalstatus(approvalstatus);
+		partnAud.setCreatedBy(subject);
+		partnAud.setUpdatedBy("-");
+		partnAud.setMakerip(makerip);
+		partnAud.setCheckerip(checkerip);
+		campaignUploadService.savePartnaudit(partnAud);
+		logger.info("audit data save success");
+
+
 	}
 }
