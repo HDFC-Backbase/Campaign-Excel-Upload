@@ -71,9 +71,9 @@ public class CorporateController implements CorporateoffersApi {
 
 	@Value("${excelfile.corporate.sheetname}")
 	private String corpsheetname;
-	
-	EncryptionAES aes = new EncryptionAES();
 
+	@Value("${secret}")
+	private String secret;
 
 	@Override
 	public CorporateoffersGetResponseBody getCorporateoffers(HttpServletRequest request, HttpServletResponse arg1) {
@@ -134,7 +134,14 @@ public class CorporateController implements CorporateoffersApi {
 		allcorp.stream().forEach(corp -> {
 			Corporate corpdata = new Corporate();
 			logger.info("Encryption started for getCorporateoffers");
-			String getid = aes.encrypt(corp.getId());
+			String getid;
+			try {
+				getid = EncryptionAES.encrypt(corp.getId(), secret);
+			} catch (Exception e) {
+				logger.info("Exception while encryption " + e.getMessage());
+				throw new CustomInternalServerException(
+						"Something went wrong while encrypting in CorporateExcelUpload");
+			}
 			logger.info("Encryption completed for getCorporateoffers");
 			corpdata.setTitle(corp.getTitle());
 			corpdata.setLogo(corp.getLogo());
@@ -227,42 +234,49 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("User in JWT " + subject);
 
 		logger.info("Role in JWT " + role);
+		try {
+			if (role.contains(maker)) {
 
-		if (role.contains(maker)) {
+				if (id != null && !id.equals(null)) {
+					logger.info("Decryption started for deleteId corporate upload");
+					Integer deleteid = EncryptionAES.decrypt(id, secret);
+					logger.info("Decryption completed for deleteId corporate upload");
+					CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(deleteid);
 
-			if (id != null && !id.equals(null)) {
-				logger.info("Decryption started for deleteId corporate upload");
-	            Integer deleteid = aes.decrypt(id);
-				logger.info("Decryption completed for deleteId corporate upload");
-				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(deleteid);
+					if (corpstg == null || corpstg.equals(null))
+						throw new CustomBadRequestException("No entity found with id " + deleteid);
 
-				if (corpstg == null || corpstg.equals(null))
-					throw new CustomBadRequestException("No entity found with id " + deleteid);
+					if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
+						throw new CustomBadRequestException("Record is already in pending state");
 
-				if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
-					throw new CustomBadRequestException("Record is already in pending state");
+					if (corpstg != null) {
+						if (corpstg.getApprovalstatus().equals(APPROVED)) {
+							corpstg.setApprovalstatus(DELETE_PENDING);
+							corpstg.setCreatedBy(subject);
+							corpstg.setUpdatedBy("-");
+							corpstg.setMakerip(makerip);
+							corpstg.setCheckerip("-");
+							campaignUploadService.saveCorpOffer(corpstg);
+						} else
+							throw new CustomBadRequestException("Only Approved records can be deleted");
+					}
 
-				if (corpstg != null) {
-					if (corpstg.getApprovalstatus().equals(APPROVED)) {
-						corpstg.setApprovalstatus(DELETE_PENDING);
-						corpstg.setCreatedBy(subject);
-						corpstg.setUpdatedBy("-");
-						corpstg.setMakerip(makerip);
-						corpstg.setCheckerip("-");
-						campaignUploadService.saveCorpOffer(corpstg);
-					} else
-						throw new CustomBadRequestException("Only Approved records can be deleted");
-				}
+					IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
+					youtubePutResponse.setMessage("Record delete requested");
+					youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
 
-				IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
-				youtubePutResponse.setMessage("Record delete requested");
-				youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
-
-				return youtubePutResponse;
+					return youtubePutResponse;
+				} else
+					throw new CustomBadRequestException("Id cannot be null");
 			} else
-				throw new CustomBadRequestException("Id cannot be null");
-		} else
-			throw new CustomBadRequestException("Maker can only edit data");
+				throw new CustomBadRequestException("Maker can only edit data");
+		} catch (CustomBadRequestException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			throw new CustomInternalServerException(
+					"Something went wrong while delete request in CorporateExcelUpload");
+		}
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -284,115 +298,120 @@ public class CorporateController implements CorporateoffersApi {
 		logger.info("User in JWT " + subject);
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
-		
+
 		IdPostResponseBody campaignPutResponse = new IdPostResponseBody();
 
 		logger.info("Role in JWT " + role);
+		try {
+			if (role.contains(checker)) {
 
-		if (role.contains(checker)) {
+				if (id != null && !id.equals(null)) {
+					logger.info("Decryption started for postRecordId corporate upload ");
+					Integer postrecordid = EncryptionAES.decrypt(id, secret);
+					logger.info("Decryption completed for postRecordId corporate upload ");
+					CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(postrecordid);
+					if (corpstg != null) {
+						CorporateFinalEntity corpfinal = campaignUploadService.getcorpFinalEntitybyStagId(corpstg);
 
-			if (id != null && !id.equals(null)) {
-				logger.info("Decryption started for postRecordId corporate upload ");
-				Integer postrecordid = aes.decrypt(id);
-				logger.info("Decryption completed for postRecordId corporate upload ");
-				CorporateStagingEntity corpstg = campaignUploadService.getCorporateWithOutFileId(postrecordid);
-				if (corpstg != null) {
-					CorporateFinalEntity corpfinal = campaignUploadService.getcorpFinalEntitybyStagId(corpstg);
+						if (action.equalsIgnoreCase("A")) {
 
-					if (action.equalsIgnoreCase("A")) {
-
-						if (corpstg.getApprovalstatus().equals(DELETE_PENDING)) {
-							corpstg.setApprovalstatus(DELETED);
-							corpstg.setUpdatedBy(subject);
-							corpstg.setCheckerip(checkerip);
-							logger.info("CorporateStagingEntity entity going for delete " + corpstg);
-							campaignPutResponse.setMessage("Records Approved Successfully");
-							campaignUploadService.saveCorpOffer(corpstg);
-							if (corpfinal != null)
-								campaignUploadService.deleteCORP(corpfinal);
-						} else {
-
-							if (!corpstg.getApprovalstatus().equals(PENDING))
-								throw new CustomBadRequestException("Only Pending records can be Approved");
-
-							CompanyFinalEntity cmfinal = campaignUploadService.getCompany(corpstg.getCompanyId());
-							List<CorporateFinalEntity> corpfinallist = campaignUploadService.findAllCORP();
-							if (cmfinal != null) {
-								if (/* corpstg.getCorpfileApproveEntity() == null && */corpfinal == null) {
-									if (corpfinallist.contains(corpstg)) {
-
-										overrideFinal(corpstg, corpfinallist, checkerip, subject);
-
-									} else {
-										logger.info("Creating new  CorporateFinalEntity");
-										CorporateFinalEntity corpfinals = new CorporateFinalEntity();
-										corpfinals.setTitle(corpstg.getTitle());
-										corpfinals.setLogo(corpstg.getLogo());
-										corpfinals.setOffertext(corpstg.getOffertext());
-										corpfinals.setApprovalstatus(APPROVED);
-										corpfinals.setCreatedBy(corpstg.getCreatedBy());
-										corpfinals.setUpdatedBy(subject);
-										corpfinals.setCheckerip(checkerip);
-										corpfinals.setMakerip(corpstg.getMakerip());
-										corpfinals.setCorporateStagingEntity(corpstg);
-										corpfinals.setCompanyfinalEntity(cmfinal);
-										logger.info("CorporateFinalEntity entity going for save " + corpfinals);
-										campaignUploadService.saveCorpFinal(corpfinals);
-									}
-								} else {
-									logger.info("Updating existing CorporateFinalEntity");
-									if (corpfinallist.contains(corpstg)) {
-
-										overrideFinal(corpstg, corpfinallist, checkerip, subject);
-										campaignUploadService.deleteCORP(corpfinal);
-
-									} else {									
-										corpfinal.setTitle(corpstg.getTitle());
-										corpfinal.setLogo(corpstg.getLogo());
-										corpfinal.setOffertext(corpstg.getOffertext());
-										corpfinal.setCreatedBy(corpstg.getCreatedBy());
-										corpfinal.setUpdatedBy(subject);
-										corpfinal.setApprovalstatus(APPROVED);
-										corpfinal.setCheckerip(checkerip);
-										corpfinal.setMakerip(corpstg.getMakerip());
-										logger.info("CorporateFinalEntity entity going for save " + corpfinal);
-										campaignUploadService.saveCorpFinal(corpfinal);
-									}
-								}
-								corpstg.setApprovalstatus(APPROVED);
+							if (corpstg.getApprovalstatus().equals(DELETE_PENDING)) {
+								corpstg.setApprovalstatus(DELETED);
 								corpstg.setUpdatedBy(subject);
 								corpstg.setCheckerip(checkerip);
+								logger.info("CorporateStagingEntity entity going for delete " + corpstg);
 								campaignPutResponse.setMessage("Records Approved Successfully");
-								logger.info("CorporateStagingEntity entity going for save " + corpstg);
 								campaignUploadService.saveCorpOffer(corpstg);
-							} else
-								throw new CustomBadRequestException("No Company Mapping Found");
+								if (corpfinal != null)
+									campaignUploadService.deleteCORP(corpfinal);
+							} else {
+
+								if (!corpstg.getApprovalstatus().equals(PENDING))
+									throw new CustomBadRequestException("Only Pending records can be Approved");
+
+								CompanyFinalEntity cmfinal = campaignUploadService.getCompany(corpstg.getCompanyId());
+								List<CorporateFinalEntity> corpfinallist = campaignUploadService.findAllCORP();
+								if (cmfinal != null) {
+									if (/* corpstg.getCorpfileApproveEntity() == null && */corpfinal == null) {
+										if (corpfinallist.contains(corpstg)) {
+
+											overrideFinal(corpstg, corpfinallist, checkerip, subject);
+
+										} else {
+											logger.info("Creating new  CorporateFinalEntity");
+											CorporateFinalEntity corpfinals = new CorporateFinalEntity();
+											corpfinals.setTitle(corpstg.getTitle());
+											corpfinals.setLogo(corpstg.getLogo());
+											corpfinals.setOffertext(corpstg.getOffertext());
+											corpfinals.setApprovalstatus(APPROVED);
+											corpfinals.setCreatedBy(corpstg.getCreatedBy());
+											corpfinals.setUpdatedBy(subject);
+											corpfinals.setCheckerip(checkerip);
+											corpfinals.setMakerip(corpstg.getMakerip());
+											corpfinals.setCorporateStagingEntity(corpstg);
+											corpfinals.setCompanyfinalEntity(cmfinal);
+											logger.info("CorporateFinalEntity entity going for save " + corpfinals);
+											campaignUploadService.saveCorpFinal(corpfinals);
+										}
+									} else {
+										logger.info("Updating existing CorporateFinalEntity");
+										if (corpfinallist.contains(corpstg)) {
+
+											overrideFinal(corpstg, corpfinallist, checkerip, subject);
+											campaignUploadService.deleteCORP(corpfinal);
+
+										} else {
+											corpfinal.setTitle(corpstg.getTitle());
+											corpfinal.setLogo(corpstg.getLogo());
+											corpfinal.setOffertext(corpstg.getOffertext());
+											corpfinal.setCreatedBy(corpstg.getCreatedBy());
+											corpfinal.setUpdatedBy(subject);
+											corpfinal.setApprovalstatus(APPROVED);
+											corpfinal.setCheckerip(checkerip);
+											corpfinal.setMakerip(corpstg.getMakerip());
+											logger.info("CorporateFinalEntity entity going for save " + corpfinal);
+											campaignUploadService.saveCorpFinal(corpfinal);
+										}
+									}
+									corpstg.setApprovalstatus(APPROVED);
+									corpstg.setUpdatedBy(subject);
+									corpstg.setCheckerip(checkerip);
+									campaignPutResponse.setMessage("Records Approved Successfully");
+									logger.info("CorporateStagingEntity entity going for save " + corpstg);
+									campaignUploadService.saveCorpOffer(corpstg);
+								} else
+									throw new CustomBadRequestException("No Company Mapping Found");
+							}
+						} else if (action.equalsIgnoreCase("R")) {
+							if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
+								corpstg.setApprovalstatus(APPROVED);
+							else if (corpstg.getApprovalstatus().equals(PENDING))
+								corpstg.setApprovalstatus(REJECTED);
+							else
+								throw new CustomBadRequestException("Only Pending records can be rejected");
+							corpstg.setUpdatedBy(subject);
+							corpstg.setCheckerip(checkerip);
+							campaignPutResponse.setMessage("Records Rejected Successfully");
+							logger.info("CorporateStagingEntity entity going for save " + corpstg);
+							campaignUploadService.saveCorpOffer(corpstg);
 						}
-					} else if (action.equalsIgnoreCase("R")) {
-						if (corpstg.getApprovalstatus().equals(DELETE_PENDING))
-							corpstg.setApprovalstatus(APPROVED);
-						else if (corpstg.getApprovalstatus().equals(PENDING))
-							corpstg.setApprovalstatus(REJECTED);
-						else
-							throw new CustomBadRequestException("Only Pending records can be rejected");
-						corpstg.setUpdatedBy(subject);
-						corpstg.setCheckerip(checkerip);
-						campaignPutResponse.setMessage("Records Rejected Successfully");
-						logger.info("CorporateStagingEntity entity going for save " + corpstg);
-						campaignUploadService.saveCorpOffer(corpstg);
-					}
+					} else
+						throw new CustomBadRequestException("No staging entity found with Id " + id);
 				} else
-					throw new CustomBadRequestException("No staging entity found with Id " + id);
+					throw new CustomBadRequestException("Id cannot be null");
+
+				campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+
+				return campaignPutResponse;
 			} else
-				throw new CustomBadRequestException("Id cannot be null");
-
-
-			
-			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
-
-			return campaignPutResponse;
-		} else
-			throw new CustomBadRequestException("Checker can only Approve data");
+				throw new CustomBadRequestException("Checker can only Approve data");
+		} catch (CustomBadRequestException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			throw new CustomInternalServerException(
+					"Something went wrong while approve request in CorporateExcelUpload");
+		}
 	}
 
 	@Override
@@ -415,61 +434,69 @@ public class CorporateController implements CorporateoffersApi {
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		logger.info("Role in JWT " + role);
+		try {
+			if (role.contains(maker)) {
 
-		if (role.contains(maker)) {
+				CorporateoffersPutResponseBody campaignPutResponse = new CorporateoffersPutResponseBody();
 
-			CorporateoffersPutResponseBody campaignPutResponse = new CorporateoffersPutResponseBody();
+				for (Update corpoff : requestBody.getUpdates()) {
+					if (corpoff.getCompanyId() != null && !corpoff.getCompanyId().equals(null)
+							&& !corpoff.getCompanyId().matches("^[a-zA-Z0-9\\-]+$"))
+						throw new CustomBadRequestException("Company Id should be alphanumerice");
 
-			for (Update corpoff : requestBody.getUpdates()) {
-				if (corpoff.getCompanyId() != null && !corpoff.getCompanyId().equals(null)
-						&& !corpoff.getCompanyId().matches("^[a-zA-Z0-9\\-]+$"))
-					throw new CustomBadRequestException("Company Id should be alphanumerice");
+					if (corpoff.getLogo() != null && !corpoff.getLogo().equals(null)
+							&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
+						throw new CustomBadRequestException("Logo format is invalid");
 
-				if (corpoff.getLogo() != null && !corpoff.getLogo().equals(null)
-						&& !corpoff.getLogo().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"))
-					throw new CustomBadRequestException("Logo format is invalid");
-
-				//if (corpoff.getId() > 0) {
+					// if (corpoff.getId() > 0) {
 					if (corpoff.getId() != null && corpoff.getId() != "") {
 						logger.info("Decryption started for putCorporateoffers");
-						Integer putid = aes.decrypt(corpoff.getId());
+						Integer putid = EncryptionAES.decrypt(corpoff.getId(), secret);
 						logger.info("Decryption completed for putCorporateoffers");
-					CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(putid);
-					if (corpstg != null) {
+						CorporateStagingEntity corpstg = campaignUploadService.getCorpOffer(putid);
+						if (corpstg != null) {
+							corpstg.setCompanyId(corpoff.getCompanyId());
+							corpstg.setTitle(corpoff.getTitle());
+							corpstg.setLogo(corpoff.getLogo());
+							corpstg.setOffertext(corpoff.getOfferText());
+							corpstg.setApprovalstatus(PENDING);
+							corpstg.setId(putid);
+							corpstg.setCreatedBy(subject);
+							corpstg.setUpdatedBy("-");
+							corpstg.setMakerip(makerip);
+							corpstg.setCheckerip("-");
+							campaignUploadService.saveCorpOffer(corpstg);
+						} else
+							throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
+					} else {
+						CorporateStagingEntity corpstg = new CorporateStagingEntity();
 						corpstg.setCompanyId(corpoff.getCompanyId());
 						corpstg.setTitle(corpoff.getTitle());
 						corpstg.setLogo(corpoff.getLogo());
 						corpstg.setOffertext(corpoff.getOfferText());
 						corpstg.setApprovalstatus(PENDING);
-						corpstg.setId(putid);
 						corpstg.setCreatedBy(subject);
 						corpstg.setUpdatedBy("-");
 						corpstg.setMakerip(makerip);
 						corpstg.setCheckerip("-");
 						campaignUploadService.saveCorpOffer(corpstg);
-					} else
-						throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
-				} else {
-					CorporateStagingEntity corpstg = new CorporateStagingEntity();
-					corpstg.setCompanyId(corpoff.getCompanyId());
-					corpstg.setTitle(corpoff.getTitle());
-					corpstg.setLogo(corpoff.getLogo());
-					corpstg.setOffertext(corpoff.getOfferText());
-					corpstg.setApprovalstatus(PENDING);
-					corpstg.setCreatedBy(subject);
-					corpstg.setUpdatedBy("-");
-					corpstg.setMakerip(makerip);
-					corpstg.setCheckerip("-");
-					campaignUploadService.saveCorpOffer(corpstg);
+					}
 				}
-			}
 
-			campaignPutResponse.setMessage("Record Updated in table");
-			campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
+				campaignPutResponse.setMessage("Record Updated in table");
+				campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
-			return campaignPutResponse;
-		} else
-			throw new CustomBadRequestException("Maker can only edit data");
+				return campaignPutResponse;
+			} else
+				throw new CustomBadRequestException("Maker can only edit data");
+		} catch (CustomBadRequestException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			throw new CustomInternalServerException(
+					"Something went wrong while update request in CorporateExcelUpload");
+		}
+
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -492,7 +519,7 @@ public class CorporateController implements CorporateoffersApi {
 		corpfinals.setUpdatedBy(subject);
 		corpfinals.setCheckerip(checkerip);
 		corpfinals.setMakerip(corpstg.getMakerip());
-		corpfinals.setCorporateStagingEntity(corpstg);		
+		corpfinals.setCorporateStagingEntity(corpstg);
 		logger.info("CorporateFinalEntity entity going for save " + corpfinals);
 		campaignUploadService.saveCorpFinal(corpfinals);
 	}
