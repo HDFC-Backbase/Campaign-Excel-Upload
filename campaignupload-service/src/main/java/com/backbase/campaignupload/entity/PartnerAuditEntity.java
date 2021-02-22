@@ -29,7 +29,7 @@ public class PartnerAuditEntity {
 	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approval_status")
+	@Column(name = "partn_status")
 	private String approvalstatus;
 	
 	@Column(name = "created_by")
@@ -45,7 +45,7 @@ public class PartnerAuditEntity {
 	private String makerip;
 	
 	@ManyToOne
-	@JoinColumn(name = "partn_stag", nullable = false)
+	@JoinColumn(name = "partn_stg_id", nullable = false)
 	private PartnerOffersStagingEntity partnstaginentity;
 	
 	public Integer getId() {

@@ -444,7 +444,7 @@ public class PartnerOffersController implements PartneroffersApi {
 						throw new CustomBadRequestException("Logo format is invalid");
 
 					// if (prtoffer.getId() > 0) {
-					if (prtoffer.getId() != null && prtoffer.getId() != "") {
+					if (prtoffer.getId() != null && !prtoffer.getId().equals(null)) {
 						logger.info("Decryption started for putPartneroffers");
 						Integer putid = EncryptionAES.decrypt(prtoffer.getId(), secret);
 						logger.info("Decryption completed for putPartneroffers");
@@ -527,6 +527,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		partnAud.setUpdatedBy(updatedBy);
 		partnAud.setMakerip(makerip);
 		partnAud.setCheckerip(checkerip);
+		partnAud.setPartnstaginentity(partnStagingEntity);
 		logger.info("PartnerAuditEntity entity going for save " + partnAud);
 		campaignUploadService.savePartnaudit(partnAud);
 

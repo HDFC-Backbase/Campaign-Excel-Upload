@@ -454,7 +454,7 @@ public class CorporateController implements CorporateoffersApi {
 						throw new CustomBadRequestException("Logo format is invalid");
 
 					// if (corpoff.getId() > 0) {
-					if (corpoff.getId() != null && corpoff.getId() != "") {
+					if (corpoff.getId() != null && !corpoff.getId().equals(null)) {
 						logger.info("Decryption started for putCorporateoffers");
 						Integer putid = EncryptionAES.decrypt(corpoff.getId(), secret);
 						logger.info("Decryption completed for putCorporateoffers");
@@ -543,6 +543,7 @@ public class CorporateController implements CorporateoffersApi {
 		corpAud.setUpdatedBy(updatedBy);
 		corpAud.setMakerip(makerip);
 		corpAud.setCheckerip(checkerip);
+		corpAud.setCorpstaginentity(corpStagingEntity);
 		logger.info("CorporateAuditEntity entity going for save " + corpAud);
 		campaignUploadService.saveCorpaudit(corpAud);
 

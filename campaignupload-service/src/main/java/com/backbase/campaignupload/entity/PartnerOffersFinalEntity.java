@@ -25,7 +25,7 @@ public class PartnerOffersFinalEntity {
 	@Column(name = "title")
 	private String title;
 
-	@Column(name = "approval_status")
+	@Column(name = "partn_status")
 	private String approvalstatus;
 
 	@Column(name = "logo")
@@ -45,7 +45,7 @@ public class PartnerOffersFinalEntity {
 	private String makerip;
 	
 	@OneToOne
-	@JoinColumn(name = "partoff_id", nullable = false)
+	@JoinColumn(name = "partn_s_id", nullable = false)
 	private PartnerOffersStagingEntity partoffstagentity;
 
 	public Integer getId() {

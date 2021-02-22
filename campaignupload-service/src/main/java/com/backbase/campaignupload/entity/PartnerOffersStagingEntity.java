@@ -28,7 +28,7 @@ public class PartnerOffersStagingEntity {
 	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approval_status")
+	@Column(name = "partn_status")
 	private String approvalstatus;
 	
 	@Column(name = "created_by")

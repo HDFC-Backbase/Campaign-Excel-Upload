@@ -28,7 +28,7 @@ public class CorporateStagingEntity {
 	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approval_status")
+	@Column(name = "corp_status")
 	private String approvalstatus;
 	
 	@Column(name = "company_id")

@@ -29,7 +29,7 @@ public class CorporateFinalEntity {
 	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approval_status")
+	@Column(name = "corp_status")
 	private String approvalstatus;
 	
 	@Column(name = "created_by")
@@ -45,7 +45,7 @@ public class CorporateFinalEntity {
 	private String makerip;
 	
 	@OneToOne
-	@JoinColumn(name = "corp_id", nullable = false)
+	@JoinColumn(name = "corp_s_id", nullable = false)
 	private CorporateStagingEntity corporateStagingEntity;
 	
 	@ManyToOne

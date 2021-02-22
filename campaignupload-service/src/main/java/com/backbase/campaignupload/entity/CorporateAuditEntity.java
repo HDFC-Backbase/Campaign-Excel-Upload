@@ -28,7 +28,7 @@ public class CorporateAuditEntity {
 	@Column(name = "offer_text")
 	private String offertext;
 
-	@Column(name = "approval_status")
+	@Column(name = "corp_status")
 	private String approvalstatus;
 	
 	@Column(name = "company_id")
@@ -47,7 +47,7 @@ public class CorporateAuditEntity {
 	private String makerip;
 	
 	@ManyToOne
-	@JoinColumn(name = "corp_stag", nullable = false)
+	@JoinColumn(name = "corp_stg_id", nullable = false)
 	private CorporateStagingEntity corpstaginentity;
 	
 	public Integer getId() {
