@@ -221,11 +221,11 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String createdBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
+		logger.info("User in JWT " + createdBy);
 
 		logger.info("Role in JWT " + role);
 		try {
@@ -246,12 +246,12 @@ public class PartnerOffersController implements PartneroffersApi {
 					if (postg != null) {
 						if (postg.getApprovalstatus().equals(APPROVED)) {
 							postg.setApprovalstatus(DELETE_PENDING);
-							postg.setCreatedBy(subject);
+							postg.setCreatedBy(createdBy);
 							postg.setUpdatedBy("-");
 							postg.setMakerip(makerip);
 							postg.setCheckerip("-");
 							campaignUploadService.savePartnerOffer(postg);
-						partnauditsave(postg, DELETE_PENDING, subject, makerip, "-");
+						partnauditsave(postg, DELETE_PENDING, createdBy,"-" ,makerip, "-");
 						} else
 							throw new CustomBadRequestException("Approved Records can be deleted");
 
@@ -289,11 +289,11 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String updatedBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
+		logger.info("User in JWT " + updatedBy);
 
 		logger.info("Role in JWT " + role);
 
@@ -315,12 +315,12 @@ public class PartnerOffersController implements PartneroffersApi {
 
 							if (prtstag.getApprovalstatus().equals(DELETE_PENDING)) {
 								prtstag.setApprovalstatus(DELETED);
-								prtstag.setUpdatedBy(subject);
+								prtstag.setUpdatedBy(updatedBy);
 								prtstag.setCheckerip(checkerip);
 								logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
 								campaignPutResponse.setMessage("Records Approved Successfully");
 								campaignUploadService.savePartnerOffer(prtstag);
-								partnauditsave(prtstag, DELETED, subject, "-", checkerip);
+								partnauditsave(prtstag, DELETED, prtstag.getCreatedBy(),updatedBy, prtstag.getMakerip(), checkerip);
 								if (ptfinal != null)
 									campaignUploadService.deletePT(ptfinal);
 
@@ -334,7 +334,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 									if (pofinallist.contains(prtstag)) {
 
-										overrideFinal(prtstag, pofinallist, checkerip, subject);
+										overrideFinal(prtstag, pofinallist, checkerip, updatedBy);
 
 									} else {
 										logger.info("Creating new PartnerOffersFinalEntity");
@@ -345,7 +345,7 @@ public class PartnerOffersController implements PartneroffersApi {
 										ptfinals.setApprovalstatus(APPROVED);
 										ptfinals.setPartoffstagentity(prtstag);
 										ptfinals.setCreatedBy(prtstag.getCreatedBy());
-										ptfinals.setUpdatedBy(subject);
+										ptfinals.setUpdatedBy(updatedBy);
 										ptfinals.setCheckerip(checkerip);
 										ptfinals.setMakerip(prtstag.getMakerip());
 										logger.info("PartnerOffersFinalEntity entity going for save " + ptfinals);
@@ -356,7 +356,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 									if (pofinallist.contains(prtstag)) {
 
-										overrideFinal(prtstag, pofinallist, checkerip, subject);
+										overrideFinal(prtstag, pofinallist, checkerip, updatedBy);
 										campaignUploadService.deletePT(ptfinal);
 
 									} else {
@@ -365,7 +365,7 @@ public class PartnerOffersController implements PartneroffersApi {
 										ptfinal.setOffertext(prtstag.getOffertext());
 										ptfinal.setApprovalstatus(APPROVED);
 										ptfinal.setCreatedBy(prtstag.getCreatedBy());
-										ptfinal.setUpdatedBy(subject);
+										ptfinal.setUpdatedBy(updatedBy);
 										ptfinal.setCheckerip(checkerip);
 										ptfinal.setMakerip(prtstag.getMakerip());
 										logger.info("PartnerOffersFinalEntity entity going for save " + ptfinal);
@@ -373,12 +373,12 @@ public class PartnerOffersController implements PartneroffersApi {
 									}
 								}
 								prtstag.setApprovalstatus(APPROVED);
-								prtstag.setUpdatedBy(subject);
+								prtstag.setUpdatedBy(updatedBy);
 								prtstag.setCheckerip(checkerip);
 								campaignPutResponse.setMessage("Record Approved successfully");
 								logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 								campaignUploadService.savePartnerOffer(prtstag);
-								partnauditsave(prtstag, APPROVED, subject, "-", checkerip);
+								partnauditsave(prtstag, APPROVED,prtstag.getCreatedBy(),updatedBy, prtstag.getMakerip(), checkerip);
 							}
 
 						} else if (action.equalsIgnoreCase("R")) {
@@ -388,12 +388,12 @@ public class PartnerOffersController implements PartneroffersApi {
 								prtstag.setApprovalstatus(REJECTED);
 							else
 								throw new CustomBadRequestException("Only Pending records can be rejected");
-							prtstag.setUpdatedBy(subject);
+							prtstag.setUpdatedBy(updatedBy);
 							prtstag.setCheckerip(checkerip);
 							campaignPutResponse.setMessage("Record Rejected successfully");
 							logger.info("PartnerOffersStagingEntity entity going for save " + prtstag);
 							campaignUploadService.savePartnerOffer(prtstag);
-							partnauditsave(prtstag, prtstag.getApprovalstatus(), subject, "-", checkerip);
+							partnauditsave(prtstag, prtstag.getApprovalstatus(),prtstag.getCreatedBy(),updatedBy,prtstag.getMakerip(), checkerip);
 						}
 
 						campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
@@ -427,7 +427,7 @@ public class PartnerOffersController implements PartneroffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String createdBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
@@ -455,12 +455,12 @@ public class PartnerOffersController implements PartneroffersApi {
 							prtstag.setOffertext(prtoffer.getOfferText());
 							prtstag.setApprovalstatus(PENDING);
 							prtstag.setId(putid);
-							prtstag.setCreatedBy(subject);
+							prtstag.setCreatedBy(createdBy);
 							prtstag.setUpdatedBy("-");
 							prtstag.setMakerip(makerip);
 							prtstag.setCheckerip("-");
 							campaignUploadService.savePartnerOffer(prtstag);
-							partnauditsave(prtstag, PENDING, subject, makerip, "-");
+							partnauditsave(prtstag, PENDING, createdBy, "",makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
 					} else {
@@ -468,7 +468,7 @@ public class PartnerOffersController implements PartneroffersApi {
 						prtstag.setTitle(prtoffer.getTitle());
 						prtstag.setLogo(prtoffer.getLogo());
 						prtstag.setOffertext(prtoffer.getOfferText());
-						prtstag.setCreatedBy(subject);
+						prtstag.setCreatedBy(createdBy);
 						prtstag.setUpdatedBy("-");
 						prtstag.setMakerip(makerip);
 						prtstag.setCheckerip("-");
@@ -515,21 +515,20 @@ public class PartnerOffersController implements PartneroffersApi {
 		campaignUploadService.savePTFinal(ptfinals);
 	}
 	
-	public void partnauditsave(PartnerOffersStagingEntity partnStagingEntity, String approvalstatus,String subject,String makerip,String checkerip)
+	public void partnauditsave(PartnerOffersStagingEntity partnStagingEntity, String approvalstatus,String createdBy, String updatedBy,String makerip,String checkerip)
 	{
 		
-		logger.info("going to save audit data");
 		PartnerAuditEntity partnAud=new PartnerAuditEntity();
 		partnAud.setTitle(partnStagingEntity.getTitle());
 		partnAud.setLogo(partnStagingEntity.getLogo());
 		partnAud.setOffertext(partnStagingEntity.getOffertext());
 		partnAud.setApprovalstatus(approvalstatus);
-		partnAud.setCreatedBy(subject);
-		partnAud.setUpdatedBy("-");
+		partnAud.setCreatedBy(createdBy);
+		partnAud.setUpdatedBy(updatedBy);
 		partnAud.setMakerip(makerip);
 		partnAud.setCheckerip(checkerip);
+		logger.info("PartnerAuditEntity entity going for save " + partnAud);
 		campaignUploadService.savePartnaudit(partnAud);
-		logger.info("audit data save success");
 
 
 	}

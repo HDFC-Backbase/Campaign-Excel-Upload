@@ -228,11 +228,11 @@ public class CorporateController implements CorporateoffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String createdBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
+		logger.info("User in JWT " + createdBy);
 
 		logger.info("Role in JWT " + role);
 		try {
@@ -253,12 +253,12 @@ public class CorporateController implements CorporateoffersApi {
 					if (corpstg != null) {
 						if (corpstg.getApprovalstatus().equals(APPROVED)) {
 							corpstg.setApprovalstatus(DELETE_PENDING);
-							corpstg.setCreatedBy(subject);
+							corpstg.setCreatedBy(createdBy);
 							corpstg.setUpdatedBy("-");
 							corpstg.setMakerip(makerip);
 							corpstg.setCheckerip("-");
 							campaignUploadService.saveCorpOffer(corpstg);
-							corpauditsave(corpstg, DELETE_PENDING, subject, makerip, "-");
+							corpauditsave(corpstg, DELETE_PENDING, createdBy,"-", makerip, "-");
 						} else
 							throw new CustomBadRequestException("Only Approved records can be deleted");
 					}
@@ -295,9 +295,9 @@ public class CorporateController implements CorporateoffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String updatedBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
+		logger.info("User in JWT " + updatedBy);
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
@@ -319,12 +319,12 @@ public class CorporateController implements CorporateoffersApi {
 
 							if (corpstg.getApprovalstatus().equals(DELETE_PENDING)) {
 								corpstg.setApprovalstatus(DELETED);
-								corpstg.setUpdatedBy(subject);
+								corpstg.setUpdatedBy(updatedBy);
 								corpstg.setCheckerip(checkerip);
 								logger.info("CorporateStagingEntity entity going for delete " + corpstg);
 								campaignPutResponse.setMessage("Records Approved Successfully");
 								campaignUploadService.saveCorpOffer(corpstg);
-								corpauditsave(corpstg, DELETED, subject, "-", checkerip);
+								corpauditsave(corpstg, DELETED,  corpstg.getCreatedBy(),updatedBy,corpstg.getMakerip(), checkerip);
 								if (corpfinal != null)
 									campaignUploadService.deleteCORP(corpfinal);
 							} else {
@@ -338,7 +338,7 @@ public class CorporateController implements CorporateoffersApi {
 									if (/* corpstg.getCorpfileApproveEntity() == null && */corpfinal == null) {
 										if (corpfinallist.contains(corpstg)) {
 
-											overrideFinal(corpstg, corpfinallist, checkerip, subject);
+											overrideFinal(corpstg, corpfinallist, checkerip, updatedBy);
 
 										} else {
 											logger.info("Creating new  CorporateFinalEntity");
@@ -348,7 +348,7 @@ public class CorporateController implements CorporateoffersApi {
 											corpfinals.setOffertext(corpstg.getOffertext());
 											corpfinals.setApprovalstatus(APPROVED);
 											corpfinals.setCreatedBy(corpstg.getCreatedBy());
-											corpfinals.setUpdatedBy(subject);
+											corpfinals.setUpdatedBy(updatedBy);
 											corpfinals.setCheckerip(checkerip);
 											corpfinals.setMakerip(corpstg.getMakerip());
 											corpfinals.setCorporateStagingEntity(corpstg);
@@ -360,7 +360,7 @@ public class CorporateController implements CorporateoffersApi {
 										logger.info("Updating existing CorporateFinalEntity");
 										if (corpfinallist.contains(corpstg)) {
 
-											overrideFinal(corpstg, corpfinallist, checkerip, subject);
+											overrideFinal(corpstg, corpfinallist, checkerip, updatedBy);
 											campaignUploadService.deleteCORP(corpfinal);
 
 										} else {
@@ -368,7 +368,7 @@ public class CorporateController implements CorporateoffersApi {
 											corpfinal.setLogo(corpstg.getLogo());
 											corpfinal.setOffertext(corpstg.getOffertext());
 											corpfinal.setCreatedBy(corpstg.getCreatedBy());
-											corpfinal.setUpdatedBy(subject);
+											corpfinal.setUpdatedBy(updatedBy);
 											corpfinal.setApprovalstatus(APPROVED);
 											corpfinal.setCheckerip(checkerip);
 											corpfinal.setMakerip(corpstg.getMakerip());
@@ -377,12 +377,12 @@ public class CorporateController implements CorporateoffersApi {
 										}
 									}
 									corpstg.setApprovalstatus(APPROVED);
-									corpstg.setUpdatedBy(subject);
+									corpstg.setUpdatedBy(updatedBy);
 									corpstg.setCheckerip(checkerip);
 									campaignPutResponse.setMessage("Records Approved Successfully");
 									logger.info("CorporateStagingEntity entity going for save " + corpstg);
 									campaignUploadService.saveCorpOffer(corpstg);
-									corpauditsave(corpstg, APPROVED, subject, "-", checkerip);
+									corpauditsave(corpstg, APPROVED,corpstg.getCreatedBy(), updatedBy, corpstg.getMakerip(), checkerip);
 								} else
 									throw new CustomBadRequestException("No Company Mapping Found");
 							}
@@ -393,12 +393,12 @@ public class CorporateController implements CorporateoffersApi {
 								corpstg.setApprovalstatus(REJECTED);
 							else
 								throw new CustomBadRequestException("Only Pending records can be rejected");
-							corpstg.setUpdatedBy(subject);
+							corpstg.setUpdatedBy(updatedBy);
 							corpstg.setCheckerip(checkerip);
 							campaignPutResponse.setMessage("Records Rejected Successfully");
 							logger.info("CorporateStagingEntity entity going for save " + corpstg);
 							campaignUploadService.saveCorpOffer(corpstg);
-							corpauditsave(corpstg, corpstg.getApprovalstatus(), subject, "-", checkerip);
+							corpauditsave(corpstg, corpstg.getApprovalstatus(),corpstg.getCreatedBy(), updatedBy, corpstg.getMakerip(), checkerip);
 						}
 					} else
 						throw new CustomBadRequestException("No staging entity found with Id " + id);
@@ -432,9 +432,9 @@ public class CorporateController implements CorporateoffersApi {
 
 		String authorization = request.getHeader("authorization").substring(7);
 
-		String subject = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
+		String createdBy = ValidateJwt.validateJwt(authorization, "JWTSecretKeyDontUseInProduction!");
 
-		logger.info("User in JWT " + subject);
+		logger.info("User in JWT " + createdBy);
 
 		List<String> role = ValidateJwt.getRole(authorization, "JWTSecretKeyDontUseInProduction!");
 
@@ -466,12 +466,12 @@ public class CorporateController implements CorporateoffersApi {
 							corpstg.setOffertext(corpoff.getOfferText());
 							corpstg.setApprovalstatus(PENDING);
 							corpstg.setId(putid);
-							corpstg.setCreatedBy(subject);
+							corpstg.setCreatedBy(createdBy);
 							corpstg.setUpdatedBy("-");
 							corpstg.setMakerip(makerip);
 							corpstg.setCheckerip("-");
 							campaignUploadService.saveCorpOffer(corpstg);
-							corpauditsave(corpstg, PENDING, subject, makerip, "-");
+							corpauditsave(corpstg, PENDING, createdBy,"-", makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
 					} else {
@@ -481,7 +481,7 @@ public class CorporateController implements CorporateoffersApi {
 						corpstg.setLogo(corpoff.getLogo());
 						corpstg.setOffertext(corpoff.getOfferText());
 						corpstg.setApprovalstatus(PENDING);
-						corpstg.setCreatedBy(subject);
+						corpstg.setCreatedBy(createdBy);
 						corpstg.setUpdatedBy("-");
 						corpstg.setMakerip(makerip);
 						corpstg.setCheckerip("-");
@@ -530,22 +530,21 @@ public class CorporateController implements CorporateoffersApi {
 		campaignUploadService.saveCorpFinal(corpfinals);
 	}
 	
-	public void corpauditsave(CorporateStagingEntity corpStagingEntity, String approvalstatus,String subject,String makerip,String checkerip)
+	public void corpauditsave(CorporateStagingEntity corpStagingEntity, String approvalstatus,String createdBy, String updatedBy,String makerip,String checkerip)
 	{
 		
-		logger.info("going to save audit data");
 		CorporateAuditEntity corpAud=new CorporateAuditEntity();
 		corpAud.setCompanyId(corpStagingEntity.getCompanyId());
 		corpAud.setTitle(corpStagingEntity.getTitle());
 		corpAud.setLogo(corpStagingEntity.getLogo());
 		corpAud.setOffertext(corpStagingEntity.getOffertext());
 		corpAud.setApprovalstatus(approvalstatus);
-		corpAud.setCreatedBy(subject);
-		corpAud.setUpdatedBy("-");
+		corpAud.setCreatedBy(createdBy);
+		corpAud.setUpdatedBy(updatedBy);
 		corpAud.setMakerip(makerip);
 		corpAud.setCheckerip(checkerip);
+		logger.info("CorporateAuditEntity entity going for save " + corpAud);
 		campaignUploadService.saveCorpaudit(corpAud);
-		logger.info("audit data save success");
 
 
 	}
