@@ -322,7 +322,7 @@ public class CorporateController implements CorporateoffersApi {
 								corpstg.setUpdatedBy(updatedBy);
 								corpstg.setCheckerip(checkerip);
 								logger.info("CorporateStagingEntity entity going for delete " + corpstg);
-								campaignPutResponse.setMessage("Records Approved Successfully");
+								campaignPutResponse.setMessage("Records Deleted Successfully");
 								campaignUploadService.saveCorpOffer(corpstg);
 								corpauditsave(corpstg, DELETED,  corpstg.getCreatedBy(),updatedBy,corpstg.getMakerip(), checkerip);
 								if (corpfinal != null)
@@ -532,7 +532,7 @@ public class CorporateController implements CorporateoffersApi {
 	
 	public void corpauditsave(CorporateStagingEntity corpStagingEntity, String approvalstatus,String createdBy, String updatedBy,String makerip,String checkerip)
 	{
-		
+		logger.info("CorporateAuditEntity going for save");
 		CorporateAuditEntity corpAud=new CorporateAuditEntity();
 		corpAud.setCompanyId(corpStagingEntity.getCompanyId());
 		corpAud.setTitle(corpStagingEntity.getTitle());
@@ -544,8 +544,8 @@ public class CorporateController implements CorporateoffersApi {
 		corpAud.setMakerip(makerip);
 		corpAud.setCheckerip(checkerip);
 		corpAud.setCorpstaginentity(corpStagingEntity);
-		logger.info("CorporateAuditEntity entity going for save " + corpAud);
 		campaignUploadService.saveCorpaudit(corpAud);
+		logger.info("CorporateAuditEntity save completed " + corpAud);
 
 
 	}

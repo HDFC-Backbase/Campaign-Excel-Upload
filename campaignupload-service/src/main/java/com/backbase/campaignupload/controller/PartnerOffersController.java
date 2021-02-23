@@ -17,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backbase.buildingblocks.presentation.errors.BadRequestException;
 import com.backbase.buildingblocks.presentation.errors.InternalServerErrorException;
-import com.backbase.campaignupload.entity.CorporateAuditEntity;
-import com.backbase.campaignupload.entity.CorporateStagingEntity;
 import com.backbase.campaignupload.entity.PartnerAuditEntity;
 import com.backbase.campaignupload.entity.PartnerOffersFinalEntity;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
@@ -163,6 +161,7 @@ public class PartnerOffersController implements PartneroffersApi {
 		logger.info("Request received to Upload data");
 
 		String makerip = request.getRemoteAddr();
+		
 		logger.info(" PartneroffersPostResponseBody ip  " + makerip);
 
 		logger.info("Authorization header " + request.getHeader("authorization"));
@@ -257,11 +256,11 @@ public class PartnerOffersController implements PartneroffersApi {
 
 					}
 
-					IdDeleteResponseBody youtubePutResponse = new IdDeleteResponseBody();
-					youtubePutResponse.setMessage("Record delete requested");
-					youtubePutResponse.setStatuscode(HttpStatus.SC_OK);
+					IdDeleteResponseBody partnerPutResponse = new IdDeleteResponseBody();
+					partnerPutResponse.setMessage("Record delete requested");
+					partnerPutResponse.setStatuscode(HttpStatus.SC_OK);
 
-					return youtubePutResponse;
+					return partnerPutResponse;
 				} else
 					throw new CustomBadRequestException("Id cannot be null");
 			} else
@@ -318,7 +317,7 @@ public class PartnerOffersController implements PartneroffersApi {
 								prtstag.setUpdatedBy(updatedBy);
 								prtstag.setCheckerip(checkerip);
 								logger.info("PartnerOffersStagingEntity entity going for delete " + prtstag);
-								campaignPutResponse.setMessage("Records Approved Successfully");
+								campaignPutResponse.setMessage("Records Deleted Successfully");
 								campaignUploadService.savePartnerOffer(prtstag);
 								partnauditsave(prtstag, DELETED, prtstag.getCreatedBy(),updatedBy, prtstag.getMakerip(), checkerip);
 								if (ptfinal != null)
@@ -517,7 +516,7 @@ public class PartnerOffersController implements PartneroffersApi {
 	
 	public void partnauditsave(PartnerOffersStagingEntity partnStagingEntity, String approvalstatus,String createdBy, String updatedBy,String makerip,String checkerip)
 	{
-		
+		logger.info("PartnerAuditEntity entity going for save");
 		PartnerAuditEntity partnAud=new PartnerAuditEntity();
 		partnAud.setTitle(partnStagingEntity.getTitle());
 		partnAud.setLogo(partnStagingEntity.getLogo());
@@ -528,8 +527,8 @@ public class PartnerOffersController implements PartneroffersApi {
 		partnAud.setMakerip(makerip);
 		partnAud.setCheckerip(checkerip);
 		partnAud.setPartnstaginentity(partnStagingEntity);
-		logger.info("PartnerAuditEntity entity going for save " + partnAud);
 		campaignUploadService.savePartnaudit(partnAud);
+		logger.info("PartnerAuditEntity entity save completed" + partnAud);
 
 
 	}

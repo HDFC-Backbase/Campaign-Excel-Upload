@@ -18,17 +18,17 @@ public class CorporateStagingEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "title")
+	@Column(name = "crp_title")
 	private String title;
 	
 
-	@Column(name = "logo")
+	@Column(name = "crp_logo")
 	private String logo;
 
-	@Column(name = "offer_text")
+	@Column(name = "crp_offertext")
 	private String offertext;
 
-	@Column(name = "corp_status")
+	@Column(name = "crp_status")
 	private String approvalstatus;
 	
 	@Column(name = "company_id")

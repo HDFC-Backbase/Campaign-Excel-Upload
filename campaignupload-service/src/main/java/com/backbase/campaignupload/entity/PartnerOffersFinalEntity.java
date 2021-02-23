@@ -19,16 +19,16 @@ public class PartnerOffersFinalEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "offer_text")
+	@Column(name = "pt_offertext")
 	private String offertext;
 
-	@Column(name = "title")
+	@Column(name = "pt_title")
 	private String title;
 
-	@Column(name = "partn_status")
+	@Column(name = "pt_status")
 	private String approvalstatus;
 
-	@Column(name = "logo")
+	@Column(name = "pt_logo")
 	private String logo;
 	
 	@Column(name = "created_by")
@@ -36,8 +36,7 @@ public class PartnerOffersFinalEntity {
 	
 	@Column(name = "updated_by")
 	private String updatedBy;
-	
-	
+		
 	@Column(name = "checker_ip")
 	private String checkerip;
 	
@@ -45,7 +44,7 @@ public class PartnerOffersFinalEntity {
 	private String makerip;
 	
 	@OneToOne
-	@JoinColumn(name = "partn_s_id", nullable = false)
+	@JoinColumn(name = "p_s_id", nullable = false)
 	private PartnerOffersStagingEntity partoffstagentity;
 
 	public Integer getId() {

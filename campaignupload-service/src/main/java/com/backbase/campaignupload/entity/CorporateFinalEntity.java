@@ -20,16 +20,16 @@ public class CorporateFinalEntity {
 	@Column(name = "id")
 	private int id;
 
-	@Column(name = "title")
+	@Column(name = "crp_title")
 	private String title;
 
-	@Column(name = "logo")
+	@Column(name = "crp_logo")
 	private String logo;
 
-	@Column(name = "offer_text")
+	@Column(name = "crp_offertext")
 	private String offertext;
 
-	@Column(name = "corp_status")
+	@Column(name = "crp_status")
 	private String approvalstatus;
 	
 	@Column(name = "created_by")
@@ -45,7 +45,7 @@ public class CorporateFinalEntity {
 	private String makerip;
 	
 	@OneToOne
-	@JoinColumn(name = "corp_s_id", nullable = false)
+	@JoinColumn(name = "crp_s_id", nullable = false)
 	private CorporateStagingEntity corporateStagingEntity;
 	
 	@ManyToOne
