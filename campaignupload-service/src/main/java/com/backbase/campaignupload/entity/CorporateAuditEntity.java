@@ -47,7 +47,7 @@ public class CorporateAuditEntity {
 	private String makerip;
 	
 	@ManyToOne
-	@JoinColumn(name = "corp_stg_id", nullable = false)
+	@JoinColumn(name = "crp_s_id", nullable = false)
 	private CorporateStagingEntity corpstaginentity;
 	
 	public Integer getId() {
