@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.backbase.campaignupload.entity.PartnerOffersStagingEntity;
 
 public interface PartnerOfferRepo extends JpaRepository<PartnerOffersStagingEntity,Integer>,PTStagCustomRepo{
-
 	
-	@Query(value="select * from partner_offer_staging p where p.id not in(select pstg.id from partner_offer_staging pstg where pstg.partn_status='Pending' and pstg.file_id is not null) order by p.updated_on desc",nativeQuery=true)
+	@Query(value="select * from partner_offer_staging p where p.id not in(select pstg.id from partner_offer_staging pstg where pstg.pt_status='Pending' and pstg.file_id is not null) order by p.updated_on desc",nativeQuery=true)
 	public List<PartnerOffersStagingEntity> findAll();
 }

@@ -471,6 +471,7 @@ public class CorporateController implements CorporateoffersApi {
 							corpstg.setMakerip(makerip);
 							corpstg.setCheckerip("-");
 							campaignUploadService.saveCorpOffer(corpstg);
+							campaignPutResponse.setMessage("Record Updated in table");
 							corpauditsave(corpstg, PENDING, createdBy,"-", makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + corpoff.getId());
@@ -485,11 +486,10 @@ public class CorporateController implements CorporateoffersApi {
 						corpstg.setUpdatedBy("-");
 						corpstg.setMakerip(makerip);
 						corpstg.setCheckerip("-");
+						campaignPutResponse.setMessage("Record Created in table");
 						campaignUploadService.saveCorpOffer(corpstg);
 					}
 				}
-
-				campaignPutResponse.setMessage("Record Updated in table");
 				campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
 				return campaignPutResponse;

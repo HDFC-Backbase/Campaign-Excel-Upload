@@ -459,7 +459,8 @@ public class PartnerOffersController implements PartneroffersApi {
 							prtstag.setMakerip(makerip);
 							prtstag.setCheckerip("-");
 							campaignUploadService.savePartnerOffer(prtstag);
-							partnauditsave(prtstag, PENDING, createdBy, "",makerip, "-");
+							campaignPutResponse.setMessage("Record Updated in table");
+							partnauditsave(prtstag, PENDING, createdBy, "-",makerip, "-");
 						} else
 							throw new CustomBadRequestException("No Entity found with Id " + prtoffer.getId());
 					} else {
@@ -472,11 +473,10 @@ public class PartnerOffersController implements PartneroffersApi {
 						prtstag.setMakerip(makerip);
 						prtstag.setCheckerip("-");
 						prtstag.setApprovalstatus(PENDING);
+						campaignPutResponse.setMessage("Record Created in table");
 						campaignUploadService.savePartnerOffer(prtstag);
 					}
 				}
-
-				campaignPutResponse.setMessage("Record Updated in table");
 				campaignPutResponse.setStatuscode(HttpStatus.SC_OK);
 
 				return campaignPutResponse;
